@@ -1,9 +1,9 @@
-import { Noise } from "../basic/perlinNoise";
-import { distance, Point } from "../basic/point";
-import PRNG from "../basic/PRNG";
-import { bezmh, normRand, poly, randChoice, wtrand } from "../basic/utils";
-import { midPt } from "../PolyTools";
-import { div, stroke, texture } from "./brushes";
+import { Noise } from '../basic/perlinNoise';
+import { distance, Point } from '../basic/point';
+import PRNG from '../basic/PRNG';
+import { bezmh, normRand, poly, randChoice, wtrand } from '../basic/utils';
+import { midPt } from '../PolyTools';
+import { div, stroke, texture } from './brushes';
 
 const random = PRNG.random;
 
@@ -94,7 +94,7 @@ export function hat01<K extends keyof GeneralFlipArgs>(
 
   const { fli } = _args;
 
-  let canv = "";
+  let canv = '';
   const seed = random();
   const f: (pl: Point[]) => Point[] = fli ? flipper : (x) => x;
   //const plist = [[-0.5,0.5],[0.5,0.5],[0.5,1],[-0.5,2]]
@@ -112,7 +112,7 @@ export function hat01<K extends keyof GeneralFlipArgs>(
         new Point(-0.65, 0.5),
       ])
     ),
-    { fil: "rgba(100,100,100,0.8)" }
+    { fil: 'rgba(100,100,100,0.8)' }
   );
 
   const qlist1: Point[] = [];
@@ -122,7 +122,7 @@ export function hat01<K extends keyof GeneralFlipArgs>(
     );
   }
   canv += poly(tranpoly(p0, p1, f(qlist1)), {
-    str: "rgba(100,100,100,0.8)",
+    str: 'rgba(100,100,100,0.8)',
     wid: 1,
   });
 
@@ -139,7 +139,7 @@ export function hat02<K extends keyof GeneralFlipArgs>(
 
   const { fli } = _args;
 
-  let canv = "";
+  let canv = '';
   const seed = random();
 
   const f: (pl: Point[]) => Point[] = fli ? flipper : (x) => x;
@@ -163,7 +163,7 @@ export function hat02<K extends keyof GeneralFlipArgs>(
         new Point(0.3, 0.5),
       ])
     ),
-    { fil: "rgba(100,100,100,0.8)" }
+    { fil: 'rgba(100,100,100,0.8)' }
   );
   return canv;
 }
@@ -178,7 +178,7 @@ export function stick01<K extends keyof GeneralFlipArgs>(
 
   const { fli } = _args;
 
-  let canv = "";
+  let canv = '';
   const seed = random();
 
   const f: (pl: Point[]) => Point[] = fli ? flipper : (x) => x;
@@ -194,7 +194,7 @@ export function stick01<K extends keyof GeneralFlipArgs>(
     );
   }
   canv += poly(tranpoly(p0, p1, f(qlist1)), {
-    str: "rgba(100,100,100,0.5)",
+    str: 'rgba(100,100,100,0.5)',
     wid: 1,
   });
 
@@ -246,19 +246,19 @@ function cloth(
   plist: Point[],
   fun: (v: number) => number
 ): string {
-    let canv = "";
+  let canv = '';
   const tlist = bezmh(plist, 2);
   const [tlist1, tlist2] = expand(tlist, fun);
   canv += poly(tlist1.concat(tlist2.reverse()).map(toGlobal), {
-    fil: "white",
+    fil: 'white',
   });
   canv += stroke(tlist1.map(toGlobal), {
     wid: 1,
-    col: "rgba(100,100,100,0.5)",
+    col: 'rgba(100,100,100,0.5)',
   });
   canv += stroke(tlist2.map(toGlobal), {
     wid: 1,
-    col: "rgba(100,100,100,0.6)",
+    col: 'rgba(100,100,100,0.6)',
   });
 
   return canv;
@@ -287,7 +287,7 @@ function fhead(sca: number, x: number) {
 class ManArgs {
   sca = 0.5;
   hat = hat01;
-  ite = (p1: Point, p2: Point, a: GeneralFlipArgs | undefined) => "";
+  ite = (p1: Point, p2: Point, a: GeneralFlipArgs | undefined) => '';
   fli = true;
   ang = [
     0,
@@ -324,7 +324,7 @@ export function man<K extends keyof ManArgs>(
     return v * sca;
   });
 
-  let canv = "";
+  let canv = '';
   const sct = {
     0: { 1: { 2: {}, 5: { 6: {} }, 7: { 8: {} } }, 3: { 4: {} } },
   };
@@ -363,7 +363,7 @@ export function man<K extends keyof ManArgs>(
   hlist1.splice(0, Math.floor(hlist1.length * 0.1));
   hlist2.splice(0, Math.floor(hlist2.length * 0.95));
   canv += poly(hlist1.concat(hlist2.reverse()).map(toGlobal), {
-    fil: "rgba(100,100,100,0.6)",
+    fil: 'rgba(100,100,100,0.6)',
   });
 
   canv += hat(toGlobal(pts[1]), toGlobal(pts[2]), { fli: fli });

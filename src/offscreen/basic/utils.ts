@@ -1,7 +1,7 @@
-import { midPt } from "../PolyTools";
-import { Point, Vector } from "./point";
-import PRNG from "./PRNG";
-import { Range } from "./range";
+import { midPt } from '../PolyTools';
+import { Point, Vector } from './point';
+import PRNG from './PRNG';
+import { Range } from './range';
 
 const random = PRNG.random;
 
@@ -78,8 +78,8 @@ export function bezmh(P: Point[], w: number = 1): Point[] {
 class PolyArgs {
   xof: number = 0;
   yof: number = 0;
-  fil: string = "rgba(0,0,0,0)";
-  str: string = "rgba(0,0,0,0)";
+  fil: string = 'rgba(0,0,0,0)';
+  str: string = 'rgba(0,0,0,0)';
   wid: number = 0;
 }
 
@@ -92,13 +92,15 @@ export function poly<K extends keyof PolyArgs>(
   const { xof, yof, fil, str, wid } = _args;
   const off = new Vector(xof, yof);
 
-  const pointStr = plist.map((p: Point) => {
-    const np = p.move(off);
-    return `${p.x.toFixed(1)},${p.y.toFixed(1)}`;
-  }).join(' ');
+  const pointStr = plist
+    .map((p: Point) => {
+      const np = p.move(off);
+      return `${p.x.toFixed(1)},${p.y.toFixed(1)}`;
+    })
+    .join(' ');
 
   var canv = `<polyline points='${pointStr}'`;
   canv +=
-    " style='fill:" + fil + ";stroke:" + str + ";stroke-width:" + wid + "'/>";
+    " style='fill:" + fil + ';stroke:' + str + ';stroke-width:' + wid + "'/>";
   return canv;
 }

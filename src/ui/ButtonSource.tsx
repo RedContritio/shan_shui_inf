@@ -1,5 +1,5 @@
-import React from "react";
-import "./styles.css";
+import React from 'react';
+import './styles.css';
 
 interface IState {
   isHover: boolean;
@@ -7,7 +7,7 @@ interface IState {
 }
 
 class ButtonSource extends React.Component<{}, IState> {
-  static id = "SOURCE_BTN";
+  static id = 'SOURCE_BTN';
 
   constructor(props: any) {
     super(props);
@@ -20,7 +20,7 @@ class ButtonSource extends React.Component<{}, IState> {
   componentDidMount() {
     const updateLeft = (x: number) =>
       this.setState({ left: Math.max(41, 77 - x) });
-    window.addEventListener("scroll", (e) => updateLeft(window.scrollX));
+    window.addEventListener('scroll', (e) => updateLeft(window.scrollX));
   }
 
   render() {
@@ -28,7 +28,7 @@ class ButtonSource extends React.Component<{}, IState> {
     const bgrColor: string = `rgba(0, 0, 0, ${isHover ? 0.1 : 0})`;
     const onMouseOver = () => this.setState({ isHover: true });
     const onMouseOut = () => this.setState({ isHover: false });
-    const onClick = () => alert("not implement");
+    const onClick = () => alert('not implement');
 
     return (
       <div

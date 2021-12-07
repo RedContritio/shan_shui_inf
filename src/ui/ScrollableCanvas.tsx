@@ -1,5 +1,5 @@
-import React from "react";
-import "./styles.css";
+import React from 'react';
+import './styles.css';
 
 interface IBarProps {
   id: string;
@@ -46,13 +46,14 @@ class ScrollBar extends React.Component<IBarProps, IBarState> {
 interface IProps {
   xscroll: (v: number) => void;
   height: number;
-  url: string | undefined;
+  background: string | undefined;
   seed: string;
   windx: number;
+  foreground: string;
 }
 
 class ScrollableCanvas extends React.Component<IProps> {
-  static id = "SCROLLABLE_CANVAS";
+  static id = 'SCROLLABLE_CANVAS';
 
   render() {
     const xscroll = this.props.xscroll;
@@ -73,8 +74,11 @@ class ScrollableCanvas extends React.Component<IProps> {
               <div
                 id="BG"
                 style={{
-                  backgroundImage: `url(${this.props.url})`,
+                  backgroundImage: `url(${this.props.background})`,
                   width: this.props.windx,
+                }}
+                dangerouslySetInnerHTML={{
+                  __html: this.props.foreground,
                 }}
               ></div>
             </td>

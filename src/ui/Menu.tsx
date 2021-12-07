@@ -1,5 +1,5 @@
-import React, { ChangeEvent } from "react";
-import "./styles.css";
+import React, { ChangeEvent } from 'react';
+import './styles.css';
 
 interface MenuProps {
   display: string;
@@ -13,7 +13,7 @@ interface MenuProps {
 }
 
 class Menu extends React.Component<MenuProps> {
-  static id: string = "MENU";
+  static id: string = 'MENU';
 
   render() {
     const changeSeed = (event: ChangeEvent<HTMLInputElement>) =>

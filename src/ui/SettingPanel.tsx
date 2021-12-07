@@ -1,7 +1,7 @@
-import React from "react";
-import ButtonSet from "./ButtonSet";
-import Menu from "./Menu";
-import "./styles.css";
+import React from 'react';
+import ButtonSet from './ButtonSet';
+import Menu from './Menu';
+import './styles.css';
 
 interface Props {
   seed: string;
@@ -18,7 +18,7 @@ interface State {
 }
 
 class SettingPanel extends React.Component<Props, State> {
-  static id = "SETTING";
+  static id = 'SETTING';
 
   constructor(props: any) {
     super(props);
@@ -39,7 +39,7 @@ class SettingPanel extends React.Component<Props, State> {
         />
         <div style={{ height: 4 }} />
         <Menu
-          display={menu_visible ? "block" : "none"}
+          display={menu_visible ? 'block' : 'none'}
           seed={this.props.seed}
           changeSeed={this.props.changeSeed}
           step={this.props.step}

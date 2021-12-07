@@ -1,7 +1,7 @@
-import { Point } from "../basic/point";
-import { loopNoise, normRand, poly, randChoice } from "../basic/utils";
-import { Noise } from "../basic/perlinNoise";
-import { div, stroke, texture } from "./brushes";
+import { Point } from '../basic/point';
+import { loopNoise, normRand, poly, randChoice } from '../basic/utils';
+import { Noise } from '../basic/perlinNoise';
+import { div, stroke, texture } from './brushes';
 import {
   tree01,
   tree02,
@@ -11,11 +11,11 @@ import {
   tree06,
   tree07,
   tree08,
-} from "./tree";
-import { arch01, arch02, arch03, arch04, transmissionTower01 } from "./arch";
-import { midPt, triangulate } from "../PolyTools";
-import { Bound } from "../basic/range";
-import PRNG from "../basic/PRNG";
+} from './tree';
+import { arch01, arch02, arch03, arch04, transmissionTower01 } from './arch';
+import { midPt, triangulate } from '../PolyTools';
+import { Bound } from '../basic/range';
+import PRNG from '../basic/PRNG';
 
 const random = PRNG.random;
 
@@ -82,13 +82,13 @@ export function foot<K extends keyof FootArgs>(
       }
     }
   }
-  let canv = "";
+  let canv = '';
   for (let i = 0; i < ftlist.length; i++) {
     canv += poly(ftlist[i], {
       xof: xof,
       yof: yof,
-      fil: "white",
-      str: "none",
+      fil: 'white',
+      str: 'none',
     });
   }
   for (let j = 0; j < ftlist.length; j++) {
@@ -97,7 +97,7 @@ export function foot<K extends keyof FootArgs>(
         return new Point(p.x + xof, p.y + yof);
       }),
       {
-        col: "rgba(100,100,100," + (0.1 + random() * 0.1).toFixed(3) + ")",
+        col: 'rgba(100,100,100,' + (0.1 + random() * 0.1).toFixed(3) + ')',
         wid: 1,
       }
     );
@@ -111,7 +111,7 @@ function vegetate(
   growthRule: (i: number, j: number) => boolean,
   proofRule: (pl: Point[], i: number) => boolean
 ): string {
-  let canv = "";
+  let canv = '';
   const veglist: Point[] = [];
   for (let i = 0; i < ptlist.length; i += 1) {
     for (let j = 0; j < ptlist[i].length; j += 1) {
@@ -142,7 +142,7 @@ export function mountain<K extends keyof MountainArgs>(
   yoff: number,
   seed: number,
   args: Pick<MountainArgs, K> | undefined = undefined
-): Point[][][] | string {
+): string {
   const _args = new MountainArgs();
   Object.assign(_args, args);
 
@@ -150,7 +150,7 @@ export function mountain<K extends keyof MountainArgs>(
 
   const _seed: number = seed != undefined ? seed : 0;
 
-  let canv = "";
+  let canv = '';
 
   const ptlist: Point[][] = [];
   const h = hei;
@@ -177,9 +177,9 @@ export function mountain<K extends keyof MountainArgs>(
     function (x, y) {
       return tree02(x + xoff, y + yoff - 5, {
         col:
-          "rgba(100,100,100," +
+          'rgba(100,100,100,' +
           (Noise.noise(0.01 * x, 0.01 * y) * 0.5 * 0.3 + 0.5).toFixed(3) +
-          ")",
+          ')',
         clu: 2,
       });
     },
@@ -196,15 +196,15 @@ export function mountain<K extends keyof MountainArgs>(
   canv += poly(ptlist[0].concat([new Point(0, reso[0] * 4)]), {
     xof: xoff,
     yof: yoff,
-    fil: "white",
-    str: "none",
+    fil: 'white',
+    str: 'none',
   });
   //OUTLINE
   canv += stroke(
     ptlist[0].map(function (p) {
       return new Point(p.x + xoff, p.y + yoff);
     }),
-    { col: "rgba(100,100,100,0.3)", noi: 1, wid: 3 }
+    { col: 'rgba(100,100,100,0.3)', noi: 1, wid: 3 }
   );
 
   canv += foot(ptlist, { xof: xoff, yof: yoff });
@@ -234,9 +234,9 @@ export function mountain<K extends keyof MountainArgs>(
     function (x, y) {
       return tree02(x + xoff, y + yoff, {
         col:
-          "rgba(100,100,100," +
+          'rgba(100,100,100,' +
           (Noise.noise(0.01 * x, 0.01 * y) * 0.5 * 0.3 + 0.5).toFixed(3) +
-          ")",
+          ')',
       });
     },
     function (i, j) {
@@ -259,9 +259,9 @@ export function mountain<K extends keyof MountainArgs>(
           hei: ht,
           wid: random() * 3 + 1,
           col:
-            "rgba(100,100,100," +
+            'rgba(100,100,100,' +
             (Noise.noise(0.01 * x, 0.01 * y) * 0.5 * 0.3 + 0.3).toFixed(3) +
-            ")",
+            ')',
         });
       },
       function (i, j): boolean {
@@ -305,9 +305,9 @@ export function mountain<K extends keyof MountainArgs>(
             return Math.pow(x * bc, bp);
           },
           col:
-            "rgba(100,100,100," +
+            'rgba(100,100,100,' +
             (Noise.noise(0.01 * x, 0.01 * y) * 0.5 * 0.3 + 0.3).toFixed(3) +
-            ")",
+            ')',
         });
       },
       function (i, j) {
@@ -339,7 +339,7 @@ export function mountain<K extends keyof MountainArgs>(
           sto: randChoice([1, 1, 1, 2, 2]),
         });
       } else {
-        return "";
+        return '';
       }
     },
     function (i, j) {
@@ -413,7 +413,9 @@ export function mountain<K extends keyof MountainArgs>(
   if (ret == 0) {
     return canv;
   } else {
-    return [ptlist];
+    console.log(`error ! ${ret} in mountain`);
+    return '';
+    // return [ptlist];
   }
 }
 
@@ -458,7 +460,7 @@ export function flatMount<K extends keyof FlatMountArgs>(
 
   const { hei, wid, tex, cho, ret } = _args;
 
-  let canv = "";
+  let canv = '';
   const ptlist: Point[][] = [];
   const reso = [5, 50];
   let hoff = 0;
@@ -495,15 +497,15 @@ export function flatMount<K extends keyof FlatMountArgs>(
   canv += poly(ptlist[0].concat([new Point(0, reso[0] * 4)]), {
     xof: xoff,
     yof: yoff,
-    fil: "white",
-    str: "none",
+    fil: 'white',
+    str: 'none',
   });
   //OUTLINE
   canv += stroke(
     ptlist[0].map(function (p: Point) {
       return new Point(p.x + xoff, p.y + yoff);
     }),
-    { col: "rgba(100,100,100,0.3)", noi: 1, wid: 3 }
+    { col: 'rgba(100,100,100,0.3)', noi: 1, wid: 3 }
   );
 
   //canv += foot(ptlist,{xof:xoff,yof:yoff})
@@ -564,15 +566,15 @@ export function flatMount<K extends keyof FlatMountArgs>(
   canv += poly(grlist, {
     xof: xoff,
     yof: yoff,
-    str: "none",
-    fil: "white",
+    str: 'none',
+    fil: 'white',
     wid: 2,
   });
   canv += stroke(
     grlist.map((p: Point) => new Point(p.x + xoff, p.y + yoff)),
     {
       wid: 3,
-      col: "rgba(100,100,100,0.2)",
+      col: 'rgba(100,100,100,0.2)',
     }
   );
 
@@ -582,7 +584,7 @@ export function flatMount<K extends keyof FlatMountArgs>(
 }
 
 export function flatDec(xoff: number, yoff: number, grbd: Bound) {
-  let canv = "";
+  let canv = '';
 
   const tt = randChoice([0, 0, 1, 2, 3, 4]);
 
@@ -729,7 +731,7 @@ export function distMount<K extends keyof DistMountArgs>(
   Object.assign(_args, args);
 
   const { hei, len, seg } = _args;
-  let canv = "";
+  let canv = '';
   const span = 10;
 
   const ptlist: Point[][] = [];
@@ -762,12 +764,12 @@ export function distMount<K extends keyof DistMountArgs>(
   for (let i = 0; i < ptlist.length; i++) {
     const getCol = function (x: number, y: number) {
       const c = (Noise.noise(x * 0.02, y * 0.02, yoff) * 55 + 200) | 0;
-      return "rgb(" + c + "," + c + "," + c + ")";
+      return 'rgb(' + c + ',' + c + ',' + c + ')';
     };
     const pe = ptlist[i][ptlist[i].length - 1];
     canv += poly(ptlist[i], {
       fil: getCol(pe.x, pe.y),
-      str: "none",
+      str: 'none',
       wid: 1,
     });
 
@@ -804,7 +806,7 @@ export function rock<K extends keyof RockArgs>(
 
   const { hei, wid, tex, ret, sha } = _args;
 
-  let canv = "";
+  let canv = '';
 
   const reso = [10, 50];
   const ptlist: Point[][] = [];
@@ -849,15 +851,15 @@ export function rock<K extends keyof RockArgs>(
   canv += poly(ptlist[0].concat([new Point(0, 0)]), {
     xof: xoff,
     yof: yoff,
-    fil: "white",
-    str: "none",
+    fil: 'white',
+    str: 'none',
   });
   //OUTLINE
   canv += stroke(
     ptlist[0].map(function (p) {
       return new Point(p.x + xoff, p.y + yoff);
     }),
-    { col: "rgba(100,100,100,0.3)", noi: 1, wid: 3 }
+    { col: 'rgba(100,100,100,0.3)', noi: 1, wid: 3 }
   );
   canv += texture(ptlist, {
     xof: xoff,
@@ -866,7 +868,7 @@ export function rock<K extends keyof RockArgs>(
     wid: 3,
     sha: sha,
     col: function (x) {
-      return "rgba(180,180,180," + (0.3 + random() * 0.3).toFixed(3) + ")";
+      return 'rgba(180,180,180,' + (0.3 + random() * 0.3).toFixed(3) + ')';
     },
     dis: function () {
       if (random() > 0.5) {

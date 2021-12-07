@@ -26,7 +26,7 @@ export function seed(x: any) {
     redo();
   }
   s = y;
-  console.log(["int seed", s]);
+  console.log(['int seed', s]);
   for (var i = 0; i < 10; i++) {
     next();
   }
@@ -45,13 +45,13 @@ export function test(f: () => number) {
     chart[Math.floor(F() * 10)] += 1;
   }
   console.log(chart);
-  console.log("finished in " + (new Date().getTime() - t0));
+  console.log('finished in ' + (new Date().getTime() - t0));
   return chart;
 }
 
 const PRNG = {
-    random: next,
-    seed
-}
+  random: next,
+  seed,
+};
 
 export default PRNG;

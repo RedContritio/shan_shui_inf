@@ -1,7 +1,7 @@
-import { Noise } from "../basic/perlinNoise";
-import { Point } from "../basic/point";
-import PRNG from "../basic/PRNG";
-import { stroke } from "./brushes";
+import { Noise } from '../basic/perlinNoise';
+import { Point } from '../basic/point';
+import PRNG from '../basic/PRNG';
+import { stroke } from './brushes';
 
 const random = PRNG.random;
 
@@ -22,7 +22,7 @@ export function water<K extends keyof WaterArgs>(
 
   const { hei, len, clu } = _args;
 
-  var canv = "";
+  var canv = '';
 
   var ptlist: Point[][] = [];
   var yk = 0;
@@ -48,7 +48,7 @@ export function water<K extends keyof WaterArgs>(
         return new Point(p.x + xoff, p.y + yoff);
       }),
       {
-        col: "rgba(100,100,100," + (0.3 + random() * 0.3).toFixed(3) + ")",
+        col: 'rgba(100,100,100,' + (0.3 + random() * 0.3).toFixed(3) + ')',
         wid: 1,
       }
     );

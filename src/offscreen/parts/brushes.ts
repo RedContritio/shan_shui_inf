@@ -1,7 +1,7 @@
-import { Noise } from "../basic/perlinNoise";
-import { Point } from "../basic/point";
-import PRNG from "../basic/PRNG";
-import { loopNoise, poly } from "../basic/utils";
+import { Noise } from '../basic/perlinNoise';
+import { Point } from '../basic/point';
+import PRNG from '../basic/PRNG';
+import { loopNoise, poly } from '../basic/utils';
 
 const random = PRNG.random;
 
@@ -9,7 +9,7 @@ class StrokeArgs {
   xof: number = 0;
   yof: number = 0;
   wid: number = 2;
-  col: string = "rgba(200,200,200,0.9)";
+  col: string = 'rgba(200,200,200,0.9)';
   noi: number = 0.5;
   out: number = 1;
   fun: (x: number) => number = (x: number) => Math.sin(x * Math.PI);
@@ -25,7 +25,7 @@ export function stroke<K extends keyof StrokeArgs>(
   const { xof, yof, wid, col, noi, out, fun } = _args;
 
   if (ptlist.length == 0) {
-    return "";
+    return '';
   }
   const vtxlist0 = [];
   const vtxlist1 = [];
@@ -68,7 +68,7 @@ class BlobArgs {
   len: number = 20;
   wid: number = 5;
   ang: number = 0;
-  col: string = "rgba(200,200,200,0.9)";
+  col: string = 'rgba(200,200,200,0.9)';
   noi: number = 0.5;
   ret: number = 0;
   fun: (x: number) => number = (x: number) =>
@@ -164,10 +164,10 @@ export function texture<K extends keyof TextureArgs>(
   ptlist: Point[][],
   args: Pick<TextureArgs, K> | undefined = undefined
 ): number[][][] | string {
-    const _args = new TextureArgs();
-    Object.assign(_args, args);
-    
-    const { xof, yof, tex, wid, len, sha, ret, noi, col, dis } = _args;
+  const _args = new TextureArgs();
+  Object.assign(_args, args);
+
+  const { xof, yof, tex, wid, len, sha, ret, noi, col, dis } = _args;
 
   var reso = [ptlist.length, ptlist[0].length];
   const texlist: number[][][] = [];
@@ -206,16 +206,16 @@ export function texture<K extends keyof TextureArgs>(
     }
   }
 
-  var canv = "";
+  var canv = '';
   //SHADE
   if (sha) {
-      const step = 1 + (sha != 0 ? 1 : 0);
+    const step = 1 + (sha != 0 ? 1 : 0);
     for (let j = 0; j < texlist.length; j += step) {
       canv += stroke(
         texlist[j].map(function (x) {
           return new Point(x[0] + xof, x[1] + yof);
         }),
-        { col: "rgba(100,100,100,0.1)", wid: sha }
+        { col: 'rgba(100,100,100,0.1)', wid: sha }
       );
     }
   }

@@ -20,7 +20,7 @@ export class Point implements IPoint {
     return src.to(this);
   }
   move(vec: Vector): Point {
-      return new Point(this.x + vec.x, this.y + vec.y);
+    return new Point(this.x + vec.x, this.y + vec.y);
   }
   isFinite(): boolean {
     return isFinite(this.x) && isFinite(this.y);
@@ -32,9 +32,9 @@ export class Point implements IPoint {
     return new Point(a[0], a[1]);
   }
   static origin(): Point {
-      return new Point(0, 0);
+    return new Point(0, 0);
   }
-  static readonly O:Point = Point.origin();
+  static readonly O: Point = Point.origin();
 }
 
 export class Vector implements IPoint {

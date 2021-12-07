@@ -1,16 +1,15 @@
-import React from "react";
-import{ Noise } from "../offscreen/basic/perlinNoise";
+import React from 'react';
+import { Noise } from '../offscreen/basic/perlinNoise';
 
-interface IProps {
-}
+interface IProps {}
 
 class BackgroundRender extends React.Component<IProps> {
   canvasRef = React.createRef<HTMLCanvasElement>();
 
   generate(): string | undefined {
-    const ctx = this.canvasRef.current?.getContext("2d");
+    const ctx = this.canvasRef.current?.getContext('2d');
     if (ctx === null || ctx === undefined) {
-        return undefined;
+      return undefined;
     }
     const resolution = 512;
 
@@ -29,7 +28,7 @@ class BackgroundRender extends React.Component<IProps> {
         ctx.fillRect(resolution - i, resolution - j, 1, 1);
       }
     }
-    return this.canvasRef.current?.toDataURL("image/png");
+    return this.canvasRef.current?.toDataURL('image/png');
   }
 
   render() {

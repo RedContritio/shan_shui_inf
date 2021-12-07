@@ -1,5 +1,5 @@
 // Modified from https://raw.githubusercontent.com/processing/p5.js/master/src/math/noise.js
-import PRNG from "./PRNG";
+import PRNG from './PRNG';
 
 const PERLIN_YWRAPB = 4;
 const PERLIN_YWRAP = 1 << PERLIN_YWRAPB;
