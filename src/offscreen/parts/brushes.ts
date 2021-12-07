@@ -77,11 +77,25 @@ class BlobArgs {
       : -Math.pow(Math.sin((x + 1) * Math.PI), 0.5);
 }
 
+export function blobstr<K extends keyof BlobArgs>(
+  x: number,
+  y: number,
+  args: Pick<BlobArgs, K> | undefined = undefined
+): string {
+  const _args = new BlobArgs();
+  Object.assign(_args, args);
+
+  const { len, wid, ang, col, noi, ret, fun } = _args;
+  
+  const plist = blob(x, y, args);
+  return poly(plist, { fil: col, str: col, wid: 0 });
+}
+
 export function blob<K extends keyof BlobArgs>(
   x: number,
   y: number,
   args: Pick<BlobArgs, K> | undefined = undefined
-): string | Point[] {
+): Point[] {
   const _args = new BlobArgs();
   Object.assign(_args, args);
 
@@ -112,11 +126,7 @@ export function blob<K extends keyof BlobArgs>(
     plist.push(new Point(nx, ny));
   }
 
-  if (ret === 0) {
-    return poly(plist, { fil: col, str: col, wid: 0 });
-  } else {
-    return plist;
-  }
+  return plist;
 }
 
 export function div(plist: Point[], reso: number): Point[] {

@@ -22,17 +22,16 @@ const random = PRNG.random;
 class FootArgs {
   xof: number = 0;
   yof: number = 0;
-  ret: number = 0;
 }
 
 export function foot<K extends keyof FootArgs>(
   ptlist: Point[][],
   args: Pick<FootArgs, K> | undefined = undefined
-) {
+): string {
   const _args: FootArgs = new FootArgs();
   Object.assign(_args, args);
 
-  const { xof, yof, ret } = _args;
+  const { xof, yof } = _args;
 
   const ftlist: Point[][] = [];
   const span = 10;
@@ -102,7 +101,7 @@ export function foot<K extends keyof FootArgs>(
       }
     );
   }
-  return ret ? ftlist : canv;
+  return canv;
 }
 
 function vegetate(
@@ -133,7 +132,6 @@ class MountainArgs {
   wid: number = 400 + random() * 200;
   tex: number = 200;
   veg: boolean = true;
-  ret: number = 0;
   col: string | undefined = undefined;
 }
 
@@ -146,7 +144,7 @@ export function mountain<K extends keyof MountainArgs>(
   const _args = new MountainArgs();
   Object.assign(_args, args);
 
-  const { hei, wid, tex, veg, ret, col } = _args;
+  const { hei, wid, tex, veg, col } = _args;
 
   const _seed: number = seed != undefined ? seed : 0;
 
@@ -410,13 +408,7 @@ export function mountain<K extends keyof MountainArgs>(
     }
   );
 
-  if (ret == 0) {
-    return canv;
-  } else {
-    console.log(`error ! ${ret} in mountain`);
-    return '';
-    // return [ptlist];
-  }
+  return canv;
 }
 
 function bound(plist: Point[]): Bound {
@@ -454,7 +446,7 @@ export function flatMount<K extends keyof FlatMountArgs>(
   yoff: number,
   seed: number = 0,
   args: Pick<FlatMountArgs, K> | undefined = undefined
-) {
+): string {
   const _args = new FlatMountArgs();
   Object.assign(_args, args);
 

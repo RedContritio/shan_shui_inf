@@ -9,7 +9,7 @@ import {
   randGaussian,
 } from '../basic/utils';
 import { midPt, triangulate } from '../PolyTools';
-import { blob, div, stroke } from './brushes';
+import { blob, blobstr, div, stroke } from './brushes';
 
 const random = PRNG.random;
 
@@ -50,7 +50,7 @@ export function tree01<K extends keyof Tree01Args>(
     const ny = y - (i * hei) / reso;
     if (i >= reso / 4) {
       for (let j = 0; j < (reso - i) / 5; j++) {
-        canv += blob(
+        canv += blobstr(
           nx + (random() - 0.5) * wid * 1.2 * (reso - i),
           ny + (random() - 0.5) * wid,
           {
@@ -107,7 +107,7 @@ export function tree02<K extends keyof Tree02Args>(
 
   let canv = '';
   for (let i = 0; i < clu; i++) {
-    canv += blob(x + randGaussian() * clu * 4, y + randGaussian() * clu * 4, {
+    canv += blobstr(x + randGaussian() * clu * 4, y + randGaussian() * clu * 4, {
       ang: Math.PI / 2,
       // col: "rgba(100,100,100,0.8)",
       fun: function (x) {
@@ -164,7 +164,7 @@ export function tree03<K extends keyof Tree03Args>(
       for (let j = 0; j < (reso - i) * 2; j++) {
         const shape = (x: number) => Math.log(50 * x + 1) / 3.95;
         const ox = random() * wid * 2 * shape((reso - i) / reso);
-        blobs += blob(
+        blobs += blobstr(
           nx + ox * randChoice([-1, 1]),
           ny + (random() - 0.5) * wid * 2,
           {
@@ -333,7 +333,7 @@ export function twig<K extends keyof TwigArgs>(
     if (i == tl - 1 && lea[0] == true) {
       for (let j = 0; j < 5; j++) {
         const dj = (j - 2.5) * 5;
-        canv += blob(
+        canv += blobstr(
           nx + tx + Math.cos(ang) * dj * wid,
           ny + ty + (Math.sin(ang) * dj - lea[1] / (dep + 1)) * wid,
           {
@@ -426,7 +426,7 @@ export function barkify(x: number, y: number, trlist: Point[][]): string {
     const nx = trlist[0][i].x * (1 - p) + trlist[1][i].x * p;
     const ny = trlist[0][i].y * (1 - p) + trlist[1][i].y * p;
     if (random() < 0.2) {
-      canv += blob(nx + x, ny + y, {
+      canv += blobstr(nx + x, ny + y, {
         noi: 1,
         len: 15,
         wid: 6 - Math.abs(p - 0.5) * 10,
@@ -444,7 +444,7 @@ export function barkify(x: number, y: number, trlist: Point[][]): string {
         [trlist[1][i].x, trlist[1][i].y, a1],
       ]);
       for (let j = 0; j < jl; j++) {
-        canv += blob(
+        canv += blobstr(
           xya[0] + x + Math.cos(xya[2]) * (j - jl / 2) * 4,
           xya[1] + y + Math.sin(xya[2]) * (j - jl / 2) * 4,
           {
@@ -898,7 +898,6 @@ export function tree07<K extends keyof Tree07Args>(
                 ? 2.75 * x * Math.pow(1 - x, 1 / 1.8)
                 : 2.75 * (x - 2) * Math.pow(x - 1, 1 / 1.8);
             },
-            ret: 1,
           }
         );
 
