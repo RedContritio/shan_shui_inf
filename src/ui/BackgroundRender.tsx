@@ -1,5 +1,5 @@
 import React from 'react';
-import { Noise } from '../offscreen/basic/perlinNoise';
+import { Noise } from '../render/basic/perlinNoise';
 
 interface IProps {}
 

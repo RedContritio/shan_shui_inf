@@ -3,8 +3,8 @@ import SettingPanel from './ui/SettingPanel';
 import ButtonSource from './ui/ButtonSource';
 import ScrollableCanvas from './ui/ScrollableCanvas';
 import BackgroundRender from './ui/BackgroundRender';
-import PRNG from './offscreen/basic/PRNG';
-import { MEM } from './offscreen/basic/memory';
+import PRNG from './render/basic/PRNG';
+import { MEM } from './render/basic/memory';
 import './App.css';
 
 interface AppState {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { MEM } from '../offscreen/basic/memory';
+import { MEM } from '../render/basic/memory';
 import './styles.css';
 
 interface IBarProps {
