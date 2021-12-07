@@ -41,7 +41,7 @@ class App extends React.Component<{}, AppState> {
   }
 
   calcViewBox() {
-    var zoom = 1.142;
+    const zoom = 1.142;
     return '' + MEM.cursx + ' 0 ' + MEM.windx / zoom + ' ' + MEM.windy / zoom;
   }
 

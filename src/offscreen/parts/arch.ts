@@ -1,4 +1,3 @@
-import { assert } from 'console';
 import { Noise } from '../basic/perlinNoise';
 import { Point } from '../basic/point';
 import PRNG from '../basic/PRNG';
@@ -199,7 +198,7 @@ function deco<K extends keyof DecoArgs>(
   const du = div([pul, pur], hsp[1]);
   const dd = div([pdl, pdr], hsp[1]);
 
-  if (style == 1) {
+  if (style === 1) {
     //-| |-
     const mlu = du[hsp[0]];
     const mru = du[du.length - 1 - hsp[0]];
@@ -216,7 +215,7 @@ function deco<K extends keyof DecoArgs>(
     }
     plist.push(div([mlu, mld], 5));
     plist.push(div([mru, mrd], 5));
-  } else if (style == 2) {
+  } else if (style === 2) {
     //||||
 
     for (let i = hsp[0]; i < du.length - hsp[0]; i += hsp[0]) {
@@ -224,7 +223,7 @@ function deco<K extends keyof DecoArgs>(
       const md = dd[i];
       plist.push(div([mu, md], 5));
     }
-  } else if (style == 3) {
+  } else if (style === 3) {
     //|##|
     const mlu = du[hsp[0]];
     const mru = du[du.length - 1 - hsp[0]];
@@ -461,7 +460,7 @@ function roof<K extends keyof RoofArgs>(
     );
   }
 
-  if (pla[0] == 1) {
+  if (pla[0] === 1) {
     let pp = opf([
       new Point(mid + quat / 2, -hei / 2 + per / 2),
       new Point(-wid * 0.5 + quat * 0.5, -hei / 2 - per / 4),
@@ -591,12 +590,12 @@ export function arch01<K extends keyof Arch01Args>(
   });
 
   const mcnt = randChoice([0, 1, 1, 2]);
-  if (mcnt == 1) {
+  if (mcnt === 1) {
     canv += man(xoff + normRand(-wid / 3, wid / 3), yoff, {
       fli: randChoice([true, false]),
       sca: 0.42,
     });
-  } else if (mcnt == 2) {
+  } else if (mcnt === 2) {
     canv += man(xoff + normRand(-wid / 4, -wid / 5), yoff, {
       fli: false,
       sca: 0.42,
@@ -672,7 +671,7 @@ export function arch02<K extends keyof Arch02Args>(
       : [];
 
     let pla = undefined;
-    if (sto == 1 && random() < 1 / 3) {
+    if (sto === 1 && random() < 1 / 3) {
       pla = [1, 'Pizza Hut'];
     }
     canv +=
@@ -717,7 +716,6 @@ export function arch03<K extends keyof Arch03Args>(
 
   const { hei, wid, rot, per, sto } = _args;
 
-  seed = seed != undefined ? seed : 0;
   let canv = '';
 
   let hoff = 0;

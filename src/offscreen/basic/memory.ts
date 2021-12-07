@@ -63,7 +63,7 @@ class Memory {
       }
 
       for (let i = 0; i < plan.length; i++) {
-        if (plan[i].tag == 'mount') {
+        if (plan[i].tag === 'mount') {
           this.appendChunk(
             new Chunk(
               plan[i].tag,
@@ -81,7 +81,7 @@ class Memory {
               water(plan[i].x, plan[i].y, i * 2)
             )
           );
-        } else if (plan[i].tag == 'flatmount') {
+        } else if (plan[i].tag === 'flatmount') {
           this.appendChunk(
             new Chunk(
               plan[i].tag,
@@ -94,7 +94,7 @@ class Memory {
               })
             )
           );
-        } else if (plan[i].tag == 'distmount') {
+        } else if (plan[i].tag === 'distmount') {
           this.appendChunk(
             new Chunk(
               plan[i].tag,
@@ -106,7 +106,7 @@ class Memory {
               })
             )
           );
-        } else if (plan[i].tag == 'boat') {
+        } else if (plan[i].tag === 'boat') {
           this.appendChunk(
             new Chunk(
               plan[i].tag,
@@ -118,7 +118,7 @@ class Memory {
               })
             )
           );
-        } else if (plan[i].tag == 'redcirc') {
+        } else if (plan[i].tag === 'redcirc') {
           this.appendChunk(
             new Chunk(
               plan[i].tag,
@@ -131,7 +131,7 @@ class Memory {
                 "' r='20' stroke='black' fill='red' />"
             )
           );
-        } else if (plan[i].tag == 'greencirc') {
+        } else if (plan[i].tag === 'greencirc') {
           this.appendChunk(
             new Chunk(
               plan[i].tag,
@@ -152,7 +152,7 @@ class Memory {
   chunkrender(xmin: number, xmax: number) {
     this.canv = '';
 
-    for (var i = 0; i < this.chunks.length; i++) {
+    for (let i = 0; i < this.chunks.length; i++) {
       if (
         xmin - this.cwid < this.chunks[i].x &&
         this.chunks[i].x < xmax + this.cwid

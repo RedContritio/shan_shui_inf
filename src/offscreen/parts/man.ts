@@ -1,8 +1,7 @@
 import { Noise } from '../basic/perlinNoise';
 import { distance, Point } from '../basic/point';
 import PRNG from '../basic/PRNG';
-import { bezmh, normRand, poly, randChoice, wtrand } from '../basic/utils';
-import { midPt } from '../PolyTools';
+import { bezmh, normRand, poly } from '../basic/utils';
 import { div, stroke, texture } from './brushes';
 
 const random = PRNG.random;

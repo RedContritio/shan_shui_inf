@@ -24,25 +24,25 @@ export function stroke<K extends keyof StrokeArgs>(
 
   const { xof, yof, wid, col, noi, out, fun } = _args;
 
-  if (ptlist.length == 0) {
+  if (ptlist.length === 0) {
     return '';
   }
   const vtxlist0 = [];
   const vtxlist1 = [];
   let vtxlist = [];
-  var n0 = random() * 10;
-  for (var i = 1; i < ptlist.length - 1; i++) {
-    var w = wid * fun(i / ptlist.length);
+  const n0 = random() * 10;
+  for (let i = 1; i < ptlist.length - 1; i++) {
+    let w = wid * fun(i / ptlist.length);
     w = w * (1 - noi) + w * noi * Noise.noise(i * 0.5, n0);
-    var a1 = Math.atan2(
+    const a1 = Math.atan2(
       ptlist[i].y - ptlist[i - 1].y,
       ptlist[i].x - ptlist[i - 1].x
     );
-    var a2 = Math.atan2(
+    const a2 = Math.atan2(
       ptlist[i].y - ptlist[i + 1].y,
       ptlist[i].x - ptlist[i + 1].x
     );
-    var a = (a1 + a2) / 2;
+    let a = (a1 + a2) / 2;
     if (a < a2) {
       a += Math.PI;
     }
@@ -60,7 +60,7 @@ export function stroke<K extends keyof StrokeArgs>(
     )
     .concat([ptlist[0]]);
 
-  var canv = poly(vtxlist, { xof, yof, fil: col, str: col, wid: out });
+  const canv = poly(vtxlist, { xof, yof, fil: col, str: col, wid: out });
   return canv;
 }
 
@@ -89,30 +89,30 @@ export function blob<K extends keyof BlobArgs>(
 
   const reso = 20.0;
   const lalist = [];
-  for (var i = 0; i < reso + 1; i++) {
-    var p = (i / reso) * 2;
-    var xo = len / 2 - Math.abs(p - 1) * len;
-    var yo = (fun(p) * wid) / 2;
-    var a = Math.atan2(yo, xo);
-    var l = Math.sqrt(xo * xo + yo * yo);
+  for (let i = 0; i < reso + 1; i++) {
+    const p = (i / reso) * 2;
+    const xo = len / 2 - Math.abs(p - 1) * len;
+    const yo = (fun(p) * wid) / 2;
+    const a = Math.atan2(yo, xo);
+    const l = Math.sqrt(xo * xo + yo * yo);
     lalist.push([l, a]);
   }
   let nslist = [];
   const n0 = random() * 10;
-  for (var i = 0; i < reso + 1; i++) {
+  for (let i = 0; i < reso + 1; i++) {
     nslist.push(Noise.noise(i * 0.05, n0));
   }
 
   nslist = loopNoise(nslist);
   const plist = [];
-  for (var i = 0; i < lalist.length; i++) {
-    var ns = nslist[i] * noi + (1 - noi);
-    var nx = x + Math.cos(lalist[i][1] + ang) * lalist[i][0] * ns;
-    var ny = y + Math.sin(lalist[i][1] + ang) * lalist[i][0] * ns;
+  for (let i = 0; i < lalist.length; i++) {
+    const ns = nslist[i] * noi + (1 - noi);
+    const nx = x + Math.cos(lalist[i][1] + ang) * lalist[i][0] * ns;
+    const ny = y + Math.sin(lalist[i][1] + ang) * lalist[i][0] * ns;
     plist.push(new Point(nx, ny));
   }
 
-  if (ret == 0) {
+  if (ret === 0) {
     return poly(plist, { fil: col, str: col, wid: 0 });
   } else {
     return plist;
@@ -120,19 +120,19 @@ export function blob<K extends keyof BlobArgs>(
 }
 
 export function div(plist: Point[], reso: number): Point[] {
-  var tl = (plist.length - 1) * reso;
-  var lx = 0;
-  var ly = 0;
-  var rlist = [];
+  const tl = (plist.length - 1) * reso;
+  let lx = 0;
+  let ly = 0;
+  const rlist = [];
 
-  for (var i = 0; i < tl; i += 1) {
+  for (let i = 0; i < tl; i += 1) {
     const lastp = plist[Math.floor(i / reso)];
     const nextp = plist[Math.ceil(i / reso)];
-    var p = (i % reso) / reso;
-    var nx = lastp.x * (1 - p) + nextp.y * p;
-    var ny = lastp.x * (1 - p) + nextp.y * p;
+    const p = (i % reso) / reso;
+    const nx = lastp.x * (1 - p) + nextp.y * p;
+    const ny = lastp.x * (1 - p) + nextp.y * p;
 
-    var ang = Math.atan2(ny - ly, nx - lx);
+    const ang = Math.atan2(ny - ly, nx - lx);
 
     rlist.push(new Point(nx, ny));
     lx = nx;
@@ -169,34 +169,34 @@ export function texture<K extends keyof TextureArgs>(
 
   const { xof, yof, tex, wid, len, sha, ret, noi, col, dis } = _args;
 
-  var reso = [ptlist.length, ptlist[0].length];
+  const reso = [ptlist.length, ptlist[0].length];
   const texlist: number[][][] = [];
-  for (var i = 0; i < tex; i++) {
-    var mid = (dis() * reso[1]) | 0;
+  for (let i = 0; i < tex; i++) {
+    const mid = (dis() * reso[1]) | 0;
     //mid = (reso[1]/3+reso[1]/3*random())|0
 
-    var hlen = Math.floor(random() * (reso[1] * len));
+    const hlen = Math.floor(random() * (reso[1] * len));
 
-    var start = mid - hlen;
-    var end = mid + hlen;
+    let start = mid - hlen;
+    let end = mid + hlen;
     start = Math.min(Math.max(start, 0), reso[1]);
     end = Math.min(Math.max(end, 0), reso[1]);
 
     const layer = (i / tex) * (reso[0] - 1);
 
     texlist.push([]);
-    for (var j = start; j < end; j++) {
-      var p = layer - Math.floor(layer);
+    for (let j = start; j < end; j++) {
+      const p = layer - Math.floor(layer);
 
-      var x =
+      const x =
         ptlist[Math.floor(layer)][j].x * p +
         ptlist[Math.ceil(layer)][j].x * (1 - p);
 
-      var y =
+      const y =
         ptlist[Math.floor(layer)][j].y * p +
         ptlist[Math.ceil(layer)][j].y * (1 - p);
 
-      var ns = [
+      const ns = [
         noi(layer + 1) * (Noise.noise(x, j * 0.5) - 0.5),
         noi(layer + 1) * (Noise.noise(y, j * 0.5) - 0.5),
       ];
@@ -206,10 +206,10 @@ export function texture<K extends keyof TextureArgs>(
     }
   }
 
-  var canv = '';
+  let canv = '';
   //SHADE
   if (sha) {
-    const step = 1 + (sha != 0 ? 1 : 0);
+    const step = 1 + (sha !== 0 ? 1 : 0);
     for (let j = 0; j < texlist.length; j += step) {
       canv += stroke(
         texlist[j].map(function (x) {

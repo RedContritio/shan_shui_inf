@@ -14,9 +14,9 @@ export function mapval(value: number, i: Range, o: Range): number {
 }
 
 export function loopNoise(nslist: number[]): number[] {
-  var dif = nslist[nslist.length - 1] - nslist[0];
-  var bds = [100, -100];
-  for (var i = 0; i < nslist.length; i++) {
+  const dif = nslist[nslist.length - 1] - nslist[0];
+  const bds = [100, -100];
+  for (let i = 0; i < nslist.length; i++) {
     nslist[i] += (dif * (nslist.length - 1 - i)) / (nslist.length - 1);
     if (nslist[i] < bds[0]) bds[0] = nslist[i];
     if (nslist[i] > bds[1]) bds[1] = nslist[i];
@@ -50,17 +50,17 @@ export function randGaussian(): number {
 }
 
 export function bezmh(P: Point[], w: number = 1): Point[] {
-  if (P.length == 2) {
+  if (P.length === 2) {
     P = [P[0], midPt(P), P[1]];
   }
   const plist = [];
   for (let j = 0; j < P.length - 2; j++) {
-    const p0 = j == 0 ? P[j] : midPt([P[j], P[j + 1]]);
+    const p0 = j === 0 ? P[j] : midPt([P[j], P[j + 1]]);
     const p1 = P[j + 1];
-    const p2 = j == P.length - 3 ? P[j + 2] : midPt([P[j + 1], P[j + 2]]);
+    const p2 = j === P.length - 3 ? P[j + 2] : midPt([P[j + 1], P[j + 2]]);
 
     const pl = 20;
-    const jb = j == P.length - 3 ? 1 : 0;
+    const jb = j === P.length - 3 ? 1 : 0;
     for (let i = 0; i < pl + jb; i += 1) {
       const t = i / pl;
       const u = Math.pow(1 - t, 2) + 2 * t * (1 - t) * w + t * t;
@@ -99,7 +99,7 @@ export function poly<K extends keyof PolyArgs>(
     })
     .join(' ');
 
-  var canv = `<polyline points='${pointStr}'`;
+  let canv = `<polyline points='${pointStr}'`;
   canv +=
     " style='fill:" + fil + ';stroke:' + str + ';stroke-width:' + wid + "'/>";
   return canv;

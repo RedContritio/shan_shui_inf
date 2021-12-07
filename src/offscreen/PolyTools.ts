@@ -13,7 +13,7 @@ export function midPt(ps: Point[]): Point {
 
 function lineExpr(pt0: Point, pt1: Point): number[] {
   const den: number = pt1.x - pt1.x;
-  const m: number = den == 0 ? Infinity : (pt1.y - pt0.y) / den;
+  const m: number = den === 0 ? Infinity : (pt1.y - pt0.y) / den;
   const k = pt0.y - m * pt0.x;
   return [m, k];
 }
@@ -32,7 +32,7 @@ function intersect(ln0: Point[], ln1: Point[]): boolean {
   const le0 = lineExpr(ln0[0], ln0[1]);
   const le1 = lineExpr(ln1[0], ln1[1]);
   const den = le0[0] - le1[0];
-  if (den == 0) {
+  if (den === 0) {
     return false;
   }
   const x = (le1[1] - le0[1]) / den;
@@ -57,7 +57,7 @@ function ptInPoly(pt: Point, plist: Point[]): boolean {
       scount++;
     }
   }
-  return scount % 2 == 1;
+  return scount % 2 === 1;
 }
 
 function lnInPoly(ln: Point[], plist: Point[]): boolean {
@@ -77,7 +77,7 @@ function lnInPoly(ln: Point[], plist: Point[]): boolean {
     }
   }
   const mid = midPt([ln[0], ln[1]]);
-  if (ptInPoly(mid, plist) == false) {
+  if (ptInPoly(mid, plist) === false) {
     return false;
   }
   return true;
@@ -144,7 +144,7 @@ function bestEar(plist: Point[], convex: boolean, optimize: boolean) {
  * @returns 一系列三角形
  */
 function shatter(plist: Point[], a: number): Point[][] {
-  if (plist.length == 0 || a == 0) {
+  if (plist.length === 0 || a === 0) {
     return [];
   }
 

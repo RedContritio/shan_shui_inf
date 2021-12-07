@@ -13,12 +13,12 @@ function scaled_cosine(i: number): number {
   return 0.5 * (1.0 - Math.cos(i * Math.PI));
 }
 
-var perlin: Array<number> | null = null;
+let perlin: Array<number> | null = null;
 
 export function noise(x: number, y: number = 0, z: number = 0) {
   if (perlin == null) {
     perlin = new Array(PERLIN_SIZE + 1);
-    for (var i = 0; i < PERLIN_SIZE + 1; i++) {
+    for (let i = 0; i < PERLIN_SIZE + 1; i++) {
       perlin[i] = PRNG.random();
     }
   }
@@ -36,7 +36,7 @@ export function noise(x: number, y: number = 0, z: number = 0) {
   let ampl = 0.5;
   //   const n1, n2, n3;
   for (let o = 0; o < perlin_octaves; o++) {
-    var of = xi + (yi << PERLIN_YWRAPB) + (zi << PERLIN_ZWRAPB);
+    let of = xi + (yi << PERLIN_YWRAPB) + (zi << PERLIN_ZWRAPB);
     const rxf = scaled_cosine(xf);
     const ryf = scaled_cosine(yf);
     let n1 = perlin[of & PERLIN_SIZE];
@@ -105,7 +105,7 @@ const lcg = {
 export function noiseSeed(seed: number) {
   lcg.setSeed(seed);
   perlin = new Array(PERLIN_SIZE + 1);
-  for (var i = 0; i < PERLIN_SIZE + 1; i++) {
+  for (let i = 0; i < PERLIN_SIZE + 1; i++) {
     perlin[i] = lcg.rand();
   }
 }

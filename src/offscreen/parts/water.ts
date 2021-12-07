@@ -22,17 +22,17 @@ export function water<K extends keyof WaterArgs>(
 
   const { hei, len, clu } = _args;
 
-  var canv = '';
+  let canv = '';
 
-  var ptlist: Point[][] = [];
-  var yk = 0;
-  for (var i = 0; i < clu; i++) {
+  const ptlist: Point[][] = [];
+  let yk = 0;
+  for (let i = 0; i < clu; i++) {
     ptlist.push([]);
-    var xk = (random() - 0.5) * (len / 8);
+    const xk = (random() - 0.5) * (len / 8);
     yk += random() * 5;
-    var lk = len / 4 + random() * (len / 4);
-    var reso = 5;
-    for (var j = -lk; j < lk; j += reso) {
+    const lk = len / 4 + random() * (len / 4);
+    const reso = 5;
+    for (let j = -lk; j < lk; j += reso) {
       ptlist[ptlist.length - 1].push(
         new Point(
           j + xk,
@@ -42,7 +42,7 @@ export function water<K extends keyof WaterArgs>(
     }
   }
 
-  for (var j = 1; j < ptlist.length; j += 1) {
+  for (let j = 1; j < ptlist.length; j += 1) {
     canv += stroke(
       ptlist[j].map(function (p) {
         return new Point(p.x + xoff, p.y + yoff);
