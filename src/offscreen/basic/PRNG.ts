@@ -26,7 +26,7 @@ export function seed(x: any) {
     redo();
   }
   s = y;
-  console.log(['int seed', s]);
+  console.log(`seed(${x}) = ${s}`);
   for (let i = 0; i < 10; i++) {
     next();
   }

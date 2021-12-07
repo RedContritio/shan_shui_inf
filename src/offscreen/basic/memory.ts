@@ -1,4 +1,4 @@
-import { boat01 } from '../parts/arch';
+import { arch02, boat01 } from '../parts/arch';
 import { distMount, flatMount, mountain } from '../parts/mountain';
 import { mountplanner } from '../parts/mountainPlanner';
 import { water } from '../parts/water';
@@ -163,6 +163,7 @@ class Memory {
   }
 
   update() {
+    console.log(`MEM.cursx: ${MEM.cursx}`);
     this.chunkloader(MEM.cursx, MEM.cursx + MEM.windx);
     this.chunkrender(MEM.cursx, MEM.cursx + MEM.windx);
   }
@@ -171,3 +172,16 @@ class Memory {
 const MEM: Memory = new Memory();
 
 export { MEM };
+
+function dummyloader(xmin: number, xmax: number) {
+  for (let i = xmin; i < xmax; i += 200) {
+    //MEM.chunks.push({tag:"?",x:i,y:100,canv:Tree.tree08(i,500,i)})
+    //MEM.chunks.push({tag:"?",x:i,y:100,canv:Man.man(i,500)})
+    //MEM.chunks.push({tag:"?",x:i,y:100,canv:Arch.arch01(i,500)})
+    //MEM.chunks.push({tag:"?",x:i,y:100,canv:Arch.boat01(i,500)})
+    //MEM.chunks.push({tag:"?",x:i,y:100,canv:Arch.transmissionTower01(i,500)})
+    MEM.chunks.push(
+      new Chunk('?', i, 100, arch02(i, 500, 0, { sto: 1, rot: Math.random() }))
+    );
+  }
+}

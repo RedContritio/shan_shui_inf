@@ -1,4 +1,5 @@
 import React from 'react';
+import { MEM } from '../offscreen/basic/memory';
 import './styles.css';
 
 interface IBarProps {
@@ -49,14 +50,37 @@ interface IProps {
   background: string | undefined;
   seed: string;
   windx: number;
-  foreground: string;
+  updateflag: boolean;
 }
 
 class ScrollableCanvas extends React.Component<IProps> {
   static id = 'SCROLLABLE_CANVAS';
 
+  calcViewBox() {
+    const zoom = 1.142;
+    return '' + MEM.cursx + ' 0 ' + MEM.windx / zoom + ' ' + MEM.windy / zoom;
+  }
+
   render() {
     const xscroll = this.props.xscroll;
+    const viewbox = this.calcViewBox();
+    console.log('ScrollableCanvas render');
+    MEM.update();
+    const foreground =
+    "<svg id='SVG' xmlns='http://www.w3.org/2000/svg' width='" +
+    MEM.windx +
+    "' height='" +
+    MEM.windy +
+    "' style='mix-blend-mode:multiply;'" +
+    "viewBox = '" +
+    viewbox +
+    "'" +
+    "><g id='G' transform='translate(" +
+    0 +
+    ",0)'>" +
+    MEM.canv +
+    //+ "<circle cx='0' cy='0' r='50' stroke='black' fill='red' />"
+    '</g></svg>';
 
     return (
       <table id={ScrollableCanvas.id}>
@@ -78,7 +102,7 @@ class ScrollableCanvas extends React.Component<IProps> {
                   width: this.props.windx,
                 }}
                 dangerouslySetInnerHTML={{
-                  __html: this.props.foreground,
+                  __html: foreground,
                 }}
               ></div>
             </td>
