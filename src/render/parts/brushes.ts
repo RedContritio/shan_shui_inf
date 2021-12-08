@@ -156,7 +156,7 @@ export function div(plist: Point[], reso: number): Point[] {
   return rlist;
 }
 
-class TextureArgs {
+class TextureArgs implements Partial<ISvgAttributes> {
   xof: number = 0;
   yof: number = 0;
   tex: number = 400;
@@ -171,10 +171,10 @@ class TextureArgs {
     random() > 0.5 ? (1 / 3) * random() : (1 * 2) / 3 + (1 / 3) * random();
 }
 
-export function texture<K extends keyof TextureArgs>(
+export function texture(
   ptlist: Point[][],
-  args: Pick<TextureArgs, K> | undefined = undefined
-): number[][][] | string {
+  args: Partial<TextureArgs> | undefined = undefined
+): Polyline[] {
   const _args = new TextureArgs();
   Object.assign(_args, args);
 
@@ -217,39 +217,45 @@ export function texture<K extends keyof TextureArgs>(
     }
   }
 
+  const polylines: Polyline[] = [];
   let canv = '';
   //SHADE
   if (sha) {
     const step = 1 + (sha !== 0 ? 1 : 0);
     for (let j = 0; j < texlist.length; j += step) {
       if (texlist[j].length > 0) {
-        canv += stroke(
-          texlist[j].map(function (x) {
-            return new Point(x[0] + xof, x[1] + yof);
-          }),
-          {
-            fill: 'rgba(100,100,100,0.1)',
-            stroke: 'rgba(100,100,100,0.1)',
-            strokeWidth: sha,
-          }
-        ).render();
+        polylines.push(
+          stroke(
+            texlist[j].map(function (x) {
+              return new Point(x[0] + xof, x[1] + yof);
+            }),
+            {
+              fill: 'rgba(100,100,100,0.1)',
+              stroke: 'rgba(100,100,100,0.1)',
+              strokeWidth: sha,
+            }
+          )
+        );
       }
     }
   }
   //TEXTURE
   for (let j = 0 + sha; j < texlist.length; j += 1 + sha) {
     if (texlist[j].length > 0) {
-      canv += stroke(
-        texlist[j].map(function (x) {
-          return new Point(x[0] + xof, x[1] + yof);
-        }),
-        {
-          fill: col(j / texlist.length),
-          stroke: col(j / texlist.length),
-          strokeWidth: strokeWidth,
-        }
-      ).render();
+      polylines.push(
+        stroke(
+          texlist[j].map(function (x) {
+            return new Point(x[0] + xof, x[1] + yof);
+          }),
+          {
+            fill: col(j / texlist.length),
+            stroke: col(j / texlist.length),
+            strokeWidth: strokeWidth,
+          }
+        )
+      );
     }
   }
-  return ret ? texlist : canv;
+
+  return polylines;
 }

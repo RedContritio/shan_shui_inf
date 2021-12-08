@@ -219,7 +219,9 @@ export function mountain<K extends keyof MountainArgs>(
     yof: yoff,
     tex: tex,
     sha: randChoice([0, 0, 0, 0, 5]),
-  });
+  })
+    .map((p) => p.render())
+    .join('\n');
   //   canv += col === undefined ? texture(ptlist, {
   //     xof: xoff,
   //     yof: yoff,
@@ -525,7 +527,9 @@ export function flatMount<K extends keyof FlatMountArgs>(
         return 0.9 - 0.4 * random();
       }
     },
-  });
+  })
+    .map((p) => p.render())
+    .join('\n');
   const _grlist1: Point[] = [];
   const _grlist2: Point[] = [];
   for (let i = 0; i < flat.length; i += 2) {
@@ -888,7 +892,9 @@ export function rock<K extends keyof RockArgs>(
         return 0.85 - 0.15 * random();
       }
     },
-  });
+  })
+    .map((p) => p.render())
+    .join('\n');
 
   for (let i = 0; i < reso[0]; i++) {
     //canv += poly(ptlist[i],{xof:xoff,yof:yoff,fill:"none",stroke:"red",strokeWidth:2})

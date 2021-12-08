@@ -23,9 +23,9 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "npx eslint src",
-    "lint:fix": "npm run lint --fix",
+    "lint:fix": "npx eslint src --fix",
     "prettier": "npx prettier src --check",
-    "prettier:fix": "npm run prettier --write"
+    "prettier:fix": "npx prettier src --write"
   },
   "eslintConfig": {
     "extends": [

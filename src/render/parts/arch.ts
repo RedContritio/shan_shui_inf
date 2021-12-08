@@ -82,7 +82,9 @@ function hut<K extends keyof HutArgs>(
     noi: function (x) {
       return 5;
     },
-  });
+  })
+    .map((p) => p.render())
+    .join('\n');
 
   for (let i = 0; i < reso[0]; i++) {
     //canv += poly(ptlist[i],{xof:xoff,yof:yoff,fill:"none",stroke:"red",strokeWidth:2})
