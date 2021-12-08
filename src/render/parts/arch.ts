@@ -162,14 +162,15 @@ function box<K extends keyof BoxArgs>(
         return new Point(p.x + xoff, p.y + yoff);
       }),
       {
-        col: 'rgba(100,100,100,0.4)',
+        fill: 'rgba(100,100,100,0.4)',
+        stroke: 'rgba(100,100,100,0.4)',
         noi: 1,
         strokeWidth: wei,
         fun: function (x) {
           return 1;
         },
       }
-    );
+    ).render();
   }
   return canv;
 }
@@ -339,14 +340,15 @@ function rail<K extends keyof RailArgs>(
         return new Point(p.x + xoff, p.y + yoff);
       }),
       {
-        col: 'rgba(100,100,100,0.5)',
+        fill: 'rgba(100,100,100,0.5)',
+        stroke: 'rgba(100,100,100,0.5)',
         noi: 0.5,
         strokeWidth: wei,
         fun: function (x) {
           return 1;
         },
       }
-    );
+    ).render();
   }
   return canv;
 }
@@ -450,14 +452,15 @@ function roof<K extends keyof RoofArgs>(
         return new Point(p.x + xoff, p.y + yoff);
       }),
       {
-        col: 'rgba(100,100,100,0.4)',
+        fill: 'rgba(100,100,100,0.4)',
+        stroke: 'rgba(100,100,100,0.4)',
         noi: 1,
         strokeWidth: wei,
         fun: function (x) {
           return 1;
         },
       }
-    );
+    ).render();
   }
 
   if (pla[0] === 1) {
@@ -536,14 +539,15 @@ function pagroof<K extends keyof PagRoofArgs>(
         return new Point(p.x + xoff, p.y + yoff);
       }),
       {
-        col: 'rgba(100,100,100,0.4)',
+        fill: 'rgba(100,100,100,0.4)',
+        stroke: 'rgba(100,100,100,0.4)',
         noi: 1,
         strokeWidth: wei,
         fun: function (x) {
           return 1;
         },
       }
-    );
+    ).render();
   }
 
   return canv;
@@ -852,9 +856,10 @@ export function boat01<K extends keyof Boat01Args>(
       fun: function (x) {
         return Math.sin(x * Math.PI * 2);
       },
-      col: 'rgba(100,100,100,0.4)',
+      fill: 'rgba(100,100,100,0.4)',
+      stroke: 'rgba(100,100,100,0.4)',
     }
-  );
+  ).render();
 
   return canv;
 }
@@ -882,8 +887,9 @@ export function transmissionTower01<K extends keyof TransmissionTower01Args>(
     return stroke(div(pl, 5).map(toGlobal), {
       strokeWidth: 1,
       fun: (x) => 0.5,
-      col: 'rgba(100,100,100,0.4)',
-    });
+      fill: 'rgba(100,100,100,0.4)',
+      stroke: 'rgba(100,100,100,0.4)',
+    }).render();
   };
 
   const p00 = new Point(-strokeWidth * 0.05, -hei);

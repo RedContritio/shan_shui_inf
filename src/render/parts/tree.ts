@@ -356,8 +356,9 @@ export function twig<K extends keyof TwigArgs>(
     fun: function (x) {
       return Math.cos((x * Math.PI) / 2);
     },
-    col: 'rgba(100,100,100,0.5)',
-  });
+    fill: 'rgba(100,100,100,0.5)',
+    stroke: 'rgba(100,100,100,0.5)',
+  }).render();
   return canv;
 }
 
@@ -400,12 +401,13 @@ function bark(x: number, y: number, strokeWidth: number, ang: number): string {
   canv += stroke(brklist, {
     strokeWidth: 0.8,
     noi: 0,
-    col: 'rgba(100,100,100,0.4)',
+    fill: 'rgba(100,100,100,0.4)',
+    stroke: 'rgba(100,100,100,0.4)',
     out: 0,
     fun: function (x) {
       return Math.sin((x + fr) * Math.PI * 3);
     },
-  });
+  }).render();
 
   return canv;
 }
@@ -475,12 +477,17 @@ export function barkify(x: number, y: number, trlist: Point[][]): string {
       rglist[i][j].y +=
         (Noise.noise(i, j * 0.1, 2) - 0.5) * (15 + 5 * randGaussian());
     }
-    canv += stroke(
-      rglist[i].map(function (p: Point) {
-        return new Point(p.x + x, p.y + y);
-      }),
-      { strokeWidth: 1.5, col: 'rgba(100,100,100,0.7)', out: 0 }
-    );
+    if(rglist[i].length > 0) {
+      canv += stroke(
+        rglist[i].map(function (p: Point) {
+          return new Point(p.x + x, p.y + y);
+        }),
+        { strokeWidth: 1.5,
+          fill: 'rgba(100,100,100,0.7)',
+          stroke: 'rgba(100,100,100,0.7)',
+          out: 0 }
+      ).render();
+    }
   }
   return canv;
 }
@@ -563,12 +570,14 @@ export function tree04<K extends keyof Tree04Args>(
 
   trmlist.splice(0, 1);
   trmlist.splice(trmlist.length - 1, 1);
+  const color = 'rgba(100,100,100,' + (0.4 + random() * 0.1).toFixed(3) + ')';
   canv += stroke(
     trmlist.map(function (p: Point) {
       return new Point(p.x + x, p.y + y);
     }),
     {
-      col: 'rgba(100,100,100,' + (0.4 + random() * 0.1).toFixed(3) + ')',
+      fill: color,
+      stroke: color,
       strokeWidth: 2.5,
       fun: function (x) {
         return Math.sin(1);
@@ -576,7 +585,7 @@ export function tree04<K extends keyof Tree04Args>(
       noi: 0.9,
       out: 0,
     }
-  );
+  ).render();
 
   canv += txcanv;
   canv += twcanv;
@@ -668,12 +677,14 @@ export function tree05<K extends keyof Tree05Args>(
 
   trmlist.splice(0, 1);
   trmlist.splice(trmlist.length - 1, 1);
+  const color = 'rgba(100,100,100,' + (0.4 + random() * 0.1).toFixed(3) + ')';
   canv += stroke(
     trmlist.map(function (p: Point) {
       return new Point(p.x + x, p.y + y);
     }),
     {
-      col: 'rgba(100,100,100,' + (0.4 + random() * 0.1).toFixed(3) + ')',
+      fill: color,
+      stroke: color,
       strokeWidth: 2.5,
       fun: function (x) {
         return Math.sin(1);
@@ -681,7 +692,7 @@ export function tree05<K extends keyof Tree05Args>(
       noi: 0.9,
       out: 0,
     }
-  );
+  ).render();
 
   canv += txcanv;
   canv += twcanv;
@@ -817,12 +828,14 @@ export function tree06<K extends keyof Tree06Args>(
 
   trmlist.splice(0, 1);
   trmlist.splice(trmlist.length - 1, 1);
+  const color = 'rgba(100,100,100,' + (0.4 + random() * 0.1).toFixed(3) + ')';
   canv += stroke(
     trmlist.map(function (v) {
       return new Point(v.x + x, v.y + y);
     }),
     {
-      col: 'rgba(100,100,100,' + (0.4 + random() * 0.1).toFixed(3) + ')',
+      fill: color,
+      stroke: color,
       strokeWidth: 2.5,
       fun: function (x) {
         return Math.sin(1);
@@ -830,7 +843,7 @@ export function tree06<K extends keyof Tree06Args>(
       noi: 0.9,
       out: 0,
     }
-  );
+  ).render();
 
   canv += txcanv;
   canv += twcanv;
@@ -975,8 +988,9 @@ function fracTree08<K extends keyof FracTree08Args>(
   tcanv += stroke(trmlist, {
     fun: fun,
     strokeWidth: 0.8,
-    col: 'rgba(100,100,100,0.5)',
-  });
+    fill: 'rgba(100,100,100,0.5)',
+    stroke: 'rgba(100,100,100,0.5)',
+  }).render();
   if (dep != 0) {
     const nben = ben + randChoice([-1, 1]) * Math.PI * 0.001 * dep * dep;
     if (random() < 0.5) {
@@ -1060,12 +1074,14 @@ export function tree08<K extends keyof Tree08Args>(
 
   canv += poly(trlist, { xof: x, yof: y, fill: 'white', stroke: col, strokeWidth: 0 }).render();
 
+  const color = 'rgba(100,100,100,' + (0.6 + random() * 0.1).toFixed(3) + ')';
   canv += stroke(
     trlist.map(function (v) {
       return new Point(v.x + x, v.y + y);
     }),
     {
-      col: 'rgba(100,100,100,' + (0.6 + random() * 0.1).toFixed(3) + ')',
+      fill: color,
+      stroke: color,
       strokeWidth: 2.5,
       fun: function (x) {
         return Math.sin(1);
@@ -1073,7 +1089,7 @@ export function tree08<K extends keyof Tree08Args>(
       noi: 0.9,
       out: 0,
     }
-  );
+  ).render();
 
   canv += txcanv;
   canv += twcanv;

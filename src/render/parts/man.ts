@@ -253,12 +253,14 @@ function cloth(
   }).render();
   canv += stroke(tlist1.map(toGlobal), {
     strokeWidth: 1,
-    col: 'rgba(100,100,100,0.5)',
-  });
+    fill: 'rgba(100,100,100,0.5)',
+    stroke: 'rgba(100,100,100,0.5)',
+  }).render();
   canv += stroke(tlist2.map(toGlobal), {
     strokeWidth: 1,
-    col: 'rgba(100,100,100,0.6)',
-  });
+    fill: 'rgba(100,100,100,0.6)',
+    stroke: 'rgba(100,100,100,0.6)',
+  }).render();
 
   return canv;
 }

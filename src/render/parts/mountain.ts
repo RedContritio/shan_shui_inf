@@ -91,15 +91,17 @@ export function foot<K extends keyof FootArgs>(
     }).render();
   }
   for (let j = 0; j < ftlist.length; j++) {
+    const color = 'rgba(100,100,100,' + (0.1 + random() * 0.1).toFixed(3) + ')';
     canv += stroke(
       ftlist[j].map(function (p) {
         return new Point(p.x + xof, p.y + yof);
       }),
       {
-        col: 'rgba(100,100,100,' + (0.1 + random() * 0.1).toFixed(3) + ')',
+        fill: color,
+        stroke: color,
         strokeWidth: 1,
       }
-    );
+    ).render();
   }
   return canv;
 }
@@ -202,8 +204,11 @@ export function mountain<K extends keyof MountainArgs>(
     ptlist[0].map(function (p) {
       return new Point(p.x + xoff, p.y + yoff);
     }),
-    { col: 'rgba(100,100,100,0.3)', noi: 1, strokeWidth: 3 }
-  );
+    {
+      fill: 'rgba(100,100,100,0.3)',
+      stroke: 'rgba(100,100,100,0.3)',
+    noi: 1, strokeWidth: 3 }
+  ).render();
 
   canv += foot(ptlist, { xof: xoff, yof: yoff });
 
@@ -497,8 +502,11 @@ export function flatMount<K extends keyof FlatMountArgs>(
     ptlist[0].map(function (p: Point) {
       return new Point(p.x + xoff, p.y + yoff);
     }),
-    { col: 'rgba(100,100,100,0.3)', noi: 1, strokeWidth: 3 }
-  );
+    {
+      fill: 'rgba(100,100,100,0.3)',
+      stroke: 'rgba(100,100,100,0.3)',
+    noi: 1, strokeWidth: 3 }
+  ).render();
 
   //canv += foot(ptlist,{xof:xoff,yof:yoff})
   canv += texture(ptlist, {
@@ -566,9 +574,10 @@ export function flatMount<K extends keyof FlatMountArgs>(
     grlist.map((p: Point) => new Point(p.x + xoff, p.y + yoff)),
     {
       strokeWidth: 3,
-      col: 'rgba(100,100,100,0.2)',
+      fill: 'rgba(100,100,100,0.2)',
+      stroke: 'rgba(100,100,100,0.2)',
     }
-  );
+  ).render();
 
   canv += flatDec(xoff, yoff, bound(grlist));
 
@@ -851,8 +860,11 @@ export function rock<K extends keyof RockArgs>(
     ptlist[0].map(function (p) {
       return new Point(p.x + xoff, p.y + yoff);
     }),
-    { col: 'rgba(100,100,100,0.3)', noi: 1, strokeWidth: 3 }
-  );
+    {
+      fill: 'rgba(100,100,100,0.3)',
+      stroke: 'rgba(100,100,100,0.3)',
+    noi: 1, strokeWidth: 3 }
+  ).render();
   canv += texture(ptlist, {
     xof: xoff,
     yof: yoff,

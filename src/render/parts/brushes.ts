@@ -2,31 +2,33 @@ import { Noise } from '../basic/perlinNoise';
 import { Point } from '../basic/point';
 import PRNG from '../basic/PRNG';
 import { loopNoise, poly } from '../basic/utils';
+import { ISvgAttributes } from '../svg/interfaces';
+import { Polyline } from '../svg/types';
 
 const random = PRNG.random;
 
-class StrokeArgs {
+class StrokeArgs implements Partial<ISvgAttributes> {
   xof: number = 0;
   yof: number = 0;
   strokeWidth: number = 2;
-  col: string = 'rgba(200,200,200,0.9)';
+  fill: string = 'rgba(200,200,200,0.9)';
+  stroke: string = 'rgba(200,200,200,0.9)';
   noi: number = 0.5;
   out: number = 1;
   fun: (x: number) => number = (x: number) => Math.sin(x * Math.PI);
 }
 
-export function stroke<K extends keyof StrokeArgs>(
+export function stroke(
   ptlist: Point[],
-  args: Pick<StrokeArgs, K> | undefined = undefined
-): string {
+  args: Partial<StrokeArgs> | undefined = undefined
+): Polyline {
   const _args = new StrokeArgs();
   Object.assign(_args, args);
 
-  const { xof, yof, strokeWidth, col, noi, out, fun } = _args;
+  const { xof, yof, strokeWidth, fill, stroke, noi, out, fun } = _args;
 
-  if (ptlist.length === 0) {
-    return '';
-  }
+  console.assert(ptlist.length > 0);
+
   const vtxlist0 = [];
   const vtxlist1 = [];
   let vtxlist = [];
@@ -60,8 +62,7 @@ export function stroke<K extends keyof StrokeArgs>(
     )
     .concat([ptlist[0]]);
 
-  const canv = poly(vtxlist, { xof, yof, fill: col, stroke: col, strokeWidth: out }).render();
-  return canv;
+  return poly(vtxlist, { xof, yof, fill, stroke, strokeWidth: out });
 }
 
 class BlobArgs {
@@ -86,7 +87,7 @@ export function blobstr<K extends keyof BlobArgs>(
   Object.assign(_args, args);
 
   const { len, strokeWidth, ang, col, noi, ret, fun } = _args;
-  
+
   const plist = blob(x, y, args);
   return poly(plist, { fill: col, stroke: col, strokeWidth: 0 }).render();
 }
@@ -221,22 +222,32 @@ export function texture<K extends keyof TextureArgs>(
   if (sha) {
     const step = 1 + (sha !== 0 ? 1 : 0);
     for (let j = 0; j < texlist.length; j += step) {
-      canv += stroke(
-        texlist[j].map(function (x) {
-          return new Point(x[0] + xof, x[1] + yof);
-        }),
-        { col: 'rgba(100,100,100,0.1)', strokeWidth: sha }
-      );
+      if (texlist[j].length > 0) {
+        canv += stroke(
+          texlist[j].map(function (x) {
+            return new Point(x[0] + xof, x[1] + yof);
+          }),
+          {
+            fill: 'rgba(100,100,100,0.1)',
+            stroke: 'rgba(100,100,100,0.1)',
+            strokeWidth: sha }
+        ).render();
+      }
     }
   }
   //TEXTURE
   for (let j = 0 + sha; j < texlist.length; j += 1 + sha) {
-    canv += stroke(
-      texlist[j].map(function (x) {
-        return new Point(x[0] + xof, x[1] + yof);
-      }),
-      { col: col(j / texlist.length), strokeWidth: strokeWidth }
-    );
+    if (texlist[j].length > 0) {
+      canv += stroke(
+        texlist[j].map(function (x) {
+          return new Point(x[0] + xof, x[1] + yof);
+        }),
+        {
+          fill: col(j / texlist.length),
+          stroke: col(j / texlist.length),
+          strokeWidth: strokeWidth }
+      ).render();
+    }
   }
   return ret ? texlist : canv;
 }

@@ -43,15 +43,17 @@ export function water<K extends keyof WaterArgs>(
   }
 
   for (let j = 1; j < ptlist.length; j += 1) {
+    const color = 'rgba(100,100,100,' + (0.3 + random() * 0.3).toFixed(3) + ')';
     canv += stroke(
       ptlist[j].map(function (p) {
         return new Point(p.x + xoff, p.y + yoff);
       }),
       {
-        col: 'rgba(100,100,100,' + (0.3 + random() * 0.3).toFixed(3) + ')',
-        strokeWidth: 1,
+        fill: color,
+        stroke: color,
+        out: 1,
       }
-    );
+    ).render();
   }
 
   return canv;
