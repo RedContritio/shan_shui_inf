@@ -3,6 +3,7 @@ import { distMount, flatMount, mountain } from '../parts/mountain';
 import { mountplanner } from '../parts/mountainPlanner';
 import { water } from '../parts/water';
 import { Chunk } from './chunk';
+import PRNG from './PRNG';
 import { randChoice } from './utils';
 
 class Memory {
@@ -69,10 +70,9 @@ class Memory {
               plan[i].tag,
               plan[i].x,
               plan[i].y,
-              mountain(plan[i].x, plan[i].y, i * 2 * Math.random())
+              mountain(plan[i].x, plan[i].y, i * 2 * PRNG.random())
                 .map((p) => p.render())
                 .join('\n')
-              //{col:function(x){return "rgba(100,100,100,"+(0.5*Math.random()*plan[i].y/this.windy)+")"}}),
             )
           );
           this.appendChunk(
@@ -91,10 +91,10 @@ class Memory {
               plan[i].tag,
               plan[i].x,
               plan[i].y,
-              flatMount(plan[i].x, plan[i].y, 2 * Math.random() * Math.PI, {
-                strokeWidth: 600 + Math.random() * 400,
+              flatMount(plan[i].x, plan[i].y, 2 * PRNG.random() * Math.PI, {
+                strokeWidth: 600 + PRNG.random() * 400,
                 hei: 100,
-                cho: 0.5 + Math.random() * 0.2,
+                cho: 0.5 + PRNG.random() * 0.2,
               })
                 .map((p) => p.render())
                 .join('\n')
@@ -106,7 +106,7 @@ class Memory {
               plan[i].tag,
               plan[i].x,
               plan[i].y,
-              distMount(plan[i].x, plan[i].y, Math.random() * 100, {
+              distMount(plan[i].x, plan[i].y, PRNG.random() * 100, {
                 hei: 150,
                 len: randChoice([500, 1000, 1500]),
               })
@@ -120,7 +120,7 @@ class Memory {
               plan[i].tag,
               plan[i].x,
               plan[i].y,
-              boat01(plan[i].x, plan[i].y, Math.random(), {
+              boat01(plan[i].x, plan[i].y, PRNG.random(), {
                 sca: plan[i].y / 800,
                 fli: randChoice([true, false]),
               })
@@ -196,7 +196,7 @@ function dummyloader(xmin: number, xmax: number) {
         '?',
         i,
         100,
-        arch02(i, 500, 0, { sto: 1, rot: Math.random() })
+        arch02(i, 500, 0, { sto: 1, rot: PRNG.random() })
           .map((p) => p.render())
           .join('\n')
       )
