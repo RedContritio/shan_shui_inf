@@ -2,6 +2,7 @@ import { Noise } from '../basic/perlinNoise';
 import { distance, Point } from '../basic/point';
 import PRNG from '../basic/PRNG';
 import { bezmh, normRand, poly } from '../basic/utils';
+import { Polyline } from '../svg/types';
 import { div, stroke, texture } from './brushes';
 
 const random = PRNG.random;
@@ -87,32 +88,34 @@ export function hat01<K extends keyof GeneralFlipArgs>(
   p0: Point,
   p1: Point,
   args: Pick<GeneralFlipArgs, K> | undefined = undefined
-): string {
+): Polyline[] {
   const _args = new GeneralFlipArgs();
   Object.assign(_args, args);
 
   const { fli } = _args;
 
-  let canv = '';
+  const polylines: Polyline[] = [];
   const seed = random();
   const f: (pl: Point[]) => Point[] = fli ? flipper : (x) => x;
   //const plist = [[-0.5,0.5],[0.5,0.5],[0.5,1],[-0.5,2]]
-  canv += poly(
-    tranpoly(
-      p0,
-      p1,
-      f([
-        new Point(-0.3, 0.5),
-        new Point(0.3, 0.8),
-        new Point(0.2, 1),
-        new Point(0, 1.1),
-        new Point(-0.3, 1.15),
-        new Point(-0.55, 1),
-        new Point(-0.65, 0.5),
-      ])
-    ),
-    { fill: 'rgba(100,100,100,0.8)' }
-  ).render();
+  polylines.push(
+    poly(
+      tranpoly(
+        p0,
+        p1,
+        f([
+          new Point(-0.3, 0.5),
+          new Point(0.3, 0.8),
+          new Point(0.2, 1),
+          new Point(0, 1.1),
+          new Point(-0.3, 1.15),
+          new Point(-0.55, 1),
+          new Point(-0.65, 0.5),
+        ])
+      ),
+      { fill: 'rgba(100,100,100,0.8)' }
+    )
+  );
 
   const qlist1: Point[] = [];
   for (let i = 0; i < 10; i++) {
@@ -120,64 +123,68 @@ export function hat01<K extends keyof GeneralFlipArgs>(
       new Point(-0.3 - Noise.noise(i * 0.2, seed) * i * 0.1, 0.5 - i * 0.3)
     );
   }
-  canv += poly(tranpoly(p0, p1, f(qlist1)), {
-    stroke: 'rgba(100,100,100,0.8)',
-    strokeWidth: 1,
-  }).render();
+  polylines.push(
+    poly(tranpoly(p0, p1, f(qlist1)), {
+      stroke: 'rgba(100,100,100,0.8)',
+      strokeWidth: 1,
+    })
+  );
 
-  return canv;
+  return polylines;
 }
 
 export function hat02<K extends keyof GeneralFlipArgs>(
   p0: Point,
   p1: Point,
   args: Pick<GeneralFlipArgs, K> | undefined = undefined
-) {
+): Polyline[] {
   const _args = new GeneralFlipArgs();
   Object.assign(_args, args);
 
   const { fli } = _args;
 
-  let canv = '';
+  const polylines: Polyline[] = [];
   const seed = random();
 
   const f: (pl: Point[]) => Point[] = fli ? flipper : (x) => x;
   // canv += poly(tranpoly(p0,p1,[
   //   [-0.3,0.6],[-0.15,1.0],[0,1.1],[0.15,1.0],[0.3,0.6]
   //   ]),{fill:"white",stroke:"rgba(130,130,130,0.8)",strokeWidth:1})
-  canv += poly(
-    tranpoly(
-      p0,
-      p1,
-      f([
-        new Point(-0.3, 0.5),
-        new Point(-1.1, 0.5),
-        new Point(-1.2, 0.6),
-        new Point(-1.1, 0.7),
-        new Point(-0.3, 0.8),
-        new Point(0.3, 0.8),
-        new Point(1.0, 0.7),
-        new Point(1.3, 0.6),
-        new Point(1.2, 0.5),
-        new Point(0.3, 0.5),
-      ])
-    ),
-    { fill: 'rgba(100,100,100,0.8)' }
-  ).render();
-  return canv;
+  polylines.push(
+    poly(
+      tranpoly(
+        p0,
+        p1,
+        f([
+          new Point(-0.3, 0.5),
+          new Point(-1.1, 0.5),
+          new Point(-1.2, 0.6),
+          new Point(-1.1, 0.7),
+          new Point(-0.3, 0.8),
+          new Point(0.3, 0.8),
+          new Point(1.0, 0.7),
+          new Point(1.3, 0.6),
+          new Point(1.2, 0.5),
+          new Point(0.3, 0.5),
+        ])
+      ),
+      { fill: 'rgba(100,100,100,0.8)' }
+    )
+  );
+  return polylines;
 }
 
 export function stick01<K extends keyof GeneralFlipArgs>(
   p0: Point,
   p1: Point,
   args: Pick<GeneralFlipArgs, K> | undefined = undefined
-) {
+): Polyline[] {
   const _args = new GeneralFlipArgs();
   Object.assign(_args, args);
 
   const { fli } = _args;
 
-  let canv = '';
+  const polylines: Polyline[] = [];
   const seed = random();
 
   const f: (pl: Point[]) => Point[] = fli ? flipper : (x) => x;
@@ -192,12 +199,14 @@ export function stick01<K extends keyof GeneralFlipArgs>(
       )
     );
   }
-  canv += poly(tranpoly(p0, p1, f(qlist1)), {
-    stroke: 'rgba(100,100,100,0.5)',
-    strokeWidth: 1,
-  }).render();
+  polylines.push(
+    poly(tranpoly(p0, p1, f(qlist1)), {
+      stroke: 'rgba(100,100,100,0.5)',
+      strokeWidth: 1,
+    })
+  );
 
-  return canv;
+  return polylines;
 }
 
 function gpar(sct: any, ind: any): number[] | false {
@@ -244,25 +253,31 @@ function cloth(
   toGlobal: (p: Point) => Point,
   plist: Point[],
   fun: (v: number) => number
-): string {
-  let canv = '';
+): Polyline[] {
+  const polylines: Polyline[] = [];
   const tlist = bezmh(plist, 2);
   const [tlist1, tlist2] = expand(tlist, fun);
-  canv += poly(tlist1.concat(tlist2.reverse()).map(toGlobal), {
-    fill: 'white',
-  }).render();
-  canv += stroke(tlist1.map(toGlobal), {
-    strokeWidth: 1,
-    fill: 'rgba(100,100,100,0.5)',
-    stroke: 'rgba(100,100,100,0.5)',
-  }).render();
-  canv += stroke(tlist2.map(toGlobal), {
-    strokeWidth: 1,
-    fill: 'rgba(100,100,100,0.6)',
-    stroke: 'rgba(100,100,100,0.6)',
-  }).render();
+  polylines.push(
+    poly(tlist1.concat(tlist2.reverse()).map(toGlobal), {
+      fill: 'white',
+    })
+  );
+  polylines.push(
+    stroke(tlist1.map(toGlobal), {
+      strokeWidth: 1,
+      fill: 'rgba(100,100,100,0.5)',
+      stroke: 'rgba(100,100,100,0.5)',
+    })
+  );
+  polylines.push(
+    stroke(tlist2.map(toGlobal), {
+      strokeWidth: 1,
+      fill: 'rgba(100,100,100,0.6)',
+      stroke: 'rgba(100,100,100,0.6)',
+    })
+  );
 
-  return canv;
+  return polylines;
 }
 
 function fsleeve(sca: number, x: number) {
@@ -288,7 +303,11 @@ function fhead(sca: number, x: number) {
 class ManArgs {
   sca = 0.5;
   hat = hat01;
-  ite = (p1: Point, p2: Point, a: GeneralFlipArgs | undefined) => '';
+  ite: (p1: Point, p2: Point, a: GeneralFlipArgs | undefined) => Polyline[] = (
+    p1: Point,
+    p2: Point,
+    a: GeneralFlipArgs | undefined
+  ) => [];
   fli = true;
   ang = [
     0,
@@ -315,7 +334,7 @@ export function man<K extends keyof ManArgs>(
   xoff: number,
   yoff: number,
   args: Pick<ManArgs, K> | undefined = undefined
-): string {
+): Polyline[] {
   const _args = new ManArgs();
   Object.assign(_args, args);
 
@@ -325,7 +344,7 @@ export function man<K extends keyof ManArgs>(
     return v * sca;
   });
 
-  let canv = '';
+  const polylinelists: Polyline[][] = [];
   const sct = {
     0: { 1: { 2: {}, 5: { 6: {} }, 7: { 8: {} } }, 3: { 4: {} } },
   };
@@ -352,22 +371,24 @@ export function man<K extends keyof ManArgs>(
   const _fbody = (v: number) => fbody(sca, v);
   const _fhead = (v: number) => fhead(sca, v);
 
-  canv += ite(toGlobal(pts[8]), toGlobal(pts[6]), { fli: fli });
+  polylinelists.push(ite(toGlobal(pts[8]), toGlobal(pts[6]), { fli: fli }));
 
-  canv += cloth(toGlobal, [pts[1], pts[7], pts[8]], _fsleeve);
-  canv += cloth(toGlobal, [pts[1], pts[0], pts[3], pts[4]], _fbody);
-  canv += cloth(toGlobal, [pts[1], pts[5], pts[6]], _fsleeve);
-  canv += cloth(toGlobal, [pts[1], pts[2]], _fhead);
+  polylinelists.push(cloth(toGlobal, [pts[1], pts[7], pts[8]], _fsleeve));
+  polylinelists.push(cloth(toGlobal, [pts[1], pts[0], pts[3], pts[4]], _fbody));
+  polylinelists.push(cloth(toGlobal, [pts[1], pts[5], pts[6]], _fsleeve));
+  polylinelists.push(cloth(toGlobal, [pts[1], pts[2]], _fhead));
 
   const hlist = bezmh([pts[1], pts[2]], 2);
   const [hlist1, hlist2] = expand(hlist, _fhead);
   hlist1.splice(0, Math.floor(hlist1.length * 0.1));
   hlist2.splice(0, Math.floor(hlist2.length * 0.95));
-  canv += poly(hlist1.concat(hlist2.reverse()).map(toGlobal), {
-    fill: 'rgba(100,100,100,0.6)',
-  }).render();
+  polylinelists.push([
+    poly(hlist1.concat(hlist2.reverse()).map(toGlobal), {
+      fill: 'rgba(100,100,100,0.6)',
+    }),
+  ]);
 
-  canv += hat(toGlobal(pts[1]), toGlobal(pts[2]), { fli: fli });
+  polylinelists.push(hat(toGlobal(pts[1]), toGlobal(pts[2]), { fli: fli }));
 
-  return canv;
+  return polylinelists.flat();
 }

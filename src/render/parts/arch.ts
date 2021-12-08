@@ -653,16 +653,22 @@ export function arch01<K extends keyof Arch01Args>(
     canv += man(xoff + normRand(-strokeWidth / 3, strokeWidth / 3), yoff, {
       fli: randChoice([true, false]),
       sca: 0.42,
-    });
+    })
+      .map((p) => p.render())
+      .join('\n');
   } else if (mcnt === 2) {
     canv += man(xoff + normRand(-strokeWidth / 4, -strokeWidth / 5), yoff, {
       fli: false,
       sca: 0.42,
-    });
+    })
+      .map((p) => p.render())
+      .join('\n');
     canv += man(xoff + normRand(strokeWidth / 5, strokeWidth / 4), yoff, {
       fli: true,
       sca: 0.42,
-    });
+    })
+      .map((p) => p.render())
+      .join('\n');
   }
   canv += rail(xoff, yoff, seed, {
     tra: false,
@@ -891,7 +897,9 @@ export function boat01<K extends keyof Boat01Args>(
     sca: 0.5 * sca,
     fli: !fli,
     len: [0, 30, 20, 30, 10, 30, 30, 30, 30],
-  });
+  })
+    .map((p) => p.render())
+    .join('\n');
 
   const plist1: Point[] = [];
   const plist2: Point[] = [];
