@@ -2,12 +2,12 @@ import { Noise } from '../basic/perlinNoise';
 import { Point, Vector } from '../basic/point';
 import PRNG from '../basic/PRNG';
 import { loopNoise, poly } from '../basic/utils';
-import { ISvgAttributes } from '../svg/interfaces';
-import { Polyline } from '../svg/types';
+import { ISvgAttributes, ISvgStyles } from '../svg/interfaces';
+import { SvgPolyline } from '../svg';
 
 const random = PRNG.random;
 
-class StrokeArgs implements Partial<ISvgAttributes> {
+class StrokeArgs implements Partial<ISvgStyles> {
   xof: number = 0;
   yof: number = 0;
   strokeWidth: number = 2;
@@ -21,7 +21,7 @@ class StrokeArgs implements Partial<ISvgAttributes> {
 export function stroke(
   ptlist: Point[],
   args: Partial<StrokeArgs> | undefined = undefined
-): Polyline {
+): SvgPolyline {
   const _args = new StrokeArgs();
   Object.assign(_args, args);
 
@@ -65,7 +65,7 @@ export function stroke(
   return poly(vtxlist, { xof, yof, fill, stroke, strokeWidth: out });
 }
 
-class BlobArgs implements Partial<ISvgAttributes> {
+class BlobArgs implements Partial<ISvgStyles> {
   len: number = 20;
   strokeWidth: number = 5;
   ang: number = 0;
@@ -82,7 +82,7 @@ export function blob(
   x: number,
   y: number,
   args: Partial<BlobArgs> | undefined = undefined
-): Polyline {
+): SvgPolyline {
   const _args = new BlobArgs();
   Object.assign(_args, args);
 
@@ -156,7 +156,7 @@ export function div(plist: Point[], reso: number): Point[] {
   return rlist;
 }
 
-class TextureArgs implements Partial<ISvgAttributes> {
+class TextureArgs implements Partial<ISvgStyles> {
   xof: number = 0;
   yof: number = 0;
   tex: number = 400;
@@ -174,7 +174,7 @@ class TextureArgs implements Partial<ISvgAttributes> {
 export function texture(
   ptlist: Point[][],
   args: Partial<TextureArgs> | undefined = undefined
-): Polyline[] {
+): SvgPolyline[] {
   const _args = new TextureArgs();
   Object.assign(_args, args);
 
@@ -216,7 +216,7 @@ export function texture(
     }
   }
 
-  const polylines: Polyline[] = [];
+  const polylines: SvgPolyline[] = [];
 
   //SHADE
   if (sha) {

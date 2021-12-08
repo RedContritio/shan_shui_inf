@@ -1,7 +1,7 @@
 import { Noise } from '../basic/perlinNoise';
 import { Point } from '../basic/point';
 import PRNG from '../basic/PRNG';
-import { Polyline } from '../svg/types';
+import { SvgPolyline } from '../svg/types';
 import { stroke } from './brushes';
 
 const random = PRNG.random;
@@ -17,12 +17,12 @@ export function water<K extends keyof WaterArgs>(
   yoff: number,
   seed: number,
   args: Pick<WaterArgs, K> | undefined = undefined
-): Polyline[] {
+): SvgPolyline[] {
   const _args = new WaterArgs();
   Object.assign(_args, args);
 
   const { hei, len, clu } = _args;
-  const polylines: Polyline[] = [];
+  const polylines: SvgPolyline[] = [];
 
   const ptlist: Point[][] = [];
   let yk = 0;

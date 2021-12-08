@@ -2,9 +2,7 @@ import { midPt } from '../PolyTools';
 import { Point, Vector } from './point';
 import PRNG from './PRNG';
 import { Range } from './range';
-import { Point as SvgPoint } from '../svg';
-import { Polyline } from '../svg/types';
-import { ISvgAttributes } from '../svg/interfaces';
+import { ISvgStyles, SvgPoint, SvgPolyline } from '../svg';
 
 const random = PRNG.random;
 
@@ -78,7 +76,7 @@ export function bezmh(P: Point[], w: number = 1): Point[] {
   return plist;
 }
 
-class PolyArgs implements Partial<ISvgAttributes> {
+class PolyArgs implements Partial<ISvgStyles> {
   xof: number = 0;
   yof: number = 0;
   fill: string = 'rgba(0,0,0,0)';
@@ -89,13 +87,13 @@ class PolyArgs implements Partial<ISvgAttributes> {
 export function poly(
   plist: Point[],
   args: Partial<PolyArgs> | undefined = undefined
-): Polyline {
+): SvgPolyline {
   const _args = new PolyArgs();
   Object.assign(_args, args);
   const { xof, yof, fill, stroke, strokeWidth } = _args;
   const off = new Vector(xof, yof);
 
-  const polyline = new Polyline(
+  const polyline = new SvgPolyline(
     plist.map((p: Point) => SvgPoint.from(p.move(off))),
     { fill, stroke, strokeWidth }
   );

@@ -1,15 +1,23 @@
-import { ISvgAttributes, ISvgElement } from './interfaces';
+import { ISvgAttributes, ISvgElement, ISvgStyles } from './interfaces';
 
 function SvgAttributeKey(key: string): string {
   var result = key.replace(/([A-Z])/g, ' $1');
   return result.split(' ').join('-').toLowerCase();
 }
 
-function SvgAttributeRender(attr: Partial<ISvgAttributes>): string {
+function SvgStyleRender(attr: Partial<ISvgStyles>): string {
   const strlist = Object.entries(attr).map(
     ([k, v]) => `${SvgAttributeKey(k)}:${v}`
   );
-  return `style='${strlist.join(';')}'`;
+  return `${strlist.join(';')}`;
+}
+
+function SvgAttributeRender(attr: Partial<ISvgAttributes>): string {
+  const strlist = Object.entries(attr).map(([k, v]) => {
+    const vstr = k === 'style' && attr.style ? SvgStyleRender(attr.style) : v;
+    return `${SvgAttributeKey(k)}='${vstr}'`;
+  });
+  return strlist.join(' ');
 }
 
 interface IPoint {
@@ -17,7 +25,7 @@ interface IPoint {
   y: number;
 }
 
-export class Point implements ISvgElement, IPoint {
+export class SvgPoint implements ISvgElement, IPoint {
   constructor(_x: number, _y: number) {
     this.x = _x;
     this.y = _y;
@@ -27,32 +35,47 @@ export class Point implements ISvgElement, IPoint {
   x: number = 0;
   y: number = 0;
 
-  static from(p: IPoint): Point {
-    return new Point(p.x, p.y);
+  static from(p: IPoint): SvgPoint {
+    return new SvgPoint(p.x, p.y);
   }
   render(): string {
     return `${this.x.toFixed(1)},${this.y.toFixed(1)}`;
   }
 }
 
-export class Polyline implements ISvgElement {
+export class SvgPolyline implements ISvgElement {
   attr: Partial<ISvgAttributes> = {};
-  points: Point[] = [];
+  points: SvgPoint[] = [];
 
-  constructor(points: Point[], attr: Partial<ISvgAttributes>) {
+  constructor(points: SvgPoint[], style: Partial<ISvgStyles>) {
     this.points = points;
-    this.attr = attr;
+    this.attr = { style };
   }
 
   render(): string {
-    const style = SvgAttributeRender(this.attr);
+    const attrstr = SvgAttributeRender(this.attr);
     return `<polyline points='${this.points
       .map((p) => p.render())
-      .join(' ')}' ${style}/>`;
+      .join(' ')}' ${attrstr}/>`;
   }
 
   toString(): string {
     console.error('call Polyline.toString');
     return this.render();
+  }
+}
+
+export class SvgText implements ISvgElement {
+  attr: Partial<ISvgAttributes> = {};
+  content: string = '';
+
+  constructor(content: string, attr: Partial<ISvgAttributes>) {
+    this.content = content;
+    this.attr = attr;
+  }
+
+  render() {
+    const attrstr = SvgAttributeRender(this.attr);
+    return `<text ${attrstr}>${this.content}</text>`;
   }
 }

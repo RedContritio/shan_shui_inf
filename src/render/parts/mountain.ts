@@ -348,11 +348,15 @@ export function mountain<K extends keyof MountainArgs>(
           sto: randChoice([1, 2, 2, 3]),
           rot: random(),
           sty: randChoice([1, 2, 3]),
-        });
+        })
+          .map((p) => p.render())
+          .join('\n');
       } else if (tt == 2) {
         return arch04(x + xoff, y + yoff, seed, {
           sto: randChoice([1, 1, 1, 2, 2]),
-        });
+        })
+          .map((p) => p.render())
+          .join('\n');
       } else {
         return '';
       }
@@ -376,7 +380,9 @@ export function mountain<K extends keyof MountainArgs>(
       return arch03(x + xoff, y + yoff, seed, {
         sto: randChoice([5, 7]),
         strokeWidth: 40 + random() * 20,
-      });
+      })
+        .map((p) => p.render())
+        .join('\n');
     },
     function (i, j) {
       return (
@@ -392,7 +398,9 @@ export function mountain<K extends keyof MountainArgs>(
   canv += vegetate(
     ptlist,
     function (x, y) {
-      return transmissionTower01(x + xoff, y + yoff, seed);
+      return transmissionTower01(x + xoff, y + yoff, seed)
+        .map((p) => p.render())
+        .join('\n');
     },
     function (i, j) {
       const ns = Noise.noise(i * 0.2, j * 0.05, seed + 20 * Math.PI);
@@ -738,7 +746,9 @@ export function flatDec(xoff: number, yoff: number, grbd: Bound) {
         hei: normRand(80, 100),
         per: random(),
       }
-    );
+    )
+      .map((p) => p.render())
+      .join('\n');
   }
 
   return canv;

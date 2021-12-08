@@ -3,6 +3,8 @@ import { Point } from '../basic/point';
 import PRNG from '../basic/PRNG';
 import { normRand, poly, randChoice, wtrand } from '../basic/utils';
 import { midPt } from '../PolyTools';
+import { ISvgElement } from '../svg';
+import { SvgPolyline, SvgText } from '../svg/types';
 import { div, stroke, texture } from './brushes';
 import { hat02, man, stick01 } from './man';
 
@@ -24,7 +26,7 @@ function hut<K extends keyof HutArgs>(
   xoff: number,
   yoff: number,
   args: Pick<HutArgs, K> | undefined = undefined
-) {
+): SvgPolyline[] {
   const _args = new HutArgs();
   Object.assign(_args, args);
 
@@ -45,29 +47,37 @@ function hut<K extends keyof HutArgs>(
       ptlist[ptlist.length - 1].push(new Point(nx, ny));
     }
   }
-  let canv = '';
-  canv += poly(
-    ptlist[0]
-      .slice(0, -1)
-      .concat(ptlist[ptlist.length - 1].slice(0, -1).reverse()),
-    { xof: xoff, yof: yoff, fill: 'white', stroke: 'none' }
-  ).render();
-  canv += poly(ptlist[0], {
-    xof: xoff,
-    yof: yoff,
-    fill: 'none',
-    stroke: 'rgba(100,100,100,0.3)',
-    strokeWidth: 2,
-  }).render();
-  canv += poly(ptlist[ptlist.length - 1], {
-    xof: xoff,
-    yof: yoff,
-    fill: 'none',
-    stroke: 'rgba(100,100,100,0.3)',
-    strokeWidth: 2,
-  }).render();
 
-  canv += texture(ptlist, {
+  const polylines: SvgPolyline[] = [];
+
+  polylines.push(
+    poly(
+      ptlist[0]
+        .slice(0, -1)
+        .concat(ptlist[ptlist.length - 1].slice(0, -1).reverse()),
+      { xof: xoff, yof: yoff, fill: 'white', stroke: 'none' }
+    )
+  );
+  polylines.push(
+    poly(ptlist[0], {
+      xof: xoff,
+      yof: yoff,
+      fill: 'none',
+      stroke: 'rgba(100,100,100,0.3)',
+      strokeWidth: 2,
+    })
+  );
+  polylines.push(
+    poly(ptlist[ptlist.length - 1], {
+      xof: xoff,
+      yof: yoff,
+      fill: 'none',
+      stroke: 'rgba(100,100,100,0.3)',
+      strokeWidth: 2,
+    })
+  );
+
+  const texures = texture(ptlist, {
     xof: xoff,
     yof: yoff,
     tex: tex,
@@ -82,15 +92,13 @@ function hut<K extends keyof HutArgs>(
     noi: function (x) {
       return 5;
     },
-  })
-    .map((p) => p.render())
-    .join('\n');
+  });
 
-  for (let i = 0; i < reso[0]; i++) {
-    //canv += poly(ptlist[i],{xof:xoff,yof:yoff,fill:"none",stroke:"red",strokeWidth:2})
-  }
+  // for (let i = 0; i < reso[0]; i++) {
+  //   //canv += poly(ptlist[i],{xof:xoff,yof:yoff,fill:"none",stroke:"red",strokeWidth:2})
+  // }
 
-  return canv;
+  return polylines.concat(texures);
 }
 
 class BoxArgs {
@@ -108,7 +116,7 @@ function box<K extends keyof BoxArgs>(
   xoff: number,
   yoff: number,
   args: Pick<BoxArgs, K> | undefined = undefined
-) {
+): SvgPolyline[] {
   const _args = new BoxArgs();
   Object.assign(_args, args);
 
@@ -168,33 +176,37 @@ function box<K extends keyof BoxArgs>(
     new Point(-strokeWidth * 0.5, 0),
   ];
 
-  let canv = '';
+  const polylines: SvgPolyline[] = [];
   if (!tra) {
-    canv += poly(polist, {
-      xof: xoff,
-      yof: yoff,
-      stroke: 'none',
-      fill: 'white',
-    }).render();
+    polylines.push(
+      poly(polist, {
+        xof: xoff,
+        yof: yoff,
+        stroke: 'none',
+        fill: 'white',
+      })
+    );
   }
 
   for (let i = 0; i < ptlist.length; i++) {
-    canv += stroke(
-      ptlist[i].map(function (p) {
-        return new Point(p.x + xoff, p.y + yoff);
-      }),
-      {
-        fill: 'rgba(100,100,100,0.4)',
-        stroke: 'rgba(100,100,100,0.4)',
-        noi: 1,
-        strokeWidth: wei,
-        fun: function (x) {
-          return 1;
-        },
-      }
-    ).render();
+    polylines.push(
+      stroke(
+        ptlist[i].map(function (p) {
+          return new Point(p.x + xoff, p.y + yoff);
+        }),
+        {
+          fill: 'rgba(100,100,100,0.4)',
+          stroke: 'rgba(100,100,100,0.4)',
+          noi: 1,
+          strokeWidth: wei,
+          fun: function (x) {
+            return 1;
+          },
+        }
+      )
+    );
   }
-  return canv;
+  return polylines;
 }
 
 class DecoArgs {
@@ -286,7 +298,7 @@ function rail<K extends keyof RailArgs>(
   yoff: number,
   seed: number = 0,
   args: Pick<RailArgs, K> | undefined = undefined
-) {
+): SvgPolyline[] {
   const _args = new RailArgs();
   Object.assign(_args, args);
 
@@ -344,7 +356,8 @@ function rail<K extends keyof RailArgs>(
       (open + ptlist.length) % ptlist.length
     ].slice(0, -1);
   }
-  let canv = '';
+
+  const polylines: SvgPolyline[] = [];
 
   for (let i = 0; i < ptlist.length / 2; i++) {
     for (let j = 0; j < ptlist[i].length; j++) {
@@ -363,33 +376,37 @@ function rail<K extends keyof RailArgs>(
         2
       );
       ln[0].x += (random() - 0.5) * hei * 0.5;
-      canv += poly(ln, {
-        xof: xoff,
-        yof: yoff,
-        fill: 'none',
-        stroke: 'rgba(100,100,100,0.5)',
-        strokeWidth: 2,
-      }).render();
+      polylines.push(
+        poly(ln, {
+          xof: xoff,
+          yof: yoff,
+          fill: 'none',
+          stroke: 'rgba(100,100,100,0.5)',
+          strokeWidth: 2,
+        })
+      );
     }
   }
 
   for (let i = 0; i < ptlist.length; i++) {
-    canv += stroke(
-      ptlist[i].map(function (p) {
-        return new Point(p.x + xoff, p.y + yoff);
-      }),
-      {
-        fill: 'rgba(100,100,100,0.5)',
-        stroke: 'rgba(100,100,100,0.5)',
-        noi: 0.5,
-        strokeWidth: wei,
-        fun: function (x) {
-          return 1;
-        },
-      }
-    ).render();
+    polylines.push(
+      stroke(
+        ptlist[i].map(function (p) {
+          return new Point(p.x + xoff, p.y + yoff);
+        }),
+        {
+          fill: 'rgba(100,100,100,0.5)',
+          stroke: 'rgba(100,100,100,0.5)',
+          noi: 0.5,
+          strokeWidth: wei,
+          fun: function (x) {
+            return 1;
+          },
+        }
+      )
+    );
   }
-  return canv;
+  return polylines;
 }
 
 class RoofArgs {
@@ -399,14 +416,14 @@ class RoofArgs {
   per = 4;
   cor = 5;
   wei = 3;
-  pla = [0, ''];
+  pla: [number, string] = [0, ''];
 }
 
 function roof<K extends keyof RoofArgs>(
   xoff: number,
   yoff: number,
   args: Pick<RoofArgs, K> | undefined = undefined
-) {
+): ISvgElement[] {
   const _args = new RoofArgs();
   Object.assign(_args, args);
 
@@ -480,7 +497,7 @@ function roof<K extends keyof RoofArgs>(
     )
   );
 
-  let canv = '';
+  const polylines: ISvgElement[] = [];
 
   const polist = opf([
     new Point(-strokeWidth * 0.5, 0),
@@ -489,28 +506,32 @@ function roof<K extends keyof RoofArgs>(
     new Point(strokeWidth * 0.5, 0),
     new Point(mid, per),
   ]);
-  canv += poly(polist, {
-    xof: xoff,
-    yof: yoff,
-    stroke: 'none',
-    fill: 'white',
-  }).render();
+  polylines.push(
+    poly(polist, {
+      xof: xoff,
+      yof: yoff,
+      stroke: 'none',
+      fill: 'white',
+    })
+  );
 
   for (let i = 0; i < ptlist.length; i++) {
-    canv += stroke(
-      ptlist[i].map(function (p) {
-        return new Point(p.x + xoff, p.y + yoff);
-      }),
-      {
-        fill: 'rgba(100,100,100,0.4)',
-        stroke: 'rgba(100,100,100,0.4)',
-        noi: 1,
-        strokeWidth: wei,
-        fun: function (x) {
-          return 1;
-        },
-      }
-    ).render();
+    polylines.push(
+      stroke(
+        ptlist[i].map(function (p) {
+          return new Point(p.x + xoff, p.y + yoff);
+        }),
+        {
+          fill: 'rgba(100,100,100,0.4)',
+          stroke: 'rgba(100,100,100,0.4)',
+          noi: 1,
+          strokeWidth: wei,
+          fun: function (x) {
+            return 1;
+          },
+        }
+      )
+    );
   }
 
   if (pla[0] === 1) {
@@ -524,22 +545,20 @@ function roof<K extends keyof RoofArgs>(
     const mp = midPt(pp);
     const a = Math.atan2(pp[1].y - pp[0].y, pp[1].x - pp[0].x);
     const adeg = (a * 180) / Math.PI;
-    canv +=
-      "<text font-size='" +
-      hei * 0.6 +
-      "' font-family='Verdana'" +
-      " style='fill:rgba(100,100,100,0.9)'" +
-      " text-anchor='middle' transform='translate(" +
-      (mp.x + xoff) +
-      ',' +
-      (mp.y + yoff) +
-      ') rotate(' +
-      adeg +
-      ")'>" +
-      pla[1] +
-      '</text>';
+
+    const text = new SvgText(pla[1], {
+      fontSize: hei * 0.6,
+      fontFamily: 'Verdana',
+      textAnchor: 'middle',
+      transform: `translate(${mp.x + xoff},${mp.y + yoff}) rotate(${adeg})`,
+      style: {
+        fill: 'rgba(100, 100, 100, 0.9)',
+      },
+    });
+
+    polylines.push(text);
   }
-  return canv;
+  return polylines;
 }
 
 class PagRoofArgs {
@@ -556,7 +575,7 @@ function pagroof<K extends keyof PagRoofArgs>(
   xoff: number,
   yoff: number,
   args: Pick<PagRoofArgs, K> | undefined = undefined
-) {
+): SvgPolyline[] {
   const _args = new PagRoofArgs();
   Object.assign(_args, args);
 
@@ -564,7 +583,7 @@ function pagroof<K extends keyof PagRoofArgs>(
 
   const ptlist: Point[][] = [];
   const polist: Point[] = [new Point(0, -hei)];
-  let canv = '';
+  const polylines: SvgPolyline[] = [];
 
   for (let i = 0; i < sid; i++) {
     const fx = strokeWidth * ((i * 1.0) / (sid - 1) - 0.5);
@@ -581,31 +600,35 @@ function pagroof<K extends keyof PagRoofArgs>(
     polist.push(new Point(fxx, fy));
   }
 
-  canv += poly(polist, {
-    xof: xoff,
-    yof: yoff,
-    stroke: 'none',
-    fill: 'white',
-  }).render();
+  polylines.push(
+    poly(polist, {
+      xof: xoff,
+      yof: yoff,
+      stroke: 'none',
+      fill: 'white',
+    })
+  );
 
   for (let i = 0; i < ptlist.length; i++) {
-    canv += stroke(
-      div(ptlist[i], 5).map(function (p) {
-        return new Point(p.x + xoff, p.y + yoff);
-      }),
-      {
-        fill: 'rgba(100,100,100,0.4)',
-        stroke: 'rgba(100,100,100,0.4)',
-        noi: 1,
-        strokeWidth: wei,
-        fun: function (x) {
-          return 1;
-        },
-      }
-    ).render();
+    polylines.push(
+      stroke(
+        div(ptlist[i], 5).map(function (p) {
+          return new Point(p.x + xoff, p.y + yoff);
+        }),
+        {
+          fill: 'rgba(100,100,100,0.4)',
+          stroke: 'rgba(100,100,100,0.4)',
+          noi: 1,
+          strokeWidth: wei,
+          fun: function (x) {
+            return 1;
+          },
+        }
+      )
+    );
   }
 
-  return canv;
+  return polylines;
 }
 
 class Arch01Args {
@@ -620,7 +643,7 @@ export function arch01<K extends keyof Arch01Args>(
   yoff: number,
   seed: number = 0,
   args: Pick<Arch01Args, K> | undefined = undefined
-) {
+): SvgPolyline[] {
   const _args = new Arch01Args();
   Object.assign(_args, args);
 
@@ -630,56 +653,64 @@ export function arch01<K extends keyof Arch01Args>(
   const h0 = hei * p;
   const h1 = hei * (1 - p);
 
-  let canv = '';
-  canv += hut(xoff, yoff - hei, { hei: h0, strokeWidth: strokeWidth });
-  canv += box(xoff, yoff, {
-    hei: h1,
-    strokeWidth: (strokeWidth * 2) / 3,
-    per: per,
-    bot: false,
-  });
+  const polylinelists: SvgPolyline[][] = [];
+  polylinelists.push(
+    hut(xoff, yoff - hei, { hei: h0, strokeWidth: strokeWidth })
+  );
+  polylinelists.push(
+    box(xoff, yoff, {
+      hei: h1,
+      strokeWidth: (strokeWidth * 2) / 3,
+      per: per,
+      bot: false,
+    })
+  );
 
-  canv += rail(xoff, yoff, seed, {
-    tra: true,
-    fro: false,
-    hei: 10,
-    strokeWidth: strokeWidth,
-    per: per * 2,
-    seg: (3 + random() * 3) | 0,
-  });
+  polylinelists.push(
+    rail(xoff, yoff, seed, {
+      tra: true,
+      fro: false,
+      hei: 10,
+      strokeWidth: strokeWidth,
+      per: per * 2,
+      seg: (3 + random() * 3) | 0,
+    })
+  );
 
   const mcnt = randChoice([0, 1, 1, 2]);
   if (mcnt === 1) {
-    canv += man(xoff + normRand(-strokeWidth / 3, strokeWidth / 3), yoff, {
-      fli: randChoice([true, false]),
-      sca: 0.42,
-    })
-      .map((p) => p.render())
-      .join('\n');
+    polylinelists.push(
+      man(xoff + normRand(-strokeWidth / 3, strokeWidth / 3), yoff, {
+        fli: randChoice([true, false]),
+        sca: 0.42,
+      })
+    );
   } else if (mcnt === 2) {
-    canv += man(xoff + normRand(-strokeWidth / 4, -strokeWidth / 5), yoff, {
-      fli: false,
-      sca: 0.42,
-    })
-      .map((p) => p.render())
-      .join('\n');
-    canv += man(xoff + normRand(strokeWidth / 5, strokeWidth / 4), yoff, {
-      fli: true,
-      sca: 0.42,
-    })
-      .map((p) => p.render())
-      .join('\n');
+    polylinelists.push(
+      man(xoff + normRand(-strokeWidth / 4, -strokeWidth / 5), yoff, {
+        fli: false,
+        sca: 0.42,
+      })
+    );
+    polylinelists.push(
+      man(xoff + normRand(strokeWidth / 5, strokeWidth / 4), yoff, {
+        fli: true,
+        sca: 0.42,
+      })
+    );
   }
-  canv += rail(xoff, yoff, seed, {
-    tra: false,
-    fro: true,
-    hei: 10,
-    strokeWidth: strokeWidth,
-    per: per * 2,
-    seg: (3 + random() * 3) | 0,
-  });
+  polylinelists.push(
+    rail(xoff, yoff, seed, {
+      tra: false,
+      fro: true,
+      hei: 10,
+      strokeWidth: strokeWidth,
+      per: per * 2,
+      seg: (3 + random() * 3) | 0,
+    })
+  );
 
-  return canv;
+  return polylinelists.flat();
 }
 
 class Arch02Args {
@@ -697,56 +728,57 @@ export function arch02<K extends keyof Arch02Args>(
   yoff: number,
   seed: number = 0,
   args: Pick<Arch02Args, K> | undefined = undefined
-) {
+): ISvgElement[] {
   const _args = new Arch02Args();
   Object.assign(_args, args);
 
   const { hei, strokeWidth, rot, per, sto, sty, rai } = _args;
 
-  let canv = '';
+  const elementlists: ISvgElement[][] = [];
 
   let hoff = 0;
   for (let i = 0; i < sto; i++) {
-    canv += box(xoff, yoff - hoff, {
-      tra: false,
-      hei: hei,
-      strokeWidth: strokeWidth * Math.pow(0.85, i),
-      rot: rot,
-      wei: 1.5,
-      per: per,
-      dec: function (a) {
-        return deco(
-          sty,
-          Object.assign({}, a, {
-            hsp: [[], [1, 5], [1, 5], [1, 4]][sty],
-            vsp: [[], [1, 2], [1, 2], [1, 3]][sty],
+    elementlists.push(
+      box(xoff, yoff - hoff, {
+        tra: false,
+        hei: hei,
+        strokeWidth: strokeWidth * Math.pow(0.85, i),
+        rot: rot,
+        wei: 1.5,
+        per: per,
+        dec: function (a) {
+          return deco(
+            sty,
+            Object.assign({}, a, {
+              hsp: [[], [1, 5], [1, 5], [1, 4]][sty],
+              vsp: [[], [1, 2], [1, 2], [1, 3]][sty],
+            })
+          );
+        },
+      })
+    );
+    elementlists.push(
+      rai
+        ? rail(xoff, yoff - hoff, i * 0.2, {
+            strokeWidth: strokeWidth * Math.pow(0.85, i) * 1.1,
+            hei: hei / 2,
+            per: per,
+            rot: rot,
+            wei: 0.5,
+            tra: false,
           })
-        );
-      },
-    });
-    canv += rai
-      ? rail(xoff, yoff - hoff, i * 0.2, {
-          strokeWidth: strokeWidth * Math.pow(0.85, i) * 1.1,
-          hei: hei / 2,
-          per: per,
-          rot: rot,
-          wei: 0.5,
-          tra: false,
-        })
-      : [];
+        : []
+    );
 
-    let pla = undefined;
-    if (sto === 1 && random() < 1 / 3) {
-      pla = [1, 'Pizza Hut'];
-    }
-    canv +=
-      pla === undefined
+    elementlists.push(
+      sto === 1 && random() < 1 / 3
         ? roof(xoff, yoff - hoff - hei, {
             hei: hei,
             strokeWidth: strokeWidth * Math.pow(0.9, i),
             rot: rot,
             wei: 1.5,
             per: per,
+            pla: [1, 'Pizza Hut'],
           })
         : roof(xoff, yoff - hoff - hei, {
             hei: hei,
@@ -754,12 +786,12 @@ export function arch02<K extends keyof Arch02Args>(
             rot: rot,
             wei: 1.5,
             per: per,
-            pla: pla,
-          });
+          })
+    );
 
     hoff += hei * 1.5;
   }
-  return canv;
+  return elementlists.flat();
 }
 
 class Arch03Args {
@@ -775,46 +807,52 @@ export function arch03<K extends keyof Arch03Args>(
   yoff: number,
   seed: number = 0,
   args: Pick<Arch03Args, K> | undefined = undefined
-) {
+): SvgPolyline[] {
   const _args = new Arch03Args();
   Object.assign(_args, args);
 
   const { hei, strokeWidth, rot, per, sto } = _args;
 
-  let canv = '';
+  const polylinelists: SvgPolyline[][] = [];
 
   let hoff = 0;
   for (let i = 0; i < sto; i++) {
-    canv += box(xoff, yoff - hoff, {
-      tra: false,
-      hei: hei,
-      strokeWidth: strokeWidth * Math.pow(0.85, i),
-      rot: rot,
-      wei: 1.5,
-      per: per / 2,
-      dec: function (a) {
-        return deco(1, Object.assign({}, a, { hsp: [1, 4], vsp: [1, 2] }));
-      },
-    });
-    canv += rail(xoff, yoff - hoff, i * 0.2, {
-      seg: 5,
-      strokeWidth: strokeWidth * Math.pow(0.85, i) * 1.1,
-      hei: hei / 2,
-      per: per / 2,
-      rot: rot,
-      wei: 0.5,
-      tra: false,
-    });
-    canv += pagroof(xoff, yoff - hoff - hei, {
-      hei: hei * 1.5,
-      strokeWidth: strokeWidth * Math.pow(0.9, i),
-      rot: rot,
-      wei: 1.5,
-      per: per,
-    });
+    polylinelists.push(
+      box(xoff, yoff - hoff, {
+        tra: false,
+        hei: hei,
+        strokeWidth: strokeWidth * Math.pow(0.85, i),
+        rot: rot,
+        wei: 1.5,
+        per: per / 2,
+        dec: function (a) {
+          return deco(1, Object.assign({}, a, { hsp: [1, 4], vsp: [1, 2] }));
+        },
+      })
+    );
+    polylinelists.push(
+      rail(xoff, yoff - hoff, i * 0.2, {
+        seg: 5,
+        strokeWidth: strokeWidth * Math.pow(0.85, i) * 1.1,
+        hei: hei / 2,
+        per: per / 2,
+        rot: rot,
+        wei: 0.5,
+        tra: false,
+      })
+    );
+    polylinelists.push(
+      pagroof(xoff, yoff - hoff - hei, {
+        hei: hei * 1.5,
+        strokeWidth: strokeWidth * Math.pow(0.9, i),
+        rot: rot,
+        wei: 1.5,
+        per: per,
+      })
+    );
     hoff += hei * 1.5;
   }
-  return canv;
+  return polylinelists.flat();
 }
 
 class Arch04Args {
@@ -830,46 +868,52 @@ export function arch04<K extends keyof Arch04Args>(
   yoff: number,
   seed: number = 0,
   args: Pick<Arch04Args, K> | undefined = undefined
-) {
+): SvgPolyline[] {
   const _args = new Arch04Args();
   Object.assign(_args, args);
 
   const { hei, strokeWidth, rot, per, sto } = _args;
 
-  let canv = '';
+  const polylinelists: SvgPolyline[][] = [];
 
   let hoff = 0;
   for (let i = 0; i < sto; i++) {
-    canv += box(xoff, yoff - hoff, {
-      tra: true,
-      hei: hei,
-      strokeWidth: strokeWidth * Math.pow(0.85, i),
-      rot: rot,
-      wei: 1.5,
-      per: per / 2,
-      dec: function (a) {
-        return [];
-      },
-    });
-    canv += rail(xoff, yoff - hoff, i * 0.2, {
-      seg: 3,
-      strokeWidth: strokeWidth * Math.pow(0.85, i) * 1.2,
-      hei: hei / 3,
-      per: per / 2,
-      rot: rot,
-      wei: 0.5,
-      tra: true,
-    });
-    canv += pagroof(xoff, yoff - hoff - hei, {
-      hei: hei * 1,
-      strokeWidth: strokeWidth * Math.pow(0.9, i),
-      rot: rot,
-      wei: 1.5,
-      per: per,
-    });
+    polylinelists.push(
+      box(xoff, yoff - hoff, {
+        tra: true,
+        hei: hei,
+        strokeWidth: strokeWidth * Math.pow(0.85, i),
+        rot: rot,
+        wei: 1.5,
+        per: per / 2,
+        dec: function (a) {
+          return [];
+        },
+      })
+    );
+    polylinelists.push(
+      rail(xoff, yoff - hoff, i * 0.2, {
+        seg: 3,
+        strokeWidth: strokeWidth * Math.pow(0.85, i) * 1.2,
+        hei: hei / 3,
+        per: per / 2,
+        rot: rot,
+        wei: 0.5,
+        tra: true,
+      })
+    );
+    polylinelists.push(
+      pagroof(xoff, yoff - hoff - hei, {
+        hei: hei * 1,
+        strokeWidth: strokeWidth * Math.pow(0.9, i),
+        rot: rot,
+        wei: 1.5,
+        per: per,
+      })
+    );
     hoff += hei * 1.2;
   }
-  return canv;
+  return polylinelists.flat();
 }
 
 class Boat01Args {
@@ -883,23 +927,23 @@ export function boat01<K extends keyof Boat01Args>(
   yoff: number,
   seed: number = 0,
   args: Pick<Boat01Args, K> | undefined = undefined
-) {
+): SvgPolyline[] {
   const _args = new Boat01Args();
   Object.assign(_args, args);
 
   const { len, sca, fli } = _args;
-  let canv = '';
+  const polylinelists: SvgPolyline[][] = [];
 
   const dir = fli ? -1 : 1;
-  canv += man(xoff + 20 * sca * dir, yoff, {
-    ite: stick01,
-    hat: hat02,
-    sca: 0.5 * sca,
-    fli: !fli,
-    len: [0, 30, 20, 30, 10, 30, 30, 30, 30],
-  })
-    .map((p) => p.render())
-    .join('\n');
+  polylinelists.push(
+    man(xoff + 20 * sca * dir, yoff, {
+      ite: stick01,
+      hat: hat02,
+      sca: 0.5 * sca,
+      fli: !fli,
+      len: [0, 30, 20, 30, 10, 30, 30, 30, 30],
+    })
+  );
 
   const plist1: Point[] = [];
   const plist2: Point[] = [];
@@ -911,20 +955,22 @@ export function boat01<K extends keyof Boat01Args>(
     plist2.push(new Point(i * dir, fun2(i / len)));
   }
   const plist: Point[] = plist1.concat(plist2.reverse());
-  canv += poly(plist, { xof: xoff, yof: yoff, fill: 'white' }).render();
-  canv += stroke(
-    plist.map((v) => new Point(xoff + v.x, yoff + v.y)),
-    {
-      strokeWidth: 1,
-      fun: function (x) {
-        return Math.sin(x * Math.PI * 2);
-      },
-      fill: 'rgba(100,100,100,0.4)',
-      stroke: 'rgba(100,100,100,0.4)',
-    }
-  ).render();
+  polylinelists.push([poly(plist, { xof: xoff, yof: yoff, fill: 'white' })]);
+  polylinelists.push([
+    stroke(
+      plist.map((v) => new Point(xoff + v.x, yoff + v.y)),
+      {
+        strokeWidth: 1,
+        fun: function (x) {
+          return Math.sin(x * Math.PI * 2);
+        },
+        fill: 'rgba(100,100,100,0.4)',
+        stroke: 'rgba(100,100,100,0.4)',
+      }
+    ),
+  ]);
 
-  return canv;
+  return polylinelists.flat();
 }
 
 class TransmissionTower01Args {
@@ -937,13 +983,14 @@ export function transmissionTower01<K extends keyof TransmissionTower01Args>(
   yoff: number,
   seed: number = 0,
   args: Pick<TransmissionTower01Args, K> | undefined = undefined
-): string {
+): SvgPolyline[] {
   const _args = new TransmissionTower01Args();
   Object.assign(_args, args);
 
   const { hei, strokeWidth } = _args;
 
-  let canv = '';
+  const polylines: SvgPolyline[] = [];
+
   const toGlobal = (v: Point) => new Point(v.x + xoff, v.y + yoff);
 
   const quickstroke = function (pl: Point[]) {
@@ -952,7 +999,7 @@ export function transmissionTower01<K extends keyof TransmissionTower01Args>(
       fun: (x) => 0.5,
       fill: 'rgba(100,100,100,0.4)',
       stroke: 'rgba(100,100,100,0.4)',
-    }).render();
+    });
   };
 
   const p00 = new Point(-strokeWidth * 0.05, -hei);
@@ -974,42 +1021,52 @@ export function transmissionTower01<K extends keyof TransmissionTower01Args>(
   ];
 
   for (let i = 0; i < bch.length; i++) {
-    canv += quickstroke([
-      new Point(-bch[i].x * strokeWidth, bch[i].y * hei),
-      new Point(bch[i].x * strokeWidth, bch[i].y * hei),
-    ]);
-    canv += quickstroke([
-      new Point(-bch[i].x * strokeWidth, bch[i].y * hei),
-      new Point(0, (bch[i].y - 0.05) * hei),
-    ]);
-    canv += quickstroke([
-      new Point(bch[i].x * strokeWidth, bch[i].y * hei),
-      new Point(0, (bch[i].y - 0.05) * hei),
-    ]);
+    polylines.push(
+      quickstroke([
+        new Point(-bch[i].x * strokeWidth, bch[i].y * hei),
+        new Point(bch[i].x * strokeWidth, bch[i].y * hei),
+      ])
+    );
+    polylines.push(
+      quickstroke([
+        new Point(-bch[i].x * strokeWidth, bch[i].y * hei),
+        new Point(0, (bch[i].y - 0.05) * hei),
+      ])
+    );
+    polylines.push(
+      quickstroke([
+        new Point(bch[i].x * strokeWidth, bch[i].y * hei),
+        new Point(0, (bch[i].y - 0.05) * hei),
+      ])
+    );
 
-    canv += quickstroke([
-      new Point(-bch[i].x * strokeWidth, bch[i].y * hei),
-      new Point(-bch[i].x * strokeWidth, (bch[i].y + 0.1) * hei),
-    ]);
-    canv += quickstroke([
-      new Point(bch[i].x * strokeWidth, bch[i].y * hei),
-      new Point(bch[i].x * strokeWidth, (bch[i].y + 0.1) * hei),
-    ]);
+    polylines.push(
+      quickstroke([
+        new Point(-bch[i].x * strokeWidth, bch[i].y * hei),
+        new Point(-bch[i].x * strokeWidth, (bch[i].y + 0.1) * hei),
+      ])
+    );
+    polylines.push(
+      quickstroke([
+        new Point(bch[i].x * strokeWidth, bch[i].y * hei),
+        new Point(bch[i].x * strokeWidth, (bch[i].y + 0.1) * hei),
+      ])
+    );
   }
 
   const l10 = div([p00, p10, p20, p30], 5);
   const l11 = div([p01, p11, p21, p31], 5);
 
   for (let i = 0; i < l10.length - 1; i++) {
-    canv += quickstroke([l10[i], l11[i + 1]]);
-    canv += quickstroke([l11[i], l10[i + 1]]);
+    polylines.push(quickstroke([l10[i], l11[i + 1]]));
+    polylines.push(quickstroke([l11[i], l10[i + 1]]));
   }
 
-  canv += quickstroke([p00, p01]);
-  canv += quickstroke([p10, p11]);
-  canv += quickstroke([p20, p21]);
-  canv += quickstroke([p00, p10, p20, p30]);
-  canv += quickstroke([p01, p11, p21, p31]);
+  polylines.push(quickstroke([p00, p01]));
+  polylines.push(quickstroke([p10, p11]));
+  polylines.push(quickstroke([p20, p21]));
+  polylines.push(quickstroke([p00, p10, p20, p30]));
+  polylines.push(quickstroke([p01, p11, p21, p31]));
 
-  return canv;
+  return polylines;
 }

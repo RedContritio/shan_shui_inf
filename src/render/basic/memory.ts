@@ -118,6 +118,8 @@ class Memory {
                 sca: plan[i].y / 800,
                 fli: randChoice([true, false]),
               })
+                .map((p) => p.render())
+                .join('\n')
             )
           );
         } else if (plan[i].tag === 'redcirc') {
@@ -183,7 +185,14 @@ function dummyloader(xmin: number, xmax: number) {
     //MEM.chunks.push({tag:"?",x:i,y:100,canv:Arch.boat01(i,500)})
     //MEM.chunks.push({tag:"?",x:i,y:100,canv:Arch.transmissionTower01(i,500)})
     MEM.chunks.push(
-      new Chunk('?', i, 100, arch02(i, 500, 0, { sto: 1, rot: Math.random() }))
+      new Chunk(
+        '?',
+        i,
+        100,
+        arch02(i, 500, 0, { sto: 1, rot: Math.random() })
+          .map((p) => p.render())
+          .join('\n')
+      )
     );
   }
 }

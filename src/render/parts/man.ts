@@ -2,7 +2,7 @@ import { Noise } from '../basic/perlinNoise';
 import { distance, Point } from '../basic/point';
 import PRNG from '../basic/PRNG';
 import { bezmh, normRand, poly } from '../basic/utils';
-import { Polyline } from '../svg/types';
+import { SvgPolyline } from '../svg/types';
 import { div, stroke, texture } from './brushes';
 
 const random = PRNG.random;
@@ -88,13 +88,13 @@ export function hat01<K extends keyof GeneralFlipArgs>(
   p0: Point,
   p1: Point,
   args: Pick<GeneralFlipArgs, K> | undefined = undefined
-): Polyline[] {
+): SvgPolyline[] {
   const _args = new GeneralFlipArgs();
   Object.assign(_args, args);
 
   const { fli } = _args;
 
-  const polylines: Polyline[] = [];
+  const polylines: SvgPolyline[] = [];
   const seed = random();
   const f: (pl: Point[]) => Point[] = fli ? flipper : (x) => x;
   //const plist = [[-0.5,0.5],[0.5,0.5],[0.5,1],[-0.5,2]]
@@ -137,13 +137,13 @@ export function hat02<K extends keyof GeneralFlipArgs>(
   p0: Point,
   p1: Point,
   args: Pick<GeneralFlipArgs, K> | undefined = undefined
-): Polyline[] {
+): SvgPolyline[] {
   const _args = new GeneralFlipArgs();
   Object.assign(_args, args);
 
   const { fli } = _args;
 
-  const polylines: Polyline[] = [];
+  const polylines: SvgPolyline[] = [];
   const seed = random();
 
   const f: (pl: Point[]) => Point[] = fli ? flipper : (x) => x;
@@ -178,13 +178,13 @@ export function stick01<K extends keyof GeneralFlipArgs>(
   p0: Point,
   p1: Point,
   args: Pick<GeneralFlipArgs, K> | undefined = undefined
-): Polyline[] {
+): SvgPolyline[] {
   const _args = new GeneralFlipArgs();
   Object.assign(_args, args);
 
   const { fli } = _args;
 
-  const polylines: Polyline[] = [];
+  const polylines: SvgPolyline[] = [];
   const seed = random();
 
   const f: (pl: Point[]) => Point[] = fli ? flipper : (x) => x;
@@ -253,8 +253,8 @@ function cloth(
   toGlobal: (p: Point) => Point,
   plist: Point[],
   fun: (v: number) => number
-): Polyline[] {
-  const polylines: Polyline[] = [];
+): SvgPolyline[] {
+  const polylines: SvgPolyline[] = [];
   const tlist = bezmh(plist, 2);
   const [tlist1, tlist2] = expand(tlist, fun);
   polylines.push(
@@ -303,11 +303,8 @@ function fhead(sca: number, x: number) {
 class ManArgs {
   sca = 0.5;
   hat = hat01;
-  ite: (p1: Point, p2: Point, a: GeneralFlipArgs | undefined) => Polyline[] = (
-    p1: Point,
-    p2: Point,
-    a: GeneralFlipArgs | undefined
-  ) => [];
+  ite: (p1: Point, p2: Point, a: GeneralFlipArgs | undefined) => SvgPolyline[] =
+    (p1: Point, p2: Point, a: GeneralFlipArgs | undefined) => [];
   fli = true;
   ang = [
     0,
@@ -334,7 +331,7 @@ export function man<K extends keyof ManArgs>(
   xoff: number,
   yoff: number,
   args: Pick<ManArgs, K> | undefined = undefined
-): Polyline[] {
+): SvgPolyline[] {
   const _args = new ManArgs();
   Object.assign(_args, args);
 
@@ -344,7 +341,7 @@ export function man<K extends keyof ManArgs>(
     return v * sca;
   });
 
-  const polylinelists: Polyline[][] = [];
+  const polylinelists: SvgPolyline[][] = [];
   const sct = {
     0: { 1: { 2: {}, 5: { 6: {} }, 7: { 8: {} } }, 3: { 4: {} } },
   };
