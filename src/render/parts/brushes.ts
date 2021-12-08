@@ -8,7 +8,7 @@ const random = PRNG.random;
 class StrokeArgs {
   xof: number = 0;
   yof: number = 0;
-  wid: number = 2;
+  strokeWidth: number = 2;
   col: string = 'rgba(200,200,200,0.9)';
   noi: number = 0.5;
   out: number = 1;
@@ -22,7 +22,7 @@ export function stroke<K extends keyof StrokeArgs>(
   const _args = new StrokeArgs();
   Object.assign(_args, args);
 
-  const { xof, yof, wid, col, noi, out, fun } = _args;
+  const { xof, yof, strokeWidth, col, noi, out, fun } = _args;
 
   if (ptlist.length === 0) {
     return '';
@@ -32,7 +32,7 @@ export function stroke<K extends keyof StrokeArgs>(
   let vtxlist = [];
   const n0 = random() * 10;
   for (let i = 1; i < ptlist.length - 1; i++) {
-    let w = wid * fun(i / ptlist.length);
+    let w = strokeWidth * fun(i / ptlist.length);
     w = w * (1 - noi) + w * noi * Noise.noise(i * 0.5, n0);
     const a1 = Math.atan2(
       ptlist[i].y - ptlist[i - 1].y,
@@ -60,13 +60,13 @@ export function stroke<K extends keyof StrokeArgs>(
     )
     .concat([ptlist[0]]);
 
-  const canv = poly(vtxlist, { xof, yof, fil: col, str: col, wid: out });
+  const canv = poly(vtxlist, { xof, yof, fill: col, stroke: col, strokeWidth: out }).render();
   return canv;
 }
 
 class BlobArgs {
   len: number = 20;
-  wid: number = 5;
+  strokeWidth: number = 5;
   ang: number = 0;
   col: string = 'rgba(200,200,200,0.9)';
   noi: number = 0.5;
@@ -85,10 +85,10 @@ export function blobstr<K extends keyof BlobArgs>(
   const _args = new BlobArgs();
   Object.assign(_args, args);
 
-  const { len, wid, ang, col, noi, ret, fun } = _args;
+  const { len, strokeWidth, ang, col, noi, ret, fun } = _args;
   
   const plist = blob(x, y, args);
-  return poly(plist, { fil: col, str: col, wid: 0 });
+  return poly(plist, { fill: col, stroke: col, strokeWidth: 0 }).render();
 }
 
 export function blob<K extends keyof BlobArgs>(
@@ -99,14 +99,14 @@ export function blob<K extends keyof BlobArgs>(
   const _args = new BlobArgs();
   Object.assign(_args, args);
 
-  const { len, wid, ang, col, noi, ret, fun } = _args;
+  const { len, strokeWidth, ang, col, noi, ret, fun } = _args;
 
   const reso = 20.0;
   const lalist = [];
   for (let i = 0; i < reso + 1; i++) {
     const p = (i / reso) * 2;
     const xo = len / 2 - Math.abs(p - 1) * len;
-    const yo = (fun(p) * wid) / 2;
+    const yo = (fun(p) * strokeWidth) / 2;
     const a = Math.atan2(yo, xo);
     const l = Math.sqrt(xo * xo + yo * yo);
     lalist.push([l, a]);
@@ -159,7 +159,7 @@ class TextureArgs {
   xof: number = 0;
   yof: number = 0;
   tex: number = 400;
-  wid: number = 1.5;
+  strokeWidth: number = 1.5;
   len: number = 0.2;
   sha: number = 0;
   ret: number = 0;
@@ -177,7 +177,7 @@ export function texture<K extends keyof TextureArgs>(
   const _args = new TextureArgs();
   Object.assign(_args, args);
 
-  const { xof, yof, tex, wid, len, sha, ret, noi, col, dis } = _args;
+  const { xof, yof, tex, strokeWidth, len, sha, ret, noi, col, dis } = _args;
 
   const reso = [ptlist.length, ptlist[0].length];
   const texlist: number[][][] = [];
@@ -225,7 +225,7 @@ export function texture<K extends keyof TextureArgs>(
         texlist[j].map(function (x) {
           return new Point(x[0] + xof, x[1] + yof);
         }),
-        { col: 'rgba(100,100,100,0.1)', wid: sha }
+        { col: 'rgba(100,100,100,0.1)', strokeWidth: sha }
       );
     }
   }
@@ -235,7 +235,7 @@ export function texture<K extends keyof TextureArgs>(
       texlist[j].map(function (x) {
         return new Point(x[0] + xof, x[1] + yof);
       }),
-      { col: col(j / texlist.length), wid: wid }
+      { col: col(j / texlist.length), strokeWidth: strokeWidth }
     );
   }
   return ret ? texlist : canv;

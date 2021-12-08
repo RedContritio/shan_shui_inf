@@ -2,6 +2,9 @@ import { midPt } from '../PolyTools';
 import { Point, Vector } from './point';
 import PRNG from './PRNG';
 import { Range } from './range';
+import { Point as SvgPoint } from '../svg';
+import { Polyline } from '../svg/types';
+import { ISvgAttributes } from '../svg/interfaces';
 
 const random = PRNG.random;
 
@@ -75,32 +78,25 @@ export function bezmh(P: Point[], w: number = 1): Point[] {
   return plist;
 }
 
-class PolyArgs {
+class PolyArgs implements Partial<ISvgAttributes> {
   xof: number = 0;
   yof: number = 0;
-  fil: string = 'rgba(0,0,0,0)';
-  str: string = 'rgba(0,0,0,0)';
-  wid: number = 0;
+  fill: string = 'rgba(0,0,0,0)';
+  stroke: string = 'rgba(0,0,0,0)';
+  strokeWidth: number = 0;
 }
 
-export function poly<K extends keyof PolyArgs>(
+export function poly(
   plist: Point[],
-  args: Pick<PolyArgs, K> | undefined = undefined
-) {
+  args: Partial<PolyArgs> | undefined = undefined
+): Polyline {
   const _args = new PolyArgs();
   Object.assign(_args, args);
-  const { xof, yof, fil, str, wid } = _args;
+  const { xof, yof, fill, stroke, strokeWidth } = _args;
   const off = new Vector(xof, yof);
+  
+  const polyline = new Polyline(plist
+    .map((p: Point) => SvgPoint.from(p.move(off))), { fill, stroke, strokeWidth });
 
-  const pointStr = plist
-    .map((p: Point) => {
-      const np = p.move(off);
-      return `${p.x.toFixed(1)},${p.y.toFixed(1)}`;
-    })
-    .join(' ');
-
-  let canv = `<polyline points='${pointStr}'`;
-  canv +=
-    " style='fill:" + fil + ';stroke:' + str + ';stroke-width:' + wid + "'/>";
-  return canv;
+  return polyline;
 }

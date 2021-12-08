@@ -86,9 +86,9 @@ export function foot<K extends keyof FootArgs>(
     canv += poly(ftlist[i], {
       xof: xof,
       yof: yof,
-      fil: 'white',
-      str: 'none',
-    });
+      fill: 'white',
+      stroke: 'none',
+    }).render();
   }
   for (let j = 0; j < ftlist.length; j++) {
     canv += stroke(
@@ -97,7 +97,7 @@ export function foot<K extends keyof FootArgs>(
       }),
       {
         col: 'rgba(100,100,100,' + (0.1 + random() * 0.1).toFixed(3) + ')',
-        wid: 1,
+        strokeWidth: 1,
       }
     );
   }
@@ -129,7 +129,7 @@ function vegetate(
 
 class MountainArgs {
   hei: number = 100 + random() * 400;
-  wid: number = 400 + random() * 200;
+  strokeWidth: number = 400 + random() * 200;
   tex: number = 200;
   veg: boolean = true;
   col: string | undefined = undefined;
@@ -144,7 +144,7 @@ export function mountain<K extends keyof MountainArgs>(
   const _args = new MountainArgs();
   Object.assign(_args, args);
 
-  const { hei, wid, tex, veg, col } = _args;
+  const { hei, strokeWidth, tex, veg, col } = _args;
 
   const _seed: number = seed != undefined ? seed : 0;
 
@@ -152,7 +152,7 @@ export function mountain<K extends keyof MountainArgs>(
 
   const ptlist: Point[][] = [];
   const h = hei;
-  const w = wid;
+  const w = strokeWidth;
   const reso = [10, 50];
 
   let hoff = 0;
@@ -194,15 +194,15 @@ export function mountain<K extends keyof MountainArgs>(
   canv += poly(ptlist[0].concat([new Point(0, reso[0] * 4)]), {
     xof: xoff,
     yof: yoff,
-    fil: 'white',
-    str: 'none',
-  });
+    fill: 'white',
+    stroke: 'none',
+  }).render();
   //OUTLINE
   canv += stroke(
     ptlist[0].map(function (p) {
       return new Point(p.x + xoff, p.y + yoff);
     }),
-    { col: 'rgba(100,100,100,0.3)', noi: 1, wid: 3 }
+    { col: 'rgba(100,100,100,0.3)', noi: 1, strokeWidth: 3 }
   );
 
   canv += foot(ptlist, { xof: xoff, yof: yoff });
@@ -255,7 +255,7 @@ export function mountain<K extends keyof MountainArgs>(
         ht = ht * 0.3 + random() * ht * 0.7;
         return tree01(x + xoff, y + yoff, {
           hei: ht,
-          wid: random() * 3 + 1,
+          strokeWidth: random() * 3 + 1,
           col:
             'rgba(100,100,100,' +
             (Noise.noise(0.01 * x, 0.01 * y) * 0.5 * 0.3 + 0.3).toFixed(3) +
@@ -327,7 +327,7 @@ export function mountain<K extends keyof MountainArgs>(
       const tt = randChoice([0, 0, 1, 1, 1, 2]);
       if (tt == 1) {
         return arch02(x + xoff, y + yoff, seed, {
-          wid: normRand(40, 70),
+          strokeWidth: normRand(40, 70),
           sto: randChoice([1, 2, 2, 3]),
           rot: random(),
           sty: randChoice([1, 2, 3]),
@@ -358,7 +358,7 @@ export function mountain<K extends keyof MountainArgs>(
     function (x, y) {
       return arch03(x + xoff, y + yoff, seed, {
         sto: randChoice([5, 7]),
-        wid: 40 + random() * 20,
+        strokeWidth: 40 + random() * 20,
       });
     },
     function (i, j) {
@@ -395,7 +395,7 @@ export function mountain<K extends keyof MountainArgs>(
     ptlist,
     function (x, y) {
       return rock(x + xoff, y + yoff, seed, {
-        wid: 20 + random() * 20,
+        strokeWidth: 20 + random() * 20,
         hei: 20 + random() * 20,
         sha: 2,
       });
@@ -435,7 +435,7 @@ function bound(plist: Point[]): Bound {
 
 class FlatMountArgs {
   hei = 40 + random() * 400;
-  wid = 400 + random() * 200;
+  strokeWidth = 400 + random() * 200;
   tex = 80;
   cho = 0.5;
   ret = 0;
@@ -450,7 +450,7 @@ export function flatMount<K extends keyof FlatMountArgs>(
   const _args = new FlatMountArgs();
   Object.assign(_args, args);
 
-  const { hei, wid, tex, cho, ret } = _args;
+  const { hei, strokeWidth, tex, cho, ret } = _args;
 
   let canv = '';
   const ptlist: Point[][] = [];
@@ -465,7 +465,7 @@ export function flatMount<K extends keyof FlatMountArgs>(
       const x = (i / reso[1] - 0.5) * Math.PI;
       const y = (Math.cos(x * 2) + 1) * Noise.noise(x + 10, j * 0.1, seed);
       const p = 1 - (j / reso[0]) * 0.6;
-      const nx = (x / Math.PI) * wid * p;
+      const nx = (x / Math.PI) * strokeWidth * p;
       let ny = -y * hei * p + hoff;
       const h = 100;
       if (ny < -h * cho + hoff) {
@@ -489,15 +489,15 @@ export function flatMount<K extends keyof FlatMountArgs>(
   canv += poly(ptlist[0].concat([new Point(0, reso[0] * 4)]), {
     xof: xoff,
     yof: yoff,
-    fil: 'white',
-    str: 'none',
-  });
+    fill: 'white',
+    stroke: 'none',
+  }).render();
   //OUTLINE
   canv += stroke(
     ptlist[0].map(function (p: Point) {
       return new Point(p.x + xoff, p.y + yoff);
     }),
-    { col: 'rgba(100,100,100,0.3)', noi: 1, wid: 3 }
+    { col: 'rgba(100,100,100,0.3)', noi: 1, strokeWidth: 3 }
   );
 
   //canv += foot(ptlist,{xof:xoff,yof:yoff})
@@ -505,7 +505,7 @@ export function flatMount<K extends keyof FlatMountArgs>(
     xof: xoff,
     yof: yoff,
     tex: tex,
-    wid: 2,
+    strokeWidth: 2,
     dis: function () {
       if (random() > 0.5) {
         return 0.1 + 0.4 * random();
@@ -552,20 +552,20 @@ export function flatMount<K extends keyof FlatMountArgs>(
     grlist[i].x *= 1 - v + Noise.noise(grlist[i].y * 0.5) * v;
   }
   /*       for (const i = 0; i < ptlist.length; i++){
-              canv += poly(ptlist[i],{xof:xoff,yof:yoff,str:"red",fil:"none",wid:2})
+              canv += poly(ptlist[i],{xof:xoff,yof:yoff,stroke:"red",fill:"none",strokeWidth:2})
             }
        */
   canv += poly(grlist, {
     xof: xoff,
     yof: yoff,
-    str: 'none',
-    fil: 'white',
-    wid: 2,
-  });
+    stroke: 'none',
+    fill: 'white',
+    strokeWidth: 2,
+  }).render();
   canv += stroke(
     grlist.map((p: Point) => new Point(p.x + xoff, p.y + yoff)),
     {
-      wid: 3,
+      strokeWidth: 3,
       col: 'rgba(100,100,100,0.2)',
     }
   );
@@ -586,7 +586,7 @@ export function flatDec(xoff: number, yoff: number, grbd: Bound) {
       yoff + (grbd.ymin + grbd.ymax) / 2 + normRand(-10, 10) + 10,
       random() * 100,
       {
-        wid: 10 + random() * 20,
+        strokeWidth: 10 + random() * 20,
         hei: 10 + random() * 20,
         sha: 2,
       }
@@ -611,7 +611,7 @@ export function flatDec(xoff: number, yoff: number, grbd: Bound) {
         yoff + (grbd.ymin + grbd.ymax) / 2 + normRand(-5, 5) + 20,
         random() * 100,
         {
-          wid: 50 + random() * 20,
+          strokeWidth: 50 + random() * 20,
           hei: 40 + random() * 20,
           sha: 5,
         }
@@ -636,7 +636,7 @@ export function flatDec(xoff: number, yoff: number, grbd: Bound) {
         yoff + (grbd.ymin + grbd.ymax) / 2 + normRand(-5, 5) + 20,
         random() * 100,
         {
-          wid: 50 + random() * 20,
+          strokeWidth: 50 + random() * 20,
           hei: 40 + random() * 20,
           sha: 5,
         }
@@ -654,7 +654,7 @@ export function flatDec(xoff: number, yoff: number, grbd: Bound) {
           yoff + yr + normRand(-5, 5) + 20,
           j * i * random() * 100,
           {
-            wid: 50 + random() * 20,
+            strokeWidth: 50 + random() * 20,
             hei: 40 + random() * 20,
             sha: 5,
           }
@@ -697,7 +697,7 @@ export function flatDec(xoff: number, yoff: number, grbd: Bound) {
       yoff + (grbd.ymin + grbd.ymax) / 2 + 20,
       random(),
       {
-        wid: normRand(160, 200),
+        strokeWidth: normRand(160, 200),
         hei: normRand(80, 100),
         per: random(),
       }
@@ -760,10 +760,10 @@ export function distMount<K extends keyof DistMountArgs>(
     };
     const pe = ptlist[i][ptlist[i].length - 1];
     canv += poly(ptlist[i], {
-      fil: getCol(pe.x, pe.y),
-      str: 'none',
-      wid: 1,
-    });
+      fill: getCol(pe.x, pe.y),
+      stroke: 'none',
+      strokeWidth: 1,
+    }).render();
 
     const T = triangulate(ptlist[i], {
       area: 100,
@@ -773,7 +773,7 @@ export function distMount<K extends keyof DistMountArgs>(
     for (let k = 0; k < T.length; k++) {
       const m = midPt(T[k]);
       const co = getCol(m.x, m.y);
-      canv += poly(T[k], { fil: co, str: co, wid: 1 });
+      canv += poly(T[k], { fill: co, stroke: co, strokeWidth: 1 }).render();
     }
   }
   return canv;
@@ -781,7 +781,7 @@ export function distMount<K extends keyof DistMountArgs>(
 
 class RockArgs {
   hei = 80;
-  wid = 100;
+  strokeWidth = 100;
   tex = 40;
   ret = 0;
   sha = 10;
@@ -796,7 +796,7 @@ export function rock<K extends keyof RockArgs>(
   const _args = new RockArgs();
   Object.assign(_args, args);
 
-  const { hei, wid, tex, ret, sha } = _args;
+  const { hei, strokeWidth, tex, ret, sha } = _args;
 
   let canv = '';
 
@@ -815,13 +815,13 @@ export function rock<K extends keyof RockArgs>(
     for (let j = 0; j < reso[1]; j++) {
       const a = (j / reso[1]) * Math.PI * 2 - Math.PI / 2;
       let l =
-        (wid * hei) /
+        (strokeWidth * hei) /
         Math.sqrt(
-          Math.pow(hei * Math.cos(a), 2) + Math.pow(wid * Math.sin(a), 2)
+          Math.pow(hei * Math.cos(a), 2) + Math.pow(strokeWidth * Math.sin(a), 2)
         );
 
-      /*           const l = Math.sin(a)>0? Math.pow(Math.sin(a),0.1)*wid
-                                       : - Math.pow(Math.sin(a+Math.PI),0.1)*wid */
+      /*           const l = Math.sin(a)>0? Math.pow(Math.sin(a),0.1)*strokeWidth
+                                       : - Math.pow(Math.sin(a+Math.PI),0.1)*strokeWidth */
       l *= 0.7 + 0.3 * nslist[j];
 
       const p = 1 - i / reso[0];
@@ -843,21 +843,21 @@ export function rock<K extends keyof RockArgs>(
   canv += poly(ptlist[0].concat([new Point(0, 0)]), {
     xof: xoff,
     yof: yoff,
-    fil: 'white',
-    str: 'none',
-  });
+    fill: 'white',
+    stroke: 'none',
+  }).render();
   //OUTLINE
   canv += stroke(
     ptlist[0].map(function (p) {
       return new Point(p.x + xoff, p.y + yoff);
     }),
-    { col: 'rgba(100,100,100,0.3)', noi: 1, wid: 3 }
+    { col: 'rgba(100,100,100,0.3)', noi: 1, strokeWidth: 3 }
   );
   canv += texture(ptlist, {
     xof: xoff,
     yof: yoff,
     tex: tex,
-    wid: 3,
+    strokeWidth: 3,
     sha: sha,
     col: function (x) {
       return 'rgba(180,180,180,' + (0.3 + random() * 0.3).toFixed(3) + ')';
@@ -872,7 +872,7 @@ export function rock<K extends keyof RockArgs>(
   });
 
   for (let i = 0; i < reso[0]; i++) {
-    //canv += poly(ptlist[i],{xof:xoff,yof:yoff,fil:"none",str:"red",wid:2})
+    //canv += poly(ptlist[i],{xof:xoff,yof:yoff,fill:"none",stroke:"red",strokeWidth:2})
   }
   return canv;
 }

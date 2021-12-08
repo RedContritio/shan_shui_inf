@@ -111,8 +111,8 @@ export function hat01<K extends keyof GeneralFlipArgs>(
         new Point(-0.65, 0.5),
       ])
     ),
-    { fil: 'rgba(100,100,100,0.8)' }
-  );
+    { fill: 'rgba(100,100,100,0.8)' }
+  ).render();
 
   const qlist1: Point[] = [];
   for (let i = 0; i < 10; i++) {
@@ -121,9 +121,9 @@ export function hat01<K extends keyof GeneralFlipArgs>(
     );
   }
   canv += poly(tranpoly(p0, p1, f(qlist1)), {
-    str: 'rgba(100,100,100,0.8)',
-    wid: 1,
-  });
+    stroke: 'rgba(100,100,100,0.8)',
+    strokeWidth: 1,
+  }).render();
 
   return canv;
 }
@@ -144,7 +144,7 @@ export function hat02<K extends keyof GeneralFlipArgs>(
   const f: (pl: Point[]) => Point[] = fli ? flipper : (x) => x;
   // canv += poly(tranpoly(p0,p1,[
   //   [-0.3,0.6],[-0.15,1.0],[0,1.1],[0.15,1.0],[0.3,0.6]
-  //   ]),{fil:"white",str:"rgba(130,130,130,0.8)",wid:1})
+  //   ]),{fill:"white",stroke:"rgba(130,130,130,0.8)",strokeWidth:1})
   canv += poly(
     tranpoly(
       p0,
@@ -162,8 +162,8 @@ export function hat02<K extends keyof GeneralFlipArgs>(
         new Point(0.3, 0.5),
       ])
     ),
-    { fil: 'rgba(100,100,100,0.8)' }
-  );
+    { fill: 'rgba(100,100,100,0.8)' }
+  ).render();
   return canv;
 }
 
@@ -193,9 +193,9 @@ export function stick01<K extends keyof GeneralFlipArgs>(
     );
   }
   canv += poly(tranpoly(p0, p1, f(qlist1)), {
-    str: 'rgba(100,100,100,0.5)',
-    wid: 1,
-  });
+    stroke: 'rgba(100,100,100,0.5)',
+    strokeWidth: 1,
+  }).render();
 
   return canv;
 }
@@ -249,14 +249,14 @@ function cloth(
   const tlist = bezmh(plist, 2);
   const [tlist1, tlist2] = expand(tlist, fun);
   canv += poly(tlist1.concat(tlist2.reverse()).map(toGlobal), {
-    fil: 'white',
-  });
+    fill: 'white',
+  }).render();
   canv += stroke(tlist1.map(toGlobal), {
-    wid: 1,
+    strokeWidth: 1,
     col: 'rgba(100,100,100,0.5)',
   });
   canv += stroke(tlist2.map(toGlobal), {
-    wid: 1,
+    strokeWidth: 1,
     col: 'rgba(100,100,100,0.6)',
   });
 
@@ -362,8 +362,8 @@ export function man<K extends keyof ManArgs>(
   hlist1.splice(0, Math.floor(hlist1.length * 0.1));
   hlist2.splice(0, Math.floor(hlist2.length * 0.95));
   canv += poly(hlist1.concat(hlist2.reverse()).map(toGlobal), {
-    fil: 'rgba(100,100,100,0.6)',
-  });
+    fill: 'rgba(100,100,100,0.6)',
+  }).render();
 
   canv += hat(toGlobal(pts[1]), toGlobal(pts[2]), { fli: fli });
 

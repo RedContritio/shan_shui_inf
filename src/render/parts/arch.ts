@@ -17,7 +17,7 @@ function flip(ptlist: Point[], axis: number = 0): Point[] {
 
 class HutArgs {
   hei: number = 40;
-  wid: number = 180;
+  strokeWidth: number = 180;
   tex: number = 300;
 }
 function hut<K extends keyof HutArgs>(
@@ -28,7 +28,7 @@ function hut<K extends keyof HutArgs>(
   const _args = new HutArgs();
   Object.assign(_args, args);
 
-  const { hei, wid, tex } = _args;
+  const { hei, strokeWidth, tex } = _args;
 
   const reso = [10, 10];
   const ptlist: Point[][] = [];
@@ -38,7 +38,7 @@ function hut<K extends keyof HutArgs>(
     const heir = hei + hei * 0.2 * random();
     for (let j = 0; j < reso[1]; j++) {
       const nx =
-        wid * (i / (reso[0] - 1) - 0.5) * Math.pow(j / (reso[1] - 1), 0.7);
+        strokeWidth * (i / (reso[0] - 1) - 0.5) * Math.pow(j / (reso[1] - 1), 0.7);
       const ny = heir * (j / (reso[1] - 1));
       ptlist[ptlist.length - 1].push(new Point(nx, ny));
     }
@@ -48,28 +48,28 @@ function hut<K extends keyof HutArgs>(
     ptlist[0]
       .slice(0, -1)
       .concat(ptlist[ptlist.length - 1].slice(0, -1).reverse()),
-    { xof: xoff, yof: yoff, fil: 'white', str: 'none' }
-  );
+    { xof: xoff, yof: yoff, fill: 'white', stroke: 'none' }
+  ).render();
   canv += poly(ptlist[0], {
     xof: xoff,
     yof: yoff,
-    fil: 'none',
-    str: 'rgba(100,100,100,0.3)',
-    wid: 2,
-  });
+    fill: 'none',
+    stroke: 'rgba(100,100,100,0.3)',
+    strokeWidth: 2,
+  }).render();
   canv += poly(ptlist[ptlist.length - 1], {
     xof: xoff,
     yof: yoff,
-    fil: 'none',
-    str: 'rgba(100,100,100,0.3)',
-    wid: 2,
-  });
+    fill: 'none',
+    stroke: 'rgba(100,100,100,0.3)',
+    strokeWidth: 2,
+  }).render();
 
   canv += texture(ptlist, {
     xof: xoff,
     yof: yoff,
     tex: tex,
-    wid: 1,
+    strokeWidth: 1,
     len: 0.25,
     col: function (x) {
       return 'rgba(120,120,120,' + (0.3 + random() * 0.3).toFixed(3) + ')';
@@ -83,7 +83,7 @@ function hut<K extends keyof HutArgs>(
   });
 
   for (let i = 0; i < reso[0]; i++) {
-    //canv += poly(ptlist[i],{xof:xoff,yof:yoff,fil:"none",str:"red",wid:2})
+    //canv += poly(ptlist[i],{xof:xoff,yof:yoff,fill:"none",stroke:"red",strokeWidth:2})
   }
 
   return canv;
@@ -91,7 +91,7 @@ function hut<K extends keyof HutArgs>(
 
 class BoxArgs {
   hei: number = 20;
-  wid: number = 120;
+  strokeWidth: number = 120;
   rot: number = 0.7;
   per: number = 4;
   tra: boolean = true;
@@ -108,22 +108,22 @@ function box<K extends keyof BoxArgs>(
   const _args = new BoxArgs();
   Object.assign(_args, args);
 
-  const { hei, wid, rot, per, tra, bot, wei, dec } = _args;
+  const { hei, strokeWidth, rot, per, tra, bot, wei, dec } = _args;
 
-  const mid = -wid * 0.5 + wid * rot;
-  const bmid = -wid * 0.5 + wid * (1 - rot);
+  const mid = -strokeWidth * 0.5 + strokeWidth * rot;
+  const bmid = -strokeWidth * 0.5 + strokeWidth * (1 - rot);
   const _ptlist: Point[][] = [];
-  _ptlist.push(div([new Point(-wid * 0.5, -hei), new Point(-wid * 0.5, 0)], 5));
-  _ptlist.push(div([new Point(wid * 0.5, -hei), new Point(wid * 0.5, 0)], 5));
+  _ptlist.push(div([new Point(-strokeWidth * 0.5, -hei), new Point(-strokeWidth * 0.5, 0)], 5));
+  _ptlist.push(div([new Point(strokeWidth * 0.5, -hei), new Point(strokeWidth * 0.5, 0)], 5));
   if (bot) {
-    _ptlist.push(div([new Point(-wid * 0.5, 0), new Point(mid, per)], 5));
-    _ptlist.push(div([new Point(wid * 0.5, 0), new Point(mid, per)], 5));
+    _ptlist.push(div([new Point(-strokeWidth * 0.5, 0), new Point(mid, per)], 5));
+    _ptlist.push(div([new Point(strokeWidth * 0.5, 0), new Point(mid, per)], 5));
   }
   _ptlist.push(div([new Point(mid, -hei), new Point(mid, per)], 5));
   if (tra) {
     if (bot) {
-      _ptlist.push(div([new Point(-wid * 0.5, 0), new Point(bmid, -per)], 5));
-      _ptlist.push(div([new Point(wid * 0.5, 0), new Point(bmid, -per)], 5));
+      _ptlist.push(div([new Point(-strokeWidth * 0.5, 0), new Point(bmid, -per)], 5));
+      _ptlist.push(div([new Point(strokeWidth * 0.5, 0), new Point(bmid, -per)], 5));
     }
     _ptlist.push(div([new Point(bmid, -hei), new Point(bmid, -per)], 5));
   }
@@ -131,19 +131,19 @@ function box<K extends keyof BoxArgs>(
   const surf = (rot < 0.5 ? 1 : 0) * 2 - 1;
   const ptlist = _ptlist.concat(
     dec({
-      pul: new Point(surf * wid * 0.5, -hei),
+      pul: new Point(surf * strokeWidth * 0.5, -hei),
       pur: new Point(mid, -hei + per),
-      pdl: new Point(surf * wid * 0.5, 0),
+      pdl: new Point(surf * strokeWidth * 0.5, 0),
       pdr: new Point(mid, per),
     })
   );
 
   const polist = [
-    new Point(wid * 0.5, -hei),
-    new Point(wid * 0.5, -hei),
-    new Point(wid * 0.5, 0),
+    new Point(strokeWidth * 0.5, -hei),
+    new Point(strokeWidth * 0.5, -hei),
+    new Point(strokeWidth * 0.5, 0),
     new Point(mid, per),
-    new Point(-wid * 0.5, 0),
+    new Point(-strokeWidth * 0.5, 0),
   ];
 
   let canv = '';
@@ -151,9 +151,9 @@ function box<K extends keyof BoxArgs>(
     canv += poly(polist, {
       xof: xoff,
       yof: yoff,
-      str: 'none',
-      fil: 'white',
-    });
+      stroke: 'none',
+      fill: 'white',
+    }).render();
   }
 
   for (let i = 0; i < ptlist.length; i++) {
@@ -164,7 +164,7 @@ function box<K extends keyof BoxArgs>(
       {
         col: 'rgba(100,100,100,0.4)',
         noi: 1,
-        wid: wei,
+        strokeWidth: wei,
         fun: function (x) {
           return 1;
         },
@@ -249,7 +249,7 @@ function deco<K extends keyof DecoArgs>(
 
 class RailArgs {
   hei: number = 20;
-  wid: number = 180;
+  strokeWidth: number = 180;
   rot: number = 0.7;
   per: number = 4;
   seg: number = 4;
@@ -267,34 +267,34 @@ function rail<K extends keyof RailArgs>(
   const _args = new RailArgs();
   Object.assign(_args, args);
 
-  const { hei, wid, rot, per, seg, wei, tra, fro } = _args;
+  const { hei, strokeWidth, rot, per, seg, wei, tra, fro } = _args;
 
-  const mid = -wid * 0.5 + wid * rot;
-  const bmid = -wid * 0.5 + wid * (1 - rot);
+  const mid = -strokeWidth * 0.5 + strokeWidth * rot;
+  const bmid = -strokeWidth * 0.5 + strokeWidth * (1 - rot);
   const ptlist = [];
 
   if (fro) {
-    ptlist.push(div([new Point(-wid * 0.5, 0), new Point(mid, per)], seg));
-    ptlist.push(div([new Point(mid, per), new Point(wid * 0.5, 0)], seg));
+    ptlist.push(div([new Point(-strokeWidth * 0.5, 0), new Point(mid, per)], seg));
+    ptlist.push(div([new Point(mid, per), new Point(strokeWidth * 0.5, 0)], seg));
   }
   if (tra) {
-    ptlist.push(div([new Point(-wid * 0.5, 0), new Point(bmid, -per)], seg));
-    ptlist.push(div([new Point(bmid, -per), new Point(wid * 0.5, 0)], seg));
+    ptlist.push(div([new Point(-strokeWidth * 0.5, 0), new Point(bmid, -per)], seg));
+    ptlist.push(div([new Point(bmid, -per), new Point(strokeWidth * 0.5, 0)], seg));
   }
   if (fro) {
     ptlist.push(
-      div([new Point(-wid * 0.5, -hei), new Point(mid, -hei + per)], seg)
+      div([new Point(-strokeWidth * 0.5, -hei), new Point(mid, -hei + per)], seg)
     );
     ptlist.push(
-      div([new Point(mid, -hei + per), new Point(wid * 0.5, -hei)], seg)
+      div([new Point(mid, -hei + per), new Point(strokeWidth * 0.5, -hei)], seg)
     );
   }
   if (tra) {
     ptlist.push(
-      div([new Point(-wid * 0.5, -hei), new Point(bmid, -hei - per)], seg)
+      div([new Point(-strokeWidth * 0.5, -hei), new Point(bmid, -hei - per)], seg)
     );
     ptlist.push(
-      div([new Point(bmid, -hei - per), new Point(wid * 0.5, -hei)], seg)
+      div([new Point(bmid, -hei - per), new Point(strokeWidth * 0.5, -hei)], seg)
     );
   }
   if (tra) {
@@ -326,10 +326,10 @@ function rail<K extends keyof RailArgs>(
       canv += poly(ln, {
         xof: xoff,
         yof: yoff,
-        fil: 'none',
-        str: 'rgba(100,100,100,0.5)',
-        wid: 2,
-      });
+        fill: 'none',
+        stroke: 'rgba(100,100,100,0.5)',
+        strokeWidth: 2,
+      }).render();
     }
   }
 
@@ -341,7 +341,7 @@ function rail<K extends keyof RailArgs>(
       {
         col: 'rgba(100,100,100,0.5)',
         noi: 0.5,
-        wid: wei,
+        strokeWidth: wei,
         fun: function (x) {
           return 1;
         },
@@ -353,7 +353,7 @@ function rail<K extends keyof RailArgs>(
 
 class RoofArgs {
   hei = 20;
-  wid = 120;
+  strokeWidth = 120;
   rot = 0.7;
   per = 4;
   cor = 5;
@@ -369,7 +369,7 @@ function roof<K extends keyof RoofArgs>(
   const _args = new RoofArgs();
   Object.assign(_args, args);
 
-  const { hei, wid, rot, per, cor, wei, pla } = _args;
+  const { hei, strokeWidth, rot, per, cor, wei, pla } = _args;
 
   const opf = function (ptlist: Point[]) {
     if (rot < 0.5) {
@@ -380,17 +380,17 @@ function roof<K extends keyof RoofArgs>(
   };
   const rrot = rot < 0.5 ? 1 - rot : rot;
 
-  const mid = -wid * 0.5 + wid * rrot;
-  const bmid = -wid * 0.5 + wid * (1 - rrot);
-  const quat = (mid + wid * 0.5) * 0.5 - mid;
+  const mid = -strokeWidth * 0.5 + strokeWidth * rrot;
+  const bmid = -strokeWidth * 0.5 + strokeWidth * (1 - rrot);
+  const quat = (mid + strokeWidth * 0.5) * 0.5 - mid;
 
   const ptlist = [];
   ptlist.push(
     div(
       opf([
-        new Point(-wid * 0.5 + quat, -hei - per / 2),
-        new Point(-wid * 0.5 + quat * 0.5, -hei / 2 - per / 4),
-        new Point(-wid * 0.5 - cor, 0),
+        new Point(-strokeWidth * 0.5 + quat, -hei - per / 2),
+        new Point(-strokeWidth * 0.5 + quat * 0.5, -hei / 2 - per / 4),
+        new Point(-strokeWidth * 0.5 - cor, 0),
       ]),
       5
     )
@@ -399,8 +399,8 @@ function roof<K extends keyof RoofArgs>(
     div(
       opf([
         new Point(mid + quat, -hei),
-        new Point((mid + quat + wid * 0.5) / 2, -hei / 2),
-        new Point(wid * 0.5 + cor, 0),
+        new Point((mid + quat + strokeWidth * 0.5) / 2, -hei / 2),
+        new Point(strokeWidth * 0.5 + cor, 0),
       ]),
       5
     )
@@ -417,16 +417,16 @@ function roof<K extends keyof RoofArgs>(
   );
 
   ptlist.push(
-    div(opf([new Point(-wid * 0.5 - cor, 0), new Point(mid + cor, per)]), 5)
+    div(opf([new Point(-strokeWidth * 0.5 - cor, 0), new Point(mid + cor, per)]), 5)
   );
   ptlist.push(
-    div(opf([new Point(wid * 0.5 + cor, 0), new Point(mid + cor, per)]), 5)
+    div(opf([new Point(strokeWidth * 0.5 + cor, 0), new Point(mid + cor, per)]), 5)
   );
 
   ptlist.push(
     div(
       opf([
-        new Point(-wid * 0.5 + quat, -hei - per / 2),
+        new Point(-strokeWidth * 0.5 + quat, -hei - per / 2),
         new Point(mid + quat, -hei),
       ]),
       5
@@ -436,13 +436,13 @@ function roof<K extends keyof RoofArgs>(
   let canv = '';
 
   const polist = opf([
-    new Point(-wid * 0.5, 0),
-    new Point(-wid * 0.5 + quat, -hei - per / 2),
+    new Point(-strokeWidth * 0.5, 0),
+    new Point(-strokeWidth * 0.5 + quat, -hei - per / 2),
     new Point(mid + quat, -hei),
-    new Point(wid * 0.5, 0),
+    new Point(strokeWidth * 0.5, 0),
     new Point(mid, per),
   ]);
-  canv += poly(polist, { xof: xoff, yof: yoff, str: 'none', fil: 'white' });
+  canv += poly(polist, { xof: xoff, yof: yoff, stroke: 'none', fill: 'white' }).render();
 
   for (let i = 0; i < ptlist.length; i++) {
     canv += stroke(
@@ -452,7 +452,7 @@ function roof<K extends keyof RoofArgs>(
       {
         col: 'rgba(100,100,100,0.4)',
         noi: 1,
-        wid: wei,
+        strokeWidth: wei,
         fun: function (x) {
           return 1;
         },
@@ -463,7 +463,7 @@ function roof<K extends keyof RoofArgs>(
   if (pla[0] === 1) {
     let pp = opf([
       new Point(mid + quat / 2, -hei / 2 + per / 2),
-      new Point(-wid * 0.5 + quat * 0.5, -hei / 2 - per / 4),
+      new Point(-strokeWidth * 0.5 + quat * 0.5, -hei / 2 - per / 4),
     ]);
     if (pp[0].x > pp[1].x) {
       pp = [pp[1], pp[0]];
@@ -491,7 +491,7 @@ function roof<K extends keyof RoofArgs>(
 
 class PagRoofArgs {
   hei = 20;
-  wid = 120;
+  strokeWidth = 120;
   rot = 0.7;
   per = 4;
   cor = 10;
@@ -507,16 +507,16 @@ function pagroof<K extends keyof PagRoofArgs>(
   const _args = new PagRoofArgs();
   Object.assign(_args, args);
 
-  const { hei, wid, rot, per, cor, sid, wei } = _args;
+  const { hei, strokeWidth, rot, per, cor, sid, wei } = _args;
 
   const ptlist: Point[][] = [];
   const polist: Point[] = [new Point(0, -hei)];
   let canv = '';
 
   for (let i = 0; i < sid; i++) {
-    const fx = wid * ((i * 1.0) / (sid - 1) - 0.5);
+    const fx = strokeWidth * ((i * 1.0) / (sid - 1) - 0.5);
     const fy = per * (1 - Math.abs((i * 1.0) / (sid - 1) - 0.5) * 2);
-    const fxx = (wid + cor) * ((i * 1.0) / (sid - 1) - 0.5);
+    const fxx = (strokeWidth + cor) * ((i * 1.0) / (sid - 1) - 0.5);
     if (i > 0) {
       ptlist.push([ptlist[ptlist.length - 1][2], new Point(fxx, fy)]);
     }
@@ -528,7 +528,7 @@ function pagroof<K extends keyof PagRoofArgs>(
     polist.push(new Point(fxx, fy));
   }
 
-  canv += poly(polist, { xof: xoff, yof: yoff, str: 'none', fil: 'white' });
+  canv += poly(polist, { xof: xoff, yof: yoff, stroke: 'none', fill: 'white' }).render();
 
   for (let i = 0; i < ptlist.length; i++) {
     canv += stroke(
@@ -538,7 +538,7 @@ function pagroof<K extends keyof PagRoofArgs>(
       {
         col: 'rgba(100,100,100,0.4)',
         noi: 1,
-        wid: wei,
+        strokeWidth: wei,
         fun: function (x) {
           return 1;
         },
@@ -551,7 +551,7 @@ function pagroof<K extends keyof PagRoofArgs>(
 
 class Arch01Args {
   hei = 70;
-  wid = 180;
+  strokeWidth = 180;
   rot = 0.7;
   per = 5;
 }
@@ -565,17 +565,17 @@ export function arch01<K extends keyof Arch01Args>(
   const _args = new Arch01Args();
   Object.assign(_args, args);
 
-  const { hei, wid, rot, per } = _args;
+  const { hei, strokeWidth, rot, per } = _args;
 
   const p = 0.4 + random() * 0.2;
   const h0 = hei * p;
   const h1 = hei * (1 - p);
 
   let canv = '';
-  canv += hut(xoff, yoff - hei, { hei: h0, wid: wid });
+  canv += hut(xoff, yoff - hei, { hei: h0, strokeWidth: strokeWidth });
   canv += box(xoff, yoff, {
     hei: h1,
-    wid: (wid * 2) / 3,
+    strokeWidth: (strokeWidth * 2) / 3,
     per: per,
     bot: false,
   });
@@ -584,23 +584,23 @@ export function arch01<K extends keyof Arch01Args>(
     tra: true,
     fro: false,
     hei: 10,
-    wid: wid,
+    strokeWidth: strokeWidth,
     per: per * 2,
     seg: (3 + random() * 3) | 0,
   });
 
   const mcnt = randChoice([0, 1, 1, 2]);
   if (mcnt === 1) {
-    canv += man(xoff + normRand(-wid / 3, wid / 3), yoff, {
+    canv += man(xoff + normRand(-strokeWidth / 3, strokeWidth / 3), yoff, {
       fli: randChoice([true, false]),
       sca: 0.42,
     });
   } else if (mcnt === 2) {
-    canv += man(xoff + normRand(-wid / 4, -wid / 5), yoff, {
+    canv += man(xoff + normRand(-strokeWidth / 4, -strokeWidth / 5), yoff, {
       fli: false,
       sca: 0.42,
     });
-    canv += man(xoff + normRand(wid / 5, wid / 4), yoff, {
+    canv += man(xoff + normRand(strokeWidth / 5, strokeWidth / 4), yoff, {
       fli: true,
       sca: 0.42,
     });
@@ -609,7 +609,7 @@ export function arch01<K extends keyof Arch01Args>(
     tra: false,
     fro: true,
     hei: 10,
-    wid: wid,
+    strokeWidth: strokeWidth,
     per: per * 2,
     seg: (3 + random() * 3) | 0,
   });
@@ -619,7 +619,7 @@ export function arch01<K extends keyof Arch01Args>(
 
 class Arch02Args {
   hei = 10;
-  wid = 50;
+  strokeWidth = 50;
   rot = 0.3;
   per = 5;
   sto = 3;
@@ -636,7 +636,7 @@ export function arch02<K extends keyof Arch02Args>(
   const _args = new Arch02Args();
   Object.assign(_args, args);
 
-  const { hei, wid, rot, per, sto, sty, rai } = _args;
+  const { hei, strokeWidth, rot, per, sto, sty, rai } = _args;
 
   let canv = '';
 
@@ -645,7 +645,7 @@ export function arch02<K extends keyof Arch02Args>(
     canv += box(xoff, yoff - hoff, {
       tra: false,
       hei: hei,
-      wid: wid * Math.pow(0.85, i),
+      strokeWidth: strokeWidth * Math.pow(0.85, i),
       rot: rot,
       wei: 1.5,
       per: per,
@@ -661,7 +661,7 @@ export function arch02<K extends keyof Arch02Args>(
     });
     canv += rai
       ? rail(xoff, yoff - hoff, i * 0.2, {
-          wid: wid * Math.pow(0.85, i) * 1.1,
+          strokeWidth: strokeWidth * Math.pow(0.85, i) * 1.1,
           hei: hei / 2,
           per: per,
           rot: rot,
@@ -678,14 +678,14 @@ export function arch02<K extends keyof Arch02Args>(
       pla === undefined
         ? roof(xoff, yoff - hoff - hei, {
             hei: hei,
-            wid: wid * Math.pow(0.9, i),
+            strokeWidth: strokeWidth * Math.pow(0.9, i),
             rot: rot,
             wei: 1.5,
             per: per,
           })
         : roof(xoff, yoff - hoff - hei, {
             hei: hei,
-            wid: wid * Math.pow(0.9, i),
+            strokeWidth: strokeWidth * Math.pow(0.9, i),
             rot: rot,
             wei: 1.5,
             per: per,
@@ -699,7 +699,7 @@ export function arch02<K extends keyof Arch02Args>(
 
 class Arch03Args {
   hei = 10;
-  wid = 50;
+  strokeWidth = 50;
   rot = 0.7;
   per = 5;
   sto = 7;
@@ -714,7 +714,7 @@ export function arch03<K extends keyof Arch03Args>(
   const _args = new Arch03Args();
   Object.assign(_args, args);
 
-  const { hei, wid, rot, per, sto } = _args;
+  const { hei, strokeWidth, rot, per, sto } = _args;
 
   let canv = '';
 
@@ -723,7 +723,7 @@ export function arch03<K extends keyof Arch03Args>(
     canv += box(xoff, yoff - hoff, {
       tra: false,
       hei: hei,
-      wid: wid * Math.pow(0.85, i),
+      strokeWidth: strokeWidth * Math.pow(0.85, i),
       rot: rot,
       wei: 1.5,
       per: per / 2,
@@ -733,7 +733,7 @@ export function arch03<K extends keyof Arch03Args>(
     });
     canv += rail(xoff, yoff - hoff, i * 0.2, {
       seg: 5,
-      wid: wid * Math.pow(0.85, i) * 1.1,
+      strokeWidth: strokeWidth * Math.pow(0.85, i) * 1.1,
       hei: hei / 2,
       per: per / 2,
       rot: rot,
@@ -742,7 +742,7 @@ export function arch03<K extends keyof Arch03Args>(
     });
     canv += pagroof(xoff, yoff - hoff - hei, {
       hei: hei * 1.5,
-      wid: wid * Math.pow(0.9, i),
+      strokeWidth: strokeWidth * Math.pow(0.9, i),
       rot: rot,
       wei: 1.5,
       per: per,
@@ -754,7 +754,7 @@ export function arch03<K extends keyof Arch03Args>(
 
 class Arch04Args {
   hei = 15;
-  wid = 30;
+  strokeWidth = 30;
   rot = 0.7;
   per = 5;
   sto = 2;
@@ -769,7 +769,7 @@ export function arch04<K extends keyof Arch04Args>(
   const _args = new Arch04Args();
   Object.assign(_args, args);
 
-  const { hei, wid, rot, per, sto } = _args;
+  const { hei, strokeWidth, rot, per, sto } = _args;
 
   let canv = '';
 
@@ -778,7 +778,7 @@ export function arch04<K extends keyof Arch04Args>(
     canv += box(xoff, yoff - hoff, {
       tra: true,
       hei: hei,
-      wid: wid * Math.pow(0.85, i),
+      strokeWidth: strokeWidth * Math.pow(0.85, i),
       rot: rot,
       wei: 1.5,
       per: per / 2,
@@ -788,7 +788,7 @@ export function arch04<K extends keyof Arch04Args>(
     });
     canv += rail(xoff, yoff - hoff, i * 0.2, {
       seg: 3,
-      wid: wid * Math.pow(0.85, i) * 1.2,
+      strokeWidth: strokeWidth * Math.pow(0.85, i) * 1.2,
       hei: hei / 3,
       per: per / 2,
       rot: rot,
@@ -797,7 +797,7 @@ export function arch04<K extends keyof Arch04Args>(
     });
     canv += pagroof(xoff, yoff - hoff - hei, {
       hei: hei * 1,
-      wid: wid * Math.pow(0.9, i),
+      strokeWidth: strokeWidth * Math.pow(0.9, i),
       rot: rot,
       wei: 1.5,
       per: per,
@@ -844,11 +844,11 @@ export function boat01<K extends keyof Boat01Args>(
     plist2.push(new Point(i * dir, fun2(i / len)));
   }
   const plist: Point[] = plist1.concat(plist2.reverse());
-  canv += poly(plist, { xof: xoff, yof: yoff, fil: 'white' });
+  canv += poly(plist, { xof: xoff, yof: yoff, fill: 'white' }).render();
   canv += stroke(
     plist.map((v) => new Point(xoff + v.x, yoff + v.y)),
     {
-      wid: 1,
+      strokeWidth: 1,
       fun: function (x) {
         return Math.sin(x * Math.PI * 2);
       },
@@ -861,7 +861,7 @@ export function boat01<K extends keyof Boat01Args>(
 
 class TransmissionTower01Args {
   hei = 100;
-  wid = 20;
+  strokeWidth = 20;
 }
 
 export function transmissionTower01<K extends keyof TransmissionTower01Args>(
@@ -873,30 +873,30 @@ export function transmissionTower01<K extends keyof TransmissionTower01Args>(
   const _args = new TransmissionTower01Args();
   Object.assign(_args, args);
 
-  const { hei, wid } = _args;
+  const { hei, strokeWidth } = _args;
 
   let canv = '';
   const toGlobal = (v: Point) => new Point(v.x + xoff, v.y + yoff);
 
   const quickstroke = function (pl: Point[]) {
     return stroke(div(pl, 5).map(toGlobal), {
-      wid: 1,
+      strokeWidth: 1,
       fun: (x) => 0.5,
       col: 'rgba(100,100,100,0.4)',
     });
   };
 
-  const p00 = new Point(-wid * 0.05, -hei);
-  const p01 = new Point(wid * 0.05, -hei);
+  const p00 = new Point(-strokeWidth * 0.05, -hei);
+  const p01 = new Point(strokeWidth * 0.05, -hei);
 
-  const p10 = new Point(-wid * 0.1, -hei * 0.9);
-  const p11 = new Point(wid * 0.1, -hei * 0.9);
+  const p10 = new Point(-strokeWidth * 0.1, -hei * 0.9);
+  const p11 = new Point(strokeWidth * 0.1, -hei * 0.9);
 
-  const p20 = new Point(-wid * 0.2, -hei * 0.5);
-  const p21 = new Point(wid * 0.2, -hei * 0.5);
+  const p20 = new Point(-strokeWidth * 0.2, -hei * 0.5);
+  const p21 = new Point(strokeWidth * 0.2, -hei * 0.5);
 
-  const p30 = new Point(-wid * 0.5, 0);
-  const p31 = new Point(wid * 0.5, 0);
+  const p30 = new Point(-strokeWidth * 0.5, 0);
+  const p31 = new Point(strokeWidth * 0.5, 0);
 
   const bch = [
     new Point(0.7, -0.85),
@@ -906,25 +906,25 @@ export function transmissionTower01<K extends keyof TransmissionTower01Args>(
 
   for (let i = 0; i < bch.length; i++) {
     canv += quickstroke([
-      new Point(-bch[i].x * wid, bch[i].y * hei),
-      new Point(bch[i].x * wid, bch[i].y * hei),
+      new Point(-bch[i].x * strokeWidth, bch[i].y * hei),
+      new Point(bch[i].x * strokeWidth, bch[i].y * hei),
     ]);
     canv += quickstroke([
-      new Point(-bch[i].x * wid, bch[i].y * hei),
+      new Point(-bch[i].x * strokeWidth, bch[i].y * hei),
       new Point(0, (bch[i].y - 0.05) * hei),
     ]);
     canv += quickstroke([
-      new Point(bch[i].x * wid, bch[i].y * hei),
+      new Point(bch[i].x * strokeWidth, bch[i].y * hei),
       new Point(0, (bch[i].y - 0.05) * hei),
     ]);
 
     canv += quickstroke([
-      new Point(-bch[i].x * wid, bch[i].y * hei),
-      new Point(-bch[i].x * wid, (bch[i].y + 0.1) * hei),
+      new Point(-bch[i].x * strokeWidth, bch[i].y * hei),
+      new Point(-bch[i].x * strokeWidth, (bch[i].y + 0.1) * hei),
     ]);
     canv += quickstroke([
-      new Point(bch[i].x * wid, bch[i].y * hei),
-      new Point(bch[i].x * wid, (bch[i].y + 0.1) * hei),
+      new Point(bch[i].x * strokeWidth, bch[i].y * hei),
+      new Point(bch[i].x * strokeWidth, (bch[i].y + 0.1) * hei),
     ]);
   }
 

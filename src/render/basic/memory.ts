@@ -88,7 +88,7 @@ class Memory {
               plan[i].x,
               plan[i].y,
               flatMount(plan[i].x, plan[i].y, 2 * Math.random() * Math.PI, {
-                wid: 600 + Math.random() * 400,
+                strokeWidth: 600 + Math.random() * 400,
                 hei: 100,
                 cho: 0.5 + Math.random() * 0.2,
               })

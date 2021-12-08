@@ -49,7 +49,7 @@ export function water<K extends keyof WaterArgs>(
       }),
       {
         col: 'rgba(100,100,100,' + (0.3 + random() * 0.3).toFixed(3) + ')',
-        wid: 1,
+        strokeWidth: 1,
       }
     );
   }

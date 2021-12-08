@@ -15,7 +15,7 @@ const random = PRNG.random;
 
 class Tree01Args {
   hei: number = 50;
-  wid: number = 3;
+  strokeWidth: number = 3;
   col: string = 'rgba(100,100,100,0.5)';
   noi: number = 0.5;
 }
@@ -28,7 +28,7 @@ export function tree01<K extends keyof Tree01Args>(
   const _args = new Tree01Args();
   Object.assign(_args, args);
 
-  const { hei, wid, col, noi } = _args;
+  const { hei, strokeWidth, col, noi } = _args;
 
   const reso = 10;
   const nslist = [];
@@ -51,11 +51,11 @@ export function tree01<K extends keyof Tree01Args>(
     if (i >= reso / 4) {
       for (let j = 0; j < (reso - i) / 5; j++) {
         canv += blobstr(
-          nx + (random() - 0.5) * wid * 1.2 * (reso - i),
-          ny + (random() - 0.5) * wid,
+          nx + (random() - 0.5) * strokeWidth * 1.2 * (reso - i),
+          ny + (random() - 0.5) * strokeWidth,
           {
             len: random() * 20 * (reso - i) * 0.2 + 10,
-            wid: random() * 6 + 3,
+            strokeWidth: random() * 6 + 3,
             ang: ((random() - 0.5) * Math.PI) / 6,
             col:
               'rgba(' +
@@ -71,18 +71,18 @@ export function tree01<K extends keyof Tree01Args>(
         );
       }
     }
-    line1.push(new Point(nx + (nslist[i][0] - 0.5) * wid - wid / 2, ny));
-    line2.push(new Point(nx + (nslist[i][1] - 0.5) * wid + wid / 2, ny));
+    line1.push(new Point(nx + (nslist[i][0] - 0.5) * strokeWidth - strokeWidth / 2, ny));
+    line2.push(new Point(nx + (nslist[i][1] - 0.5) * strokeWidth + strokeWidth / 2, ny));
   }
   canv +=
-    poly(line1, { fil: 'none', str: col, wid: 1.5 }) +
-    poly(line2, { fil: 'none', str: col, wid: 1.5 });
+    poly(line1, { fill: 'none', stroke: col, strokeWidth: 1.5 }).render() +
+    poly(line2, { fill: 'none', stroke: col, strokeWidth: 1.5 }).render();
   return canv;
 }
 
 class Tree02Args {
   hei: number = 16;
-  wid: number = 8;
+  strokeWidth: number = 8;
   clu: number = 5;
   col: string = 'rgba(100,100,100,0.5)';
   noi: number = 0.5;
@@ -96,7 +96,7 @@ export function tree02<K extends keyof Tree02Args>(
   const _args = new Tree02Args();
   Object.assign(_args, args);
 
-  const { hei, wid, clu, col, noi } = _args;
+  const { hei, strokeWidth, clu, col, noi } = _args;
 
   let leafcol;
   if (col.includes('rgba(')) {
@@ -115,7 +115,7 @@ export function tree02<K extends keyof Tree02Args>(
           ? Math.pow(Math.sin(x * Math.PI) * x, 0.5)
           : -Math.pow(Math.sin((x - 2) * Math.PI * (x - 2)), 0.5);
       },
-      wid: random() * wid * 0.75 + wid * 0.5,
+      strokeWidth: random() * strokeWidth * 0.75 + strokeWidth * 0.5,
       len: random() * hei * 0.75 + hei * 0.5,
       col: col,
     });
@@ -125,7 +125,7 @@ export function tree02<K extends keyof Tree02Args>(
 
 class Tree03Args {
   hei: number = 16;
-  wid: number = 5;
+  strokeWidth: number = 5;
   ben: (x: number) => number = (_) => 0;
   col: string = 'rgba(100,100,100,0.5)';
   noi: number = 0.5;
@@ -139,7 +139,7 @@ export function tree03<K extends keyof Tree03Args>(
   const _args = new Tree03Args();
   Object.assign(_args, args);
 
-  const { hei, wid, ben, col, noi } = _args;
+  const { hei, strokeWidth, ben, col, noi } = _args;
 
   const reso = 10;
   const nslist = [];
@@ -163,13 +163,13 @@ export function tree03<K extends keyof Tree03Args>(
     if (i >= reso / 5) {
       for (let j = 0; j < (reso - i) * 2; j++) {
         const shape = (x: number) => Math.log(50 * x + 1) / 3.95;
-        const ox = random() * wid * 2 * shape((reso - i) / reso);
+        const ox = random() * strokeWidth * 2 * shape((reso - i) / reso);
         blobs += blobstr(
           nx + ox * randChoice([-1, 1]),
-          ny + (random() - 0.5) * wid * 2,
+          ny + (random() - 0.5) * strokeWidth * 2,
           {
             len: ox * 2,
-            wid: random() * 6 + 3,
+            strokeWidth: random() * 6 + 3,
             ang: ((random() - 0.5) * Math.PI) / 6,
             col:
               'rgba(' +
@@ -187,26 +187,26 @@ export function tree03<K extends keyof Tree03Args>(
     }
     line1.push(
       new Point(
-        nx + (((nslist[i][0] - 0.5) * wid - wid / 2) * (reso - i)) / reso,
+        nx + (((nslist[i][0] - 0.5) * strokeWidth - strokeWidth / 2) * (reso - i)) / reso,
         ny
       )
     );
     line2.push(
       new Point(
-        nx + (((nslist[i][1] - 0.5) * wid + wid / 2) * (reso - i)) / reso,
+        nx + (((nslist[i][1] - 0.5) * strokeWidth + strokeWidth / 2) * (reso - i)) / reso,
         ny
       )
     );
   }
   const lc = line1.concat(line2.reverse());
-  canv += poly(lc, { fil: 'white', str: col, wid: 1.5 });
+  canv += poly(lc, { fill: 'white', stroke: col, strokeWidth: 1.5 }).render();
   canv += blobs;
   return canv;
 }
 
 class BranchArgs {
   hei: number = 360;
-  wid: number = 6;
+  strokeWidth: number = 6;
   ang: number = 0;
   det: number = 10;
   ben: number = 0.2 * Math.PI;
@@ -218,7 +218,7 @@ export function branch<K extends keyof BranchArgs>(
   const _args = new BranchArgs();
   Object.assign(_args, args);
 
-  const { hei, wid, ang, det, ben } = _args;
+  const { hei, strokeWidth, ang, det, ben } = _args;
 
   let nx = 0;
   let ny = 0;
@@ -255,14 +255,14 @@ export function branch<K extends keyof BranchArgs>(
     const ny = lastp[1] * (1 - p) + nextp[1] * p;
 
     const angle = Math.atan2(ny - ly, nx - lx);
-    const woff = ((Noise.noise(i * 0.3) - 0.5) * wid * hei) / 80;
+    const woff = ((Noise.noise(i * 0.3) - 0.5) * strokeWidth * hei) / 80;
 
     let b = 0;
     if (p == 0) {
-      b = random() * wid;
+      b = random() * strokeWidth;
     }
 
-    const nw = wid * (((tl - i) / tl) * 0.5 + 0.5);
+    const nw = strokeWidth * (((tl - i) / tl) * 0.5 + 0.5);
     trlist1.push(
       new Point(
         nx + Math.cos(angle + Math.PI / 2) * (nw + woff + b),
@@ -285,7 +285,7 @@ export function branch<K extends keyof BranchArgs>(
 class TwigArgs {
   dir: number = 1;
   sca: number = 1;
-  wid: number = 1;
+  strokeWidth: number = 1;
   ang: number = 0;
   lea: [boolean, number] = [true, 12];
 }
@@ -299,7 +299,7 @@ export function twig<K extends keyof TwigArgs>(
   const _args = new TwigArgs();
   Object.assign(_args, args);
 
-  const { dir, sca, wid, ang, lea } = _args;
+  const { dir, sca, strokeWidth, ang, lea } = _args;
 
   let canv = '';
   const twlist: Point[] = [];
@@ -325,7 +325,7 @@ export function twig<K extends keyof TwigArgs>(
       canv += twig(nx + tx, ny + ty, dep - 1, {
         ang: ang,
         sca: sca * 0.8,
-        wid: wid,
+        strokeWidth: strokeWidth,
         dir: dir * randChoice([-1, 1]),
         lea: lea,
       });
@@ -334,11 +334,11 @@ export function twig<K extends keyof TwigArgs>(
       for (let j = 0; j < 5; j++) {
         const dj = (j - 2.5) * 5;
         canv += blobstr(
-          nx + tx + Math.cos(ang) * dj * wid,
-          ny + ty + (Math.sin(ang) * dj - lea[1] / (dep + 1)) * wid,
+          nx + tx + Math.cos(ang) * dj * strokeWidth,
+          ny + ty + (Math.sin(ang) * dj - lea[1] / (dep + 1)) * strokeWidth,
           {
-            wid: (6 + 3 * random()) * wid,
-            len: (15 + 12 * random()) * wid,
+            strokeWidth: (6 + 3 * random()) * strokeWidth,
+            len: (15 + 12 * random()) * strokeWidth,
             ang: ang / 2 + Math.PI / 2 + Math.PI * 0.2 * (random() - 0.5),
             col: 'rgba(100,100,100,' + (0.5 + dep * 0.2).toFixed(3) + ')',
             fun: function (x) {
@@ -352,7 +352,7 @@ export function twig<K extends keyof TwigArgs>(
     }
   }
   canv += stroke(twlist, {
-    wid: 1,
+    strokeWidth: 1,
     fun: function (x) {
       return Math.cos((x * Math.PI) / 2);
     },
@@ -361,7 +361,7 @@ export function twig<K extends keyof TwigArgs>(
   return canv;
 }
 
-function bark(x: number, y: number, wid: number, ang: number): string {
+function bark(x: number, y: number, strokeWidth: number, ang: number): string {
   const len = 10 + 10 * random();
   const noi = 0.5;
   const fun = function (x: number) {
@@ -376,7 +376,7 @@ function bark(x: number, y: number, wid: number, ang: number): string {
   for (let i = 0; i < reso + 1; i++) {
     const p = (i / reso) * 2;
     const xo = len / 2 - Math.abs(p - 1) * len;
-    const yo = (fun(p) * wid) / 2;
+    const yo = (fun(p) * strokeWidth) / 2;
     const a = Math.atan2(yo, xo);
     const l = Math.sqrt(xo * xo + yo * yo);
     lalist.push([l, a]);
@@ -398,7 +398,7 @@ function bark(x: number, y: number, wid: number, ang: number): string {
 
   const fr = random();
   canv += stroke(brklist, {
-    wid: 0.8,
+    strokeWidth: 0.8,
     noi: 0,
     col: 'rgba(100,100,100,0.4)',
     out: 0,
@@ -429,7 +429,7 @@ export function barkify(x: number, y: number, trlist: Point[][]): string {
       canv += blobstr(nx + x, ny + y, {
         noi: 1,
         len: 15,
-        wid: 6 - Math.abs(p - 0.5) * 10,
+        strokeWidth: 6 - Math.abs(p - 0.5) * 10,
         ang: (a0 + a1) / 2,
         col: 'rgba(100,100,100,0.6)',
       });
@@ -448,7 +448,7 @@ export function barkify(x: number, y: number, trlist: Point[][]): string {
           xya[0] + x + Math.cos(xya[2]) * (j - jl / 2) * 4,
           xya[1] + y + Math.sin(xya[2]) * (j - jl / 2) * 4,
           {
-            wid: 4,
+            strokeWidth: 4,
             len: 4 + 6 * random(),
             ang: a0 + Math.PI / 2,
             col: 'rgba(100,100,100,0.6)',
@@ -479,7 +479,7 @@ export function barkify(x: number, y: number, trlist: Point[][]): string {
       rglist[i].map(function (p: Point) {
         return new Point(p.x + x, p.y + y);
       }),
-      { wid: 1.5, col: 'rgba(100,100,100,0.7)', out: 0 }
+      { strokeWidth: 1.5, col: 'rgba(100,100,100,0.7)', out: 0 }
     );
   }
   return canv;
@@ -487,7 +487,7 @@ export function barkify(x: number, y: number, trlist: Point[][]): string {
 
 class Tree04Args {
   hei: number = 300;
-  wid: number = 6;
+  strokeWidth: number = 6;
   col: string = 'rgba(100,100,100,0.5)';
   noi: number = 0.5;
 }
@@ -500,13 +500,13 @@ export function tree04<K extends keyof Tree04Args>(
   const _args = new Tree04Args();
   Object.assign(_args, args);
 
-  const { hei, wid, col, noi } = _args;
+  const { hei, strokeWidth, col, noi } = _args;
 
   let canv = '';
   let txcanv = '';
   let twcanv = '';
 
-  const _trlist = branch({ hei, wid, ang: -Math.PI / 2 });
+  const _trlist = branch({ hei, strokeWidth, ang: -Math.PI / 2 });
   txcanv += barkify(x, y, _trlist);
   const trlist: Point[] = _trlist[0].concat(_trlist[1].reverse());
 
@@ -523,7 +523,7 @@ export function tree04<K extends keyof Tree04Args>(
         Math.PI * 0.2 - Math.PI * 1.4 * (i > trlist.length / 2 ? 1 : 0);
       const _brlist: Point[][] = branch({
         hei: hei * (random() + 1) * 0.3,
-        wid: wid * 0.5,
+        strokeWidth: strokeWidth * 0.5,
         ang: ba,
       });
 
@@ -541,7 +541,7 @@ export function tree04<K extends keyof Tree04Args>(
             _brlist[0][j].y + trlist[i].y + y,
             1,
             {
-              wid: hei / 300,
+              strokeWidth: hei / 300,
               ang: ba > -Math.PI / 2 ? ba : ba + Math.PI,
               sca: (0.5 * hei) / 300,
               dir: ba > -Math.PI / 2 ? 1 : -1,
@@ -559,7 +559,7 @@ export function tree04<K extends keyof Tree04Args>(
       trmlist.push(trlist[i]);
     }
   }
-  canv += poly(trmlist, { xof: x, yof: y, fil: 'white', str: col, wid: 0 });
+  canv += poly(trmlist, { xof: x, yof: y, fill: 'white', stroke: col, strokeWidth: 0 }).render();
 
   trmlist.splice(0, 1);
   trmlist.splice(trmlist.length - 1, 1);
@@ -569,7 +569,7 @@ export function tree04<K extends keyof Tree04Args>(
     }),
     {
       col: 'rgba(100,100,100,' + (0.4 + random() * 0.1).toFixed(3) + ')',
-      wid: 2.5,
+      strokeWidth: 2.5,
       fun: function (x) {
         return Math.sin(1);
       },
@@ -585,7 +585,7 @@ export function tree04<K extends keyof Tree04Args>(
 
 class Tree05Args {
   hei: number = 300;
-  wid: number = 5;
+  strokeWidth: number = 5;
   col: string = 'rgba(100,100,100,0.5)';
   noi: number = 0.5;
 }
@@ -598,13 +598,13 @@ export function tree05<K extends keyof Tree05Args>(
   const _args = new Tree05Args();
   Object.assign(_args, args);
 
-  const { hei, wid, col, noi } = _args;
+  const { hei, strokeWidth, col, noi } = _args;
 
   let canv = '';
   let txcanv = '';
   let twcanv = '';
 
-  const _trlist = branch({ hei: hei, wid: wid, ang: -Math.PI / 2, ben: 0 });
+  const _trlist = branch({ hei: hei, strokeWidth: strokeWidth, ang: -Math.PI / 2, ben: 0 });
   txcanv += barkify(x, y, _trlist);
   const trlist = _trlist[0].concat(_trlist[1].reverse());
 
@@ -625,7 +625,7 @@ export function tree05<K extends keyof Tree05Args>(
         (1 - bar * 2) * Math.PI * (i > trlist.length / 2 ? 1 : 0);
       const _brlist = branch({
         hei: hei * (0.3 * p - random() * 0.05),
-        wid: wid * 0.5,
+        strokeWidth: strokeWidth * 0.5,
         ang: ba,
         ben: 0.5,
       });
@@ -644,7 +644,7 @@ export function tree05<K extends keyof Tree05Args>(
             _brlist[0][j].y + trlist[i].y + y,
             0,
             {
-              wid: hei / 300,
+              strokeWidth: hei / 300,
               ang: ba > -Math.PI / 2 ? ba : ba + Math.PI,
               sca: (0.2 * hei) / 300,
               dir: ba > -Math.PI / 2 ? 1 : -1,
@@ -664,7 +664,7 @@ export function tree05<K extends keyof Tree05Args>(
     }
   }
 
-  canv += poly(trmlist, { xof: x, yof: y, fil: 'white', str: col, wid: 0 });
+  canv += poly(trmlist, { xof: x, yof: y, fill: 'white', stroke: col, strokeWidth: 0 }).render();
 
   trmlist.splice(0, 1);
   trmlist.splice(trmlist.length - 1, 1);
@@ -674,7 +674,7 @@ export function tree05<K extends keyof Tree05Args>(
     }),
     {
       col: 'rgba(100,100,100,' + (0.4 + random() * 0.1).toFixed(3) + ')',
-      wid: 2.5,
+      strokeWidth: 2.5,
       fun: function (x) {
         return Math.sin(1);
       },
@@ -690,14 +690,14 @@ export function tree05<K extends keyof Tree05Args>(
 
 class Tree06Args {
   hei: number = 100;
-  wid: number = 6;
+  strokeWidth: number = 6;
   col: string = 'rgba(100,100,100,0.5)';
   noi: number = 0.5;
 }
 
 class FracTree06Args {
   hei: number = 300;
-  wid: number = 5;
+  strokeWidth: number = 5;
   ang: number = 0;
   ben: number = 0.2 * Math.PI;
 }
@@ -717,11 +717,11 @@ function fracTree06<K extends keyof FracTree06Args>(
   const _args = new FracTree06Args();
   Object.assign(_args, args);
 
-  const { hei, wid, ang, ben } = _args;
+  const { hei, strokeWidth, ang, ben } = _args;
 
   const _trlist = branch({
     hei: hei,
-    wid: wid,
+    strokeWidth: strokeWidth,
     ang: ang,
     ben: ben,
     det: hei / 20,
@@ -755,7 +755,7 @@ function fracTree06<K extends keyof FracTree06Args>(
         dep - 1,
         {
           hei: hei * (0.7 + random() * 0.2),
-          wid: wid * 0.6,
+          strokeWidth: strokeWidth * 0.6,
           ang: ang + ba,
           ben: 0.55,
         }
@@ -800,20 +800,20 @@ export function tree06<K extends keyof Tree06Args>(
   const _args = new Tree06Args();
   Object.assign(_args, args);
 
-  const { hei, wid, col, noi } = _args;
+  const { hei, strokeWidth, col, noi } = _args;
   let canv = '';
   const canvs: CanvasPair = new CanvasPair();
 
   const trmlist = fracTree06(canvs, x, y, 3, {
     hei: hei,
-    wid: wid,
+    strokeWidth: strokeWidth,
     ang: -Math.PI / 2,
     ben: 0,
   });
 
   const { txcanv, twcanv } = canvs;
 
-  canv += poly(trmlist, { xof: x, yof: y, fil: 'white', str: col, wid: 0 });
+  canv += poly(trmlist, { xof: x, yof: y, fill: 'white', stroke: col, strokeWidth: 0 }).render();
 
   trmlist.splice(0, 1);
   trmlist.splice(trmlist.length - 1, 1);
@@ -823,7 +823,7 @@ export function tree06<K extends keyof Tree06Args>(
     }),
     {
       col: 'rgba(100,100,100,' + (0.4 + random() * 0.1).toFixed(3) + ')',
-      wid: 2.5,
+      strokeWidth: 2.5,
       fun: function (x) {
         return Math.sin(1);
       },
@@ -839,7 +839,7 @@ export function tree06<K extends keyof Tree06Args>(
 
 class Tree07Args {
   hei: number = 60;
-  wid: number = 4;
+  strokeWidth: number = 4;
   ben: (x: number) => number = (x: number) => 0.2 * Math.sqrt(x);
   col: string = 'rgba(100,100,100,1)';
   noi: number = 0.5;
@@ -853,7 +853,7 @@ export function tree07<K extends keyof Tree07Args>(
   const _args: Tree07Args = new Tree07Args();
   Object.assign(_args, args);
 
-  const { hei, wid, ben, col, noi } = _args;
+  const { hei, strokeWidth, ben, col, noi } = _args;
 
   const reso = 10;
   const nslist = [];
@@ -877,11 +877,11 @@ export function tree07<K extends keyof Tree07Args>(
     if (i >= reso / 4) {
       for (let j = 0; j < 1; j++) {
         const bpl = blob(
-          nx + (random() - 0.5) * wid * 1.2 * (reso - i) * 0.5,
-          ny + (random() - 0.5) * wid * 0.5,
+          nx + (random() - 0.5) * strokeWidth * 1.2 * (reso - i) * 0.5,
+          ny + (random() - 0.5) * strokeWidth * 0.5,
           {
             len: random() * 50 + 20,
-            wid: random() * 12 + 12,
+            strokeWidth: random() * 12 + 12,
             ang: (-random() * Math.PI) / 6,
             col:
               'rgba(' +
@@ -901,7 +901,7 @@ export function tree07<K extends keyof Tree07Args>(
           }
         );
 
-        //canv+=poly(bpl,{fil:col,wid:0})
+        //canv+=poly(bpl,{fill:col,strokeWidth:0})
         T = T.concat(
           triangulate(bpl as Point[], {
             area: 50,
@@ -911,11 +911,11 @@ export function tree07<K extends keyof Tree07Args>(
         );
       }
     }
-    line1.push(new Point(nx + (nslist[i][0] - 0.5) * wid - wid / 2, ny));
-    line2.push(new Point(nx + (nslist[i][1] - 0.5) * wid + wid / 2, ny));
+    line1.push(new Point(nx + (nslist[i][0] - 0.5) * strokeWidth - strokeWidth / 2, ny));
+    line2.push(new Point(nx + (nslist[i][1] - 0.5) * strokeWidth + strokeWidth / 2, ny));
   }
 
-  //canv += poly(line1.concat(line2.reverse()),{fil:col,wid:0})
+  //canv += poly(line1.concat(line2.reverse()),{fill:col,strokeWidth:0})
   T = triangulate(line1.concat(line2.reverse()), {
     area: 50,
     convex: true,
@@ -926,7 +926,7 @@ export function tree07<K extends keyof Tree07Args>(
     const m = midPt(T[k]);
     const c = (Noise.noise(m.x * 0.02, m.y * 0.02) * 200 + 50) | 0;
     const co = 'rgba(' + c + ',' + c + ',' + c + ',0.8)';
-    canv += poly(T[k], { fil: co, str: co, wid: 0 });
+    canv += poly(T[k], { fill: co, stroke: co, strokeWidth: 0 }).render();
   }
   return canv;
 }
@@ -974,7 +974,7 @@ function fracTree08<K extends keyof FracTree08Args>(
   let tcanv = '';
   tcanv += stroke(trmlist, {
     fun: fun,
-    wid: 0.8,
+    strokeWidth: 0.8,
     col: 'rgba(100,100,100,0.5)',
   });
   if (dep != 0) {
@@ -1009,7 +1009,7 @@ function fracTree08<K extends keyof FracTree08Args>(
 
 class Tree08Args {
   hei: number = 80;
-  wid: number = 1;
+  strokeWidth: number = 1;
   col: string = 'rgba(100,100,100,0.5)';
   noi: number = 0.5;
 }
@@ -1022,7 +1022,7 @@ export function tree08<K extends keyof Tree08Args>(
   const _args: Tree08Args = new Tree08Args();
   Object.assign(_args, args);
 
-  const { hei, wid, col, noi } = _args;
+  const { hei, strokeWidth, col, noi } = _args;
 
   let canv = '';
   let txcanv = '';
@@ -1032,7 +1032,7 @@ export function tree08<K extends keyof Tree08Args>(
 
   const _trlist = branch({
     hei: hei,
-    wid: wid,
+    strokeWidth: strokeWidth,
     ang: -Math.PI / 2 + ang,
     ben: Math.PI * 0.2,
     det: hei / 20,
@@ -1058,7 +1058,7 @@ export function tree08<K extends keyof Tree08Args>(
     }
   }
 
-  canv += poly(trlist, { xof: x, yof: y, fil: 'white', str: col, wid: 0 });
+  canv += poly(trlist, { xof: x, yof: y, fill: 'white', stroke: col, strokeWidth: 0 }).render();
 
   canv += stroke(
     trlist.map(function (v) {
@@ -1066,7 +1066,7 @@ export function tree08<K extends keyof Tree08Args>(
     }),
     {
       col: 'rgba(100,100,100,' + (0.6 + random() * 0.1).toFixed(3) + ')',
-      wid: 2.5,
+      strokeWidth: 2.5,
       fun: function (x) {
         return Math.sin(1);
       },
