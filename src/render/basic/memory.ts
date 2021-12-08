@@ -79,6 +79,8 @@ class Memory {
               plan[i].x,
               plan[i].y - 10000,
               water(plan[i].x, plan[i].y, i * 2)
+                .map((p) => p.render())
+                .join('\n')
             )
           );
         } else if (plan[i].tag === 'flatmount') {

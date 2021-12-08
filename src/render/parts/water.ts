@@ -1,6 +1,7 @@
 import { Noise } from '../basic/perlinNoise';
 import { Point } from '../basic/point';
 import PRNG from '../basic/PRNG';
+import { Polyline } from '../svg/types';
 import { stroke } from './brushes';
 
 const random = PRNG.random;
@@ -16,13 +17,12 @@ export function water<K extends keyof WaterArgs>(
   yoff: number,
   seed: number,
   args: Pick<WaterArgs, K> | undefined = undefined
-): string {
+): Polyline[] {
   const _args = new WaterArgs();
   Object.assign(_args, args);
 
   const { hei, len, clu } = _args;
-
-  let canv = '';
+  const polylines: Polyline[] = [];
 
   const ptlist: Point[][] = [];
   let yk = 0;
@@ -44,17 +44,19 @@ export function water<K extends keyof WaterArgs>(
 
   for (let j = 1; j < ptlist.length; j += 1) {
     const color = 'rgba(100,100,100,' + (0.3 + random() * 0.3).toFixed(3) + ')';
-    canv += stroke(
-      ptlist[j].map(function (p) {
-        return new Point(p.x + xoff, p.y + yoff);
-      }),
-      {
-        fill: color,
-        stroke: color,
-        out: 1,
-      }
-    ).render();
+    polylines.push(
+      stroke(
+        ptlist[j].map(function (p) {
+          return new Point(p.x + xoff, p.y + yoff);
+        }),
+        {
+          fill: color,
+          stroke: color,
+          out: 1,
+        }
+      )
+    );
   }
 
-  return canv;
+  return polylines;
 }
