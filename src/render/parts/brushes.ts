@@ -1,5 +1,5 @@
 import { Noise } from '../basic/perlinNoise';
-import { Point } from '../basic/point';
+import { Point, Vector } from '../basic/point';
 import PRNG from '../basic/PRNG';
 import { loopNoise, poly } from '../basic/utils';
 import { ISvgAttributes } from '../svg/interfaces';
@@ -65,7 +65,7 @@ export function stroke(
   return poly(vtxlist, { xof, yof, fill, stroke, strokeWidth: out });
 }
 
-class BlobArgs {
+class BlobArgs implements Partial<ISvgAttributes> {
   len: number = 20;
   strokeWidth: number = 5;
   ang: number = 0;
@@ -78,24 +78,24 @@ class BlobArgs {
       : -Math.pow(Math.sin((x + 1) * Math.PI), 0.5);
 }
 
-export function blobstr<K extends keyof BlobArgs>(
+export function blob(
   x: number,
   y: number,
-  args: Pick<BlobArgs, K> | undefined = undefined
-): string {
+  args: Partial<BlobArgs> | undefined = undefined
+): Polyline {
   const _args = new BlobArgs();
   Object.assign(_args, args);
 
   const { len, strokeWidth, ang, col, noi, ret, fun } = _args;
 
-  const plist = blob(x, y, args);
-  return poly(plist, { fill: col, stroke: col, strokeWidth: 0 }).render();
+  const plist = blob_points(x, y, args);
+  return poly(plist, { fill: col, stroke: col, strokeWidth: 0 });
 }
 
-export function blob<K extends keyof BlobArgs>(
+export function blob_points(
   x: number,
   y: number,
-  args: Pick<BlobArgs, K> | undefined = undefined
+  args: Partial<BlobArgs> | undefined = undefined
 ): Point[] {
   const _args = new BlobArgs();
   Object.assign(_args, args);
@@ -180,8 +180,10 @@ export function texture(
 
   const { xof, yof, tex, strokeWidth, len, sha, ret, noi, col, dis } = _args;
 
+  const offset = new Vector(xof, yof);
   const reso = [ptlist.length, ptlist[0].length];
-  const texlist: number[][][] = [];
+  const texlist: Point[][] = [];
+
   for (let i = 0; i < tex; i++) {
     const mid = (dis() * reso[1]) | 0;
     //mid = (reso[1]/3+reso[1]/3*random())|0
@@ -207,18 +209,15 @@ export function texture(
         ptlist[Math.floor(layer)][j].y * p +
         ptlist[Math.ceil(layer)][j].y * (1 - p);
 
-      const ns = [
-        noi(layer + 1) * (Noise.noise(x, j * 0.5) - 0.5),
-        noi(layer + 1) * (Noise.noise(y, j * 0.5) - 0.5),
-      ];
+      const nx = noi(layer + 1) * (Noise.noise(x, j * 0.5) - 0.5);
+      const ny = noi(layer + 1) * (Noise.noise(y, j * 0.5) - 0.5);
 
-      const narrar = [x + ns[0], y + ns[1]];
-      texlist[texlist.length - 1].push(narrar);
+      texlist[texlist.length - 1].push(new Point(x + nx, y + ny));
     }
   }
 
   const polylines: Polyline[] = [];
-  let canv = '';
+
   //SHADE
   if (sha) {
     const step = 1 + (sha !== 0 ? 1 : 0);
@@ -226,9 +225,7 @@ export function texture(
       if (texlist[j].length > 0) {
         polylines.push(
           stroke(
-            texlist[j].map(function (x) {
-              return new Point(x[0] + xof, x[1] + yof);
-            }),
+            texlist[j].map((p) => p.move(offset)),
             {
               fill: 'rgba(100,100,100,0.1)',
               stroke: 'rgba(100,100,100,0.1)',
@@ -244,9 +241,7 @@ export function texture(
     if (texlist[j].length > 0) {
       polylines.push(
         stroke(
-          texlist[j].map(function (x) {
-            return new Point(x[0] + xof, x[1] + yof);
-          }),
+          texlist[j].map((p) => p.move(offset)),
           {
             fill: col(j / texlist.length),
             stroke: col(j / texlist.length),
