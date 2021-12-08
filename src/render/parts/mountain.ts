@@ -181,7 +181,9 @@ export function mountain<K extends keyof MountainArgs>(
           (Noise.noise(0.01 * x, 0.01 * y) * 0.5 * 0.3 + 0.5).toFixed(3) +
           ')',
         clu: 2,
-      });
+      })
+        .map((p) => p.render())
+        .join('\n');
     },
     function (i, j) {
       const ns = Noise.noise(j * 0.1, seed);
@@ -244,7 +246,9 @@ export function mountain<K extends keyof MountainArgs>(
           'rgba(100,100,100,' +
           (Noise.noise(0.01 * x, 0.01 * y) * 0.5 * 0.3 + 0.5).toFixed(3) +
           ')',
-      });
+      })
+        .map((p) => p.render())
+        .join('\n');
     },
     function (i, j) {
       const ns = Noise.noise(i * 0.1, j * 0.1, seed + 2);
@@ -269,7 +273,9 @@ export function mountain<K extends keyof MountainArgs>(
             'rgba(100,100,100,' +
             (Noise.noise(0.01 * x, 0.01 * y) * 0.5 * 0.3 + 0.3).toFixed(3) +
             ')',
-        });
+        })
+          .map((p) => p.render())
+          .join('\n');
       },
       function (i, j): boolean {
         const ns = Noise.noise(i * 0.2, j * 0.05, seed);
@@ -315,7 +321,9 @@ export function mountain<K extends keyof MountainArgs>(
             'rgba(100,100,100,' +
             (Noise.noise(0.01 * x, 0.01 * y) * 0.5 * 0.3 + 0.3).toFixed(3) +
             ')',
-        });
+        })
+          .map((p) => p.render())
+          .join('\n');
       },
       function (i, j) {
         const ns = Noise.noise(i * 0.2, j * 0.05, seed);
@@ -617,7 +625,9 @@ export function flatDec(xoff: number, yoff: number, grbd: Bound) {
         xr + Math.min(Math.max(normRand(-30, 30), grbd.xmin), grbd.xmax),
         yr,
         { hei: 60 + random() * 40 }
-      );
+      )
+        .map((p) => p.render())
+        .join('\n');
     }
   }
 
@@ -645,7 +655,9 @@ export function flatDec(xoff: number, yoff: number, grbd: Bound) {
         xoff + i + 20 * normRand(-1, 1),
         yoff + (grbd.ymin + grbd.ymax) / 2 + 20,
         { hei: 100 + random() * 200 }
-      );
+      )
+        .map((p) => p.render())
+        .join('\n');
     }
     for (let j = 0; j < random() * 4; j++) {
       canv += rock(
@@ -663,7 +675,9 @@ export function flatDec(xoff: number, yoff: number, grbd: Bound) {
     for (let i = 0; i < randChoice([1, 1, 1, 1, 2, 2, 3]); i++) {
       const xr = normRand(grbd.xmin, grbd.xmax);
       const yr = (grbd.ymin + grbd.ymax) / 2;
-      canv += tree04(xoff + xr, yoff + yr + 20, {});
+      canv += tree04(xoff + xr, yoff + yr + 20, {})
+        .map((p) => p.render())
+        .join('\n');
       for (let j = 0; j < random() * 2; j++) {
         canv += rock(
           xoff +
@@ -684,7 +698,9 @@ export function flatDec(xoff: number, yoff: number, grbd: Bound) {
         xoff + normRand(grbd.xmin, grbd.xmax),
         yoff + (grbd.ymin + grbd.ymax) / 2,
         { hei: 60 + random() * 60 }
-      );
+      )
+        .map((p) => p.render())
+        .join('\n');
     }
   } else if (tt == 4) {
     const pmin = random() * 0.5;
@@ -696,7 +712,9 @@ export function flatDec(xoff: number, yoff: number, grbd: Bound) {
         xoff + i + 20 * normRand(-1, 1),
         yoff + (grbd.ymin + grbd.ymax) / 2 + normRand(-1, 1) + 0,
         { hei: normRand(40, 80) }
-      );
+      )
+        .map((p) => p.render())
+        .join('\n');
     }
   }
 
@@ -704,7 +722,9 @@ export function flatDec(xoff: number, yoff: number, grbd: Bound) {
     canv += tree02(
       xoff + normRand(grbd.xmin, grbd.xmax),
       yoff + normRand(grbd.ymin, grbd.ymax)
-    );
+    )
+      .map((p) => p.render())
+      .join('\n');
   }
 
   const ts = randChoice([0, 0, 0, 0, 1]);

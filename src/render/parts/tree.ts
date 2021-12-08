@@ -9,6 +9,7 @@ import {
   randGaussian,
 } from '../basic/utils';
 import { midPt, triangulate } from '../PolyTools';
+import { Polyline } from '../svg/types';
 import { blob_points, blob, div, stroke } from './brushes';
 
 const random = PRNG.random;
@@ -20,11 +21,11 @@ class Tree01Args {
   noi: number = 0.5;
 }
 
-export function tree01<K extends keyof Tree01Args>(
+export function tree01(
   x: number,
   y: number,
-  args: Pick<Tree01Args, K> | undefined = undefined
-): string {
+  args: Partial<Tree01Args> | undefined = undefined
+): Polyline[] {
   const _args = new Tree01Args();
   Object.assign(_args, args);
 
@@ -42,7 +43,8 @@ export function tree01<K extends keyof Tree01Args>(
   } else {
     leafcol = ['100', '100', '100', '0.5'];
   }
-  let canv = '';
+
+  const polylines: Polyline[] = [];
   const line1 = [];
   const line2 = [];
   for (let i = 0; i < reso; i++) {
@@ -50,25 +52,27 @@ export function tree01<K extends keyof Tree01Args>(
     const ny = y - (i * hei) / reso;
     if (i >= reso / 4) {
       for (let j = 0; j < (reso - i) / 5; j++) {
-        canv += blob(
-          nx + (random() - 0.5) * strokeWidth * 1.2 * (reso - i),
-          ny + (random() - 0.5) * strokeWidth,
-          {
-            len: random() * 20 * (reso - i) * 0.2 + 10,
-            strokeWidth: random() * 6 + 3,
-            ang: ((random() - 0.5) * Math.PI) / 6,
-            col:
-              'rgba(' +
-              leafcol[0] +
-              ',' +
-              leafcol[1] +
-              ',' +
-              leafcol[2] +
-              ',' +
-              (random() * 0.2 + parseFloat(leafcol[3])).toFixed(1) +
-              ')',
-          }
-        ).render();
+        polylines.push(
+          blob(
+            nx + (random() - 0.5) * strokeWidth * 1.2 * (reso - i),
+            ny + (random() - 0.5) * strokeWidth,
+            {
+              len: random() * 20 * (reso - i) * 0.2 + 10,
+              strokeWidth: random() * 6 + 3,
+              ang: ((random() - 0.5) * Math.PI) / 6,
+              col:
+                'rgba(' +
+                leafcol[0] +
+                ',' +
+                leafcol[1] +
+                ',' +
+                leafcol[2] +
+                ',' +
+                (random() * 0.2 + parseFloat(leafcol[3])).toFixed(1) +
+                ')',
+            }
+          )
+        );
       }
     }
     line1.push(
@@ -78,10 +82,10 @@ export function tree01<K extends keyof Tree01Args>(
       new Point(nx + (nslist[i][1] - 0.5) * strokeWidth + strokeWidth / 2, ny)
     );
   }
-  canv +=
-    poly(line1, { fill: 'none', stroke: col, strokeWidth: 1.5 }).render() +
-    poly(line2, { fill: 'none', stroke: col, strokeWidth: 1.5 }).render();
-  return canv;
+
+  polylines.push(poly(line1, { fill: 'none', stroke: col, strokeWidth: 1.5 }));
+  polylines.push(poly(line2, { fill: 'none', stroke: col, strokeWidth: 1.5 }));
+  return polylines;
 }
 
 class Tree02Args {
@@ -92,11 +96,11 @@ class Tree02Args {
   noi: number = 0.5;
 }
 
-export function tree02<K extends keyof Tree02Args>(
+export function tree02(
   x: number,
   y: number,
-  args: Pick<Tree02Args, K> | undefined = undefined
-) {
+  args: Partial<Tree02Args> | undefined = undefined
+): Polyline[] {
   const _args = new Tree02Args();
   Object.assign(_args, args);
 
@@ -109,22 +113,24 @@ export function tree02<K extends keyof Tree02Args>(
     leafcol = ['100', '100', '100', '0.5'];
   }
 
-  let canv = '';
+  const polylines: Polyline[] = [];
   for (let i = 0; i < clu; i++) {
-    canv += blob(x + randGaussian() * clu * 4, y + randGaussian() * clu * 4, {
-      ang: Math.PI / 2,
-      // col: "rgba(100,100,100,0.8)",
-      fun: function (x) {
-        return x <= 1
-          ? Math.pow(Math.sin(x * Math.PI) * x, 0.5)
-          : -Math.pow(Math.sin((x - 2) * Math.PI * (x - 2)), 0.5);
-      },
-      strokeWidth: random() * strokeWidth * 0.75 + strokeWidth * 0.5,
-      len: random() * hei * 0.75 + hei * 0.5,
-      col: col,
-    }).render();
+    polylines.push(
+      blob(x + randGaussian() * clu * 4, y + randGaussian() * clu * 4, {
+        ang: Math.PI / 2,
+        // col: "rgba(100,100,100,0.8)",
+        fun: function (x) {
+          return x <= 1
+            ? Math.pow(Math.sin(x * Math.PI) * x, 0.5)
+            : -Math.pow(Math.sin((x - 2) * Math.PI * (x - 2)), 0.5);
+        },
+        strokeWidth: random() * strokeWidth * 0.75 + strokeWidth * 0.5,
+        len: random() * hei * 0.75 + hei * 0.5,
+        col: col,
+      })
+    );
   }
-  return canv;
+  return polylines;
 }
 
 class Tree03Args {
@@ -135,11 +141,11 @@ class Tree03Args {
   noi: number = 0.5;
 }
 
-export function tree03<K extends keyof Tree03Args>(
+export function tree03(
   x: number,
   y: number,
-  args: Pick<Tree03Args, K> | undefined = undefined
-) {
+  args: Partial<Tree03Args> | undefined = undefined
+): Polyline[] {
   const _args = new Tree03Args();
   Object.assign(_args, args);
 
@@ -157,8 +163,8 @@ export function tree03<K extends keyof Tree03Args>(
   } else {
     leafcol = ['100', '100', '100', '0.5'];
   }
-  let canv = '';
-  let blobs = '';
+  const polylines: Polyline[] = [];
+  const blobs: Polyline[] = [];
   const line1: Point[] = [];
   const line2: Point[] = [];
   for (let i = 0; i < reso; i++) {
@@ -168,25 +174,27 @@ export function tree03<K extends keyof Tree03Args>(
       for (let j = 0; j < (reso - i) * 2; j++) {
         const shape = (x: number) => Math.log(50 * x + 1) / 3.95;
         const ox = random() * strokeWidth * 2 * shape((reso - i) / reso);
-        blobs += blob(
-          nx + ox * randChoice([-1, 1]),
-          ny + (random() - 0.5) * strokeWidth * 2,
-          {
-            len: ox * 2,
-            strokeWidth: random() * 6 + 3,
-            ang: ((random() - 0.5) * Math.PI) / 6,
-            col:
-              'rgba(' +
-              leafcol[0] +
-              ',' +
-              leafcol[1] +
-              ',' +
-              leafcol[2] +
-              ',' +
-              (random() * 0.2 + parseFloat(leafcol[3])).toFixed(3) +
-              ')',
-          }
-        ).render();
+        blobs.push(
+          blob(
+            nx + ox * randChoice([-1, 1]),
+            ny + (random() - 0.5) * strokeWidth * 2,
+            {
+              len: ox * 2,
+              strokeWidth: random() * 6 + 3,
+              ang: ((random() - 0.5) * Math.PI) / 6,
+              col:
+                'rgba(' +
+                leafcol[0] +
+                ',' +
+                leafcol[1] +
+                ',' +
+                leafcol[2] +
+                ',' +
+                (random() * 0.2 + parseFloat(leafcol[3])).toFixed(3) +
+                ')',
+            }
+          )
+        );
       }
     }
     line1.push(
@@ -209,9 +217,9 @@ export function tree03<K extends keyof Tree03Args>(
     );
   }
   const lc = line1.concat(line2.reverse());
-  canv += poly(lc, { fill: 'white', stroke: col, strokeWidth: 1.5 }).render();
-  canv += blobs;
-  return canv;
+  polylines.push(poly(lc, { fill: 'white', stroke: col, strokeWidth: 1.5 }));
+
+  return polylines.concat(blobs);
 }
 
 class BranchArgs {
@@ -222,8 +230,8 @@ class BranchArgs {
   ben: number = 0.2 * Math.PI;
 }
 
-export function branch<K extends keyof BranchArgs>(
-  args: Pick<BranchArgs, K> | undefined = undefined
+export function branch(
+  args: Partial<BranchArgs> | undefined = undefined
 ): Point[][] {
   const _args = new BranchArgs();
   Object.assign(_args, args);
@@ -300,18 +308,18 @@ class TwigArgs {
   lea: [boolean, number] = [true, 12];
 }
 
-export function twig<K extends keyof TwigArgs>(
+export function twig(
   tx: number,
   ty: number,
   dep: number,
-  args: Pick<TwigArgs, K> | undefined = undefined
-) {
+  args: Partial<TwigArgs> | undefined = undefined
+): Polyline[] {
   const _args = new TwigArgs();
   Object.assign(_args, args);
 
   const { dir, sca, strokeWidth, ang, lea } = _args;
 
-  let canv = '';
+  const polylinelists: Polyline[][] = [];
   const twlist: Point[] = [];
   const tl = 10;
   const hs = random() * 0.5 + 0.5;
@@ -320,6 +328,7 @@ export function twig<K extends keyof TwigArgs>(
 
   const tfun = randChoice([fun2]);
   const a0 = ((random() * Math.PI) / 6) * dir + ang;
+
   for (let i = 0; i < tl; i++) {
     const mx = dir * tfun(i / tl) * 50 * sca * hs;
     const my = -i * 5 * sca;
@@ -332,47 +341,59 @@ export function twig<K extends keyof TwigArgs>(
 
     twlist.push(new Point(nx + tx, ny + ty));
     if ((i == ((tl / 3) | 0) || i == (((tl * 2) / 3) | 0)) && dep > 0) {
-      canv += twig(nx + tx, ny + ty, dep - 1, {
-        ang: ang,
-        sca: sca * 0.8,
-        strokeWidth: strokeWidth,
-        dir: dir * randChoice([-1, 1]),
-        lea: lea,
-      });
+      polylinelists.push(
+        twig(nx + tx, ny + ty, dep - 1, {
+          ang: ang,
+          sca: sca * 0.8,
+          strokeWidth: strokeWidth,
+          dir: dir * randChoice([-1, 1]),
+          lea: lea,
+        })
+      );
     }
     if (i == tl - 1 && lea[0] == true) {
       for (let j = 0; j < 5; j++) {
         const dj = (j - 2.5) * 5;
-        canv += blob(
-          nx + tx + Math.cos(ang) * dj * strokeWidth,
-          ny + ty + (Math.sin(ang) * dj - lea[1] / (dep + 1)) * strokeWidth,
-          {
-            strokeWidth: (6 + 3 * random()) * strokeWidth,
-            len: (15 + 12 * random()) * strokeWidth,
-            ang: ang / 2 + Math.PI / 2 + Math.PI * 0.2 * (random() - 0.5),
-            col: 'rgba(100,100,100,' + (0.5 + dep * 0.2).toFixed(3) + ')',
-            fun: function (x) {
-              return x <= 1
-                ? Math.pow(Math.sin(x * Math.PI) * x, 0.5)
-                : -Math.pow(Math.sin((x - 2) * Math.PI * (x - 2)), 0.5);
-            },
-          }
-        ).render();
+        polylinelists.push([
+          blob(
+            nx + tx + Math.cos(ang) * dj * strokeWidth,
+            ny + ty + (Math.sin(ang) * dj - lea[1] / (dep + 1)) * strokeWidth,
+            {
+              strokeWidth: (6 + 3 * random()) * strokeWidth,
+              len: (15 + 12 * random()) * strokeWidth,
+              ang: ang / 2 + Math.PI / 2 + Math.PI * 0.2 * (random() - 0.5),
+              col: 'rgba(100,100,100,' + (0.5 + dep * 0.2).toFixed(3) + ')',
+              fun: function (x) {
+                return x <= 1
+                  ? Math.pow(Math.sin(x * Math.PI) * x, 0.5)
+                  : -Math.pow(Math.sin((x - 2) * Math.PI * (x - 2)), 0.5);
+              },
+            }
+          ),
+        ]);
       }
     }
   }
-  canv += stroke(twlist, {
-    strokeWidth: 1,
-    fun: function (x) {
-      return Math.cos((x * Math.PI) / 2);
-    },
-    fill: 'rgba(100,100,100,0.5)',
-    stroke: 'rgba(100,100,100,0.5)',
-  }).render();
-  return canv;
+  polylinelists.push([
+    stroke(twlist, {
+      strokeWidth: 1,
+      fun: function (x) {
+        return Math.cos((x * Math.PI) / 2);
+      },
+      fill: 'rgba(100,100,100,0.5)',
+      stroke: 'rgba(100,100,100,0.5)',
+    }),
+  ]);
+
+  return polylinelists.flat();
 }
 
-function bark(x: number, y: number, strokeWidth: number, ang: number): string {
+function bark(
+  x: number,
+  y: number,
+  strokeWidth: number,
+  ang: number
+): Polyline[] {
   const len = 10 + 10 * random();
   const noi = 0.5;
   const fun = function (x: number) {
@@ -381,7 +402,7 @@ function bark(x: number, y: number, strokeWidth: number, ang: number): string {
       : -Math.pow(Math.sin((x + 1) * Math.PI), 0.5);
   };
   const reso = 20.0;
-  let canv = '';
+  const polylines: Polyline[] = [];
 
   const lalist: number[][] = [];
   for (let i = 0; i < reso + 1; i++) {
@@ -408,22 +429,24 @@ function bark(x: number, y: number, strokeWidth: number, ang: number): string {
   }
 
   const fr = random();
-  canv += stroke(brklist, {
-    strokeWidth: 0.8,
-    noi: 0,
-    fill: 'rgba(100,100,100,0.4)',
-    stroke: 'rgba(100,100,100,0.4)',
-    out: 0,
-    fun: function (x) {
-      return Math.sin((x + fr) * Math.PI * 3);
-    },
-  }).render();
+  polylines.push(
+    stroke(brklist, {
+      strokeWidth: 0.8,
+      noi: 0,
+      fill: 'rgba(100,100,100,0.4)',
+      stroke: 'rgba(100,100,100,0.4)',
+      out: 0,
+      fun: function (x) {
+        return Math.sin((x + fr) * Math.PI * 3);
+      },
+    })
+  );
 
-  return canv;
+  return polylines;
 }
 
-export function barkify(x: number, y: number, trlist: Point[][]): string {
-  let canv = '';
+export function barkify(x: number, y: number, trlist: Point[][]): Polyline[] {
+  const polylinelists: Polyline[][] = [];
 
   for (let i = 2; i < trlist[0].length - 1; i++) {
     const a0 = Math.atan2(
@@ -438,15 +461,19 @@ export function barkify(x: number, y: number, trlist: Point[][]): string {
     const nx = trlist[0][i].x * (1 - p) + trlist[1][i].x * p;
     const ny = trlist[0][i].y * (1 - p) + trlist[1][i].y * p;
     if (random() < 0.2) {
-      canv += blob(nx + x, ny + y, {
-        noi: 1,
-        len: 15,
-        strokeWidth: 6 - Math.abs(p - 0.5) * 10,
-        ang: (a0 + a1) / 2,
-        col: 'rgba(100,100,100,0.6)',
-      }).render();
+      polylinelists.push([
+        blob(nx + x, ny + y, {
+          noi: 1,
+          len: 15,
+          strokeWidth: 6 - Math.abs(p - 0.5) * 10,
+          ang: (a0 + a1) / 2,
+          col: 'rgba(100,100,100,0.6)',
+        }),
+      ]);
     } else {
-      canv += bark(nx + x, ny + y, 5 - Math.abs(p - 0.5) * 10, (a0 + a1) / 2);
+      polylinelists.push(
+        bark(nx + x, ny + y, 5 - Math.abs(p - 0.5) * 10, (a0 + a1) / 2)
+      );
     }
 
     if (random() < 0.05) {
@@ -456,16 +483,18 @@ export function barkify(x: number, y: number, trlist: Point[][]): string {
         [trlist[1][i].x, trlist[1][i].y, a1],
       ]);
       for (let j = 0; j < jl; j++) {
-        canv += blob(
-          xya[0] + x + Math.cos(xya[2]) * (j - jl / 2) * 4,
-          xya[1] + y + Math.sin(xya[2]) * (j - jl / 2) * 4,
-          {
-            strokeWidth: 4,
-            len: 4 + 6 * random(),
-            ang: a0 + Math.PI / 2,
-            col: 'rgba(100,100,100,0.6)',
-          }
-        ).render();
+        polylinelists.push([
+          blob(
+            xya[0] + x + Math.cos(xya[2]) * (j - jl / 2) * 4,
+            xya[1] + y + Math.sin(xya[2]) * (j - jl / 2) * 4,
+            {
+              strokeWidth: 4,
+              len: 4 + 6 * random(),
+              ang: a0 + Math.PI / 2,
+              col: 'rgba(100,100,100,0.6)',
+            }
+          ),
+        ]);
       }
     }
   }
@@ -488,20 +517,22 @@ export function barkify(x: number, y: number, trlist: Point[][]): string {
         (Noise.noise(i, j * 0.1, 2) - 0.5) * (15 + 5 * randGaussian());
     }
     if (rglist[i].length > 0) {
-      canv += stroke(
-        rglist[i].map(function (p: Point) {
-          return new Point(p.x + x, p.y + y);
-        }),
-        {
-          strokeWidth: 1.5,
-          fill: 'rgba(100,100,100,0.7)',
-          stroke: 'rgba(100,100,100,0.7)',
-          out: 0,
-        }
-      ).render();
+      polylinelists.push([
+        stroke(
+          rglist[i].map(function (p: Point) {
+            return new Point(p.x + x, p.y + y);
+          }),
+          {
+            strokeWidth: 1.5,
+            fill: 'rgba(100,100,100,0.7)',
+            stroke: 'rgba(100,100,100,0.7)',
+            out: 0,
+          }
+        ),
+      ]);
     }
   }
-  return canv;
+  return polylinelists.flat();
 }
 
 class Tree04Args {
@@ -511,22 +542,22 @@ class Tree04Args {
   noi: number = 0.5;
 }
 
-export function tree04<K extends keyof Tree04Args>(
+export function tree04(
   x: number,
   y: number,
-  args: Pick<Tree04Args, K> | undefined = undefined
-) {
+  args: Partial<Tree04Args> | undefined = undefined
+): Polyline[] {
   const _args = new Tree04Args();
   Object.assign(_args, args);
 
   const { hei, strokeWidth, col, noi } = _args;
 
-  let canv = '';
-  let txcanv = '';
-  let twcanv = '';
+  const polylinelists: Polyline[][] = [];
+  const txpolylinelists: Polyline[][] = [];
+  const twpolylinelists: Polyline[][] = [];
 
   const _trlist = branch({ hei, strokeWidth, ang: -Math.PI / 2 });
-  txcanv += barkify(x, y, _trlist);
+  txpolylinelists.push(barkify(x, y, _trlist));
   const trlist: Point[] = _trlist[0].concat(_trlist[1].reverse());
 
   let trmlist: Point[] = [];
@@ -551,20 +582,25 @@ export function tree04<K extends keyof Tree04Args>(
       const foff = function (p: Point) {
         return new Point(p.x + trlist[i].x, p.y + trlist[i].y);
       };
-      txcanv += barkify(x, y, [_brlist[0].map(foff), _brlist[1].map(foff)]);
+
+      txpolylinelists.push(
+        barkify(x, y, [_brlist[0].map(foff), _brlist[1].map(foff)])
+      );
 
       for (let j = 0; j < _brlist[0].length; j++) {
         if (random() < 0.2 || j == _brlist[0].length - 1) {
-          twcanv += twig(
-            _brlist[0][j].x + trlist[i].x + x,
-            _brlist[0][j].y + trlist[i].y + y,
-            1,
-            {
-              strokeWidth: hei / 300,
-              ang: ba > -Math.PI / 2 ? ba : ba + Math.PI,
-              sca: (0.5 * hei) / 300,
-              dir: ba > -Math.PI / 2 ? 1 : -1,
-            }
+          twpolylinelists.push(
+            twig(
+              _brlist[0][j].x + trlist[i].x + x,
+              _brlist[0][j].y + trlist[i].y + y,
+              1,
+              {
+                strokeWidth: hei / 300,
+                ang: ba > -Math.PI / 2 ? ba : ba + Math.PI,
+                sca: (0.5 * hei) / 300,
+                dir: ba > -Math.PI / 2 ? 1 : -1,
+              }
+            )
           );
         }
       }
@@ -578,36 +614,41 @@ export function tree04<K extends keyof Tree04Args>(
       trmlist.push(trlist[i]);
     }
   }
-  canv += poly(trmlist, {
-    xof: x,
-    yof: y,
-    fill: 'white',
-    stroke: col,
-    strokeWidth: 0,
-  }).render();
+  polylinelists.push([
+    poly(trmlist, {
+      xof: x,
+      yof: y,
+      fill: 'white',
+      stroke: col,
+      strokeWidth: 0,
+    }),
+  ]);
 
   trmlist.splice(0, 1);
   trmlist.splice(trmlist.length - 1, 1);
   const color = 'rgba(100,100,100,' + (0.4 + random() * 0.1).toFixed(3) + ')';
-  canv += stroke(
-    trmlist.map(function (p: Point) {
-      return new Point(p.x + x, p.y + y);
-    }),
-    {
-      fill: color,
-      stroke: color,
-      strokeWidth: 2.5,
-      fun: function (x) {
-        return Math.sin(1);
-      },
-      noi: 0.9,
-      out: 0,
-    }
-  ).render();
 
-  canv += txcanv;
-  canv += twcanv;
-  return canv;
+  polylinelists.push([
+    stroke(
+      trmlist.map(function (p: Point) {
+        return new Point(p.x + x, p.y + y);
+      }),
+      {
+        fill: color,
+        stroke: color,
+        strokeWidth: 2.5,
+        fun: function (x) {
+          return Math.sin(1);
+        },
+        noi: 0.9,
+        out: 0,
+      }
+    ),
+  ]);
+
+  polylinelists.push(txpolylinelists.flat());
+  polylinelists.push(twpolylinelists.flat());
+  return polylinelists.flat();
 }
 
 class Tree05Args {
@@ -617,19 +658,19 @@ class Tree05Args {
   noi: number = 0.5;
 }
 
-export function tree05<K extends keyof Tree05Args>(
+export function tree05(
   x: number,
   y: number,
-  args: Pick<Tree05Args, K> | undefined = undefined
-) {
+  args: Partial<Tree05Args> | undefined = undefined
+): Polyline[] {
   const _args = new Tree05Args();
   Object.assign(_args, args);
 
   const { hei, strokeWidth, col, noi } = _args;
 
-  let canv = '';
-  let txcanv = '';
-  let twcanv = '';
+  const polylinelists: Polyline[][] = [];
+  const txpolylinelists: Polyline[][] = [];
+  const twpolylinelists: Polyline[][] = [];
 
   const _trlist = branch({
     hei: hei,
@@ -637,7 +678,7 @@ export function tree05<K extends keyof Tree05Args>(
     ang: -Math.PI / 2,
     ben: 0,
   });
-  txcanv += barkify(x, y, _trlist);
+  txpolylinelists.push(barkify(x, y, _trlist));
   const trlist = _trlist[0].concat(_trlist[1].reverse());
 
   let trmlist: Point[] = [];
@@ -671,17 +712,19 @@ export function tree05<K extends keyof Tree05Args>(
 
       for (let j = 0; j < _brlist[0].length; j++) {
         if (j % 20 == 0 || j == _brlist[0].length - 1) {
-          twcanv += twig(
-            _brlist[0][j].x + trlist[i].y + x,
-            _brlist[0][j].y + trlist[i].y + y,
-            0,
-            {
-              strokeWidth: hei / 300,
-              ang: ba > -Math.PI / 2 ? ba : ba + Math.PI,
-              sca: (0.2 * hei) / 300,
-              dir: ba > -Math.PI / 2 ? 1 : -1,
-              lea: [true, 5],
-            }
+          twpolylinelists.push(
+            twig(
+              _brlist[0][j].x + trlist[i].y + x,
+              _brlist[0][j].y + trlist[i].y + y,
+              0,
+              {
+                strokeWidth: hei / 300,
+                ang: ba > -Math.PI / 2 ? ba : ba + Math.PI,
+                sca: (0.2 * hei) / 300,
+                dir: ba > -Math.PI / 2 ? 1 : -1,
+                lea: [true, 5],
+              }
+            )
           );
         }
       }
@@ -696,36 +739,40 @@ export function tree05<K extends keyof Tree05Args>(
     }
   }
 
-  canv += poly(trmlist, {
-    xof: x,
-    yof: y,
-    fill: 'white',
-    stroke: col,
-    strokeWidth: 0,
-  }).render();
+  polylinelists.push([
+    poly(trmlist, {
+      xof: x,
+      yof: y,
+      fill: 'white',
+      stroke: col,
+      strokeWidth: 0,
+    }),
+  ]);
 
   trmlist.splice(0, 1);
   trmlist.splice(trmlist.length - 1, 1);
   const color = 'rgba(100,100,100,' + (0.4 + random() * 0.1).toFixed(3) + ')';
-  canv += stroke(
-    trmlist.map(function (p: Point) {
-      return new Point(p.x + x, p.y + y);
-    }),
-    {
-      fill: color,
-      stroke: color,
-      strokeWidth: 2.5,
-      fun: function (x) {
-        return Math.sin(1);
-      },
-      noi: 0.9,
-      out: 0,
-    }
-  ).render();
+  polylinelists.push([
+    stroke(
+      trmlist.map(function (p: Point) {
+        return new Point(p.x + x, p.y + y);
+      }),
+      {
+        fill: color,
+        stroke: color,
+        strokeWidth: 2.5,
+        fun: function (x) {
+          return Math.sin(1);
+        },
+        noi: 0.9,
+        out: 0,
+      }
+    ),
+  ]);
 
-  canv += txcanv;
-  canv += twcanv;
-  return canv;
+  polylinelists.push(txpolylinelists.flat());
+  polylinelists.push(twpolylinelists.flat());
+  return polylinelists.flat();
 }
 
 class Tree06Args {
@@ -742,17 +789,13 @@ class FracTree06Args {
   ben: number = 0.2 * Math.PI;
 }
 
-class CanvasPair {
-  txcanv: string = '';
-  twcanv: string = '';
-}
-
-function fracTree06<K extends keyof FracTree06Args>(
-  canvs: CanvasPair,
+function fracTree06(
+  txpolylinelists: Polyline[][],
+  twpolylinelists: Polyline[][],
   xoff: number,
   yoff: number,
   dep: number,
-  args: Pick<FracTree06Args, K> | undefined = undefined
+  args: Partial<FracTree06Args> | undefined = undefined
 ): Point[] {
   const _args = new FracTree06Args();
   Object.assign(_args, args);
@@ -767,9 +810,7 @@ function fracTree06<K extends keyof FracTree06Args>(
     det: hei / 20,
   });
 
-  let { txcanv, twcanv } = canvs;
-
-  txcanv += barkify(xoff, yoff, _trlist);
+  txpolylinelists.push(barkify(xoff, yoff, _trlist));
   const trlist = _trlist[0].concat(_trlist[1].reverse());
 
   let trmlist: Point[] = [];
@@ -789,7 +830,8 @@ function fracTree06<K extends keyof FracTree06Args>(
         bar * Math.PI - bar * 2 * Math.PI * (i > trlist.length / 2 ? 1 : 0);
 
       const brlist = fracTree06(
-        { txcanv, twcanv },
+        txpolylinelists,
+        twpolylinelists,
         trlist[i].x + xoff,
         trlist[i].y + yoff,
         dep - 1,
@@ -803,16 +845,18 @@ function fracTree06<K extends keyof FracTree06Args>(
 
       for (let j = 0; j < brlist.length; j++) {
         if (random() < 0.03) {
-          twcanv += twig(
-            brlist[j].x + trlist[i].x + xoff,
-            brlist[j].y + trlist[i].y + yoff,
-            2,
-            {
-              ang: ba * (random() * 0.5 + 0.75),
-              sca: 0.3,
-              dir: ba > 0 ? 1 : -1,
-              lea: [false, 0],
-            }
+          twpolylinelists.push(
+            twig(
+              brlist[j].x + trlist[i].x + xoff,
+              brlist[j].y + trlist[i].y + yoff,
+              2,
+              {
+                ang: ba * (random() * 0.5 + 0.75),
+                sca: 0.3,
+                dir: ba > 0 ? 1 : -1,
+                lea: [false, 0],
+              }
+            )
           );
         }
       }
@@ -827,62 +871,63 @@ function fracTree06<K extends keyof FracTree06Args>(
     }
   }
 
-  Object.assign(canvs, { txcanv, twcanv });
-
   return trmlist;
 }
 
-export function tree06<K extends keyof Tree06Args>(
+export function tree06(
   x: number,
   y: number,
-  args: Pick<Tree06Args, K> | undefined = undefined
-) {
+  args: Partial<Tree06Args> | undefined = undefined
+): Polyline[] {
   const _args = new Tree06Args();
   Object.assign(_args, args);
 
   const { hei, strokeWidth, col, noi } = _args;
-  let canv = '';
-  const canvs: CanvasPair = new CanvasPair();
+  const polylinelists: Polyline[][] = [];
+  const txpolylinelists: Polyline[][] = [];
+  const twpolylinelists: Polyline[][] = [];
 
-  const trmlist = fracTree06(canvs, x, y, 3, {
+  const trmlist = fracTree06(txpolylinelists, twpolylinelists, x, y, 3, {
     hei: hei,
     strokeWidth: strokeWidth,
     ang: -Math.PI / 2,
     ben: 0,
   });
 
-  const { txcanv, twcanv } = canvs;
-
-  canv += poly(trmlist, {
-    xof: x,
-    yof: y,
-    fill: 'white',
-    stroke: col,
-    strokeWidth: 0,
-  }).render();
+  polylinelists.push([
+    poly(trmlist, {
+      xof: x,
+      yof: y,
+      fill: 'white',
+      stroke: col,
+      strokeWidth: 0,
+    }),
+  ]);
 
   trmlist.splice(0, 1);
   trmlist.splice(trmlist.length - 1, 1);
   const color = 'rgba(100,100,100,' + (0.4 + random() * 0.1).toFixed(3) + ')';
-  canv += stroke(
-    trmlist.map(function (v) {
-      return new Point(v.x + x, v.y + y);
-    }),
-    {
-      fill: color,
-      stroke: color,
-      strokeWidth: 2.5,
-      fun: function (x) {
-        return Math.sin(1);
-      },
-      noi: 0.9,
-      out: 0,
-    }
-  ).render();
+  polylinelists.push([
+    stroke(
+      trmlist.map(function (v) {
+        return new Point(v.x + x, v.y + y);
+      }),
+      {
+        fill: color,
+        stroke: color,
+        strokeWidth: 2.5,
+        fun: function (x) {
+          return Math.sin(1);
+        },
+        noi: 0.9,
+        out: 0,
+      }
+    ),
+  ]);
 
-  canv += txcanv;
-  canv += twcanv;
-  return canv;
+  polylinelists.push(txpolylinelists.flat());
+  polylinelists.push(twpolylinelists.flat());
+  return polylinelists.flat();
 }
 
 class Tree07Args {
@@ -893,11 +938,11 @@ class Tree07Args {
   noi: number = 0.5;
 }
 
-export function tree07<K extends keyof Tree07Args>(
+export function tree07(
   x: number,
   y: number,
-  args: Pick<Tree07Args, K> | undefined = undefined
-) {
+  args: Partial<Tree07Args> | undefined = undefined
+): Polyline[] {
   const _args: Tree07Args = new Tree07Args();
   Object.assign(_args, args);
 
@@ -915,7 +960,7 @@ export function tree07<K extends keyof Tree07Args>(
   }
   const leafcol = col.replace('rgba(', '').replace(')', '').split(',');
 
-  let canv = '';
+  const polylines: Polyline[] = [];
   const line1: Point[] = [];
   const line2: Point[] = [];
   let T: Point[][] = [];
@@ -978,9 +1023,9 @@ export function tree07<K extends keyof Tree07Args>(
     const m = midPt(T[k]);
     const c = (Noise.noise(m.x * 0.02, m.y * 0.02) * 200 + 50) | 0;
     const co = 'rgba(' + c + ',' + c + ',' + c + ',0.8)';
-    canv += poly(T[k], { fill: co, stroke: co, strokeWidth: 0 }).render();
+    polylines.push(poly(T[k], { fill: co, stroke: co, strokeWidth: 0 }));
   }
-  return canv;
+  return polylines;
 }
 
 class FracTree08Args {
@@ -989,12 +1034,12 @@ class FracTree08Args {
   ben: number = 0;
 }
 
-function fracTree08<K extends keyof FracTree08Args>(
+function fracTree08(
   xoff: number,
   yoff: number,
   dep: number,
-  args: Pick<FracTree08Args, K> | undefined = undefined
-) {
+  args: Partial<FracTree08Args> | undefined = undefined
+): Polyline[] {
   const _args: FracTree08Args = new FracTree08Args();
   Object.assign(_args, args);
 
@@ -1023,41 +1068,49 @@ function fracTree08<K extends keyof FracTree08Args>(
     trmlist[i].y = spt.y + d * Math.sin(a + ang);
   }
 
-  let tcanv = '';
-  tcanv += stroke(trmlist, {
-    fun: fun,
-    strokeWidth: 0.8,
-    fill: 'rgba(100,100,100,0.5)',
-    stroke: 'rgba(100,100,100,0.5)',
-  }).render();
+  const polylinelists: Polyline[][] = [];
+  polylinelists.push([
+    stroke(trmlist, {
+      fun: fun,
+      strokeWidth: 0.8,
+      fill: 'rgba(100,100,100,0.5)',
+      stroke: 'rgba(100,100,100,0.5)',
+    }),
+  ]);
   if (dep != 0) {
     const nben = ben + randChoice([-1, 1]) * Math.PI * 0.001 * dep * dep;
     if (random() < 0.5) {
-      tcanv += fracTree08(ept.x, ept.y, dep - 1, {
-        ang:
-          ang +
-          ben +
-          Math.PI * randChoice([normRand(-1, 0.5), normRand(0.5, 1)]) * 0.2,
-        len: len * normRand(0.8, 0.9),
-        ben: nben,
-      });
-      tcanv += fracTree08(ept.x, ept.y, dep - 1, {
-        ang:
-          ang +
-          ben +
-          Math.PI * randChoice([normRand(-1, -0.5), normRand(0.5, 1)]) * 0.2,
-        len: len * normRand(0.8, 0.9),
-        ben: nben,
-      });
+      polylinelists.push(
+        fracTree08(ept.x, ept.y, dep - 1, {
+          ang:
+            ang +
+            ben +
+            Math.PI * randChoice([normRand(-1, 0.5), normRand(0.5, 1)]) * 0.2,
+          len: len * normRand(0.8, 0.9),
+          ben: nben,
+        })
+      );
+      polylinelists.push(
+        fracTree08(ept.x, ept.y, dep - 1, {
+          ang:
+            ang +
+            ben +
+            Math.PI * randChoice([normRand(-1, -0.5), normRand(0.5, 1)]) * 0.2,
+          len: len * normRand(0.8, 0.9),
+          ben: nben,
+        })
+      );
     } else {
-      tcanv += fracTree08(ept.x, ept.y, dep - 1, {
-        ang: ang + ben,
-        len: len * normRand(0.8, 0.9),
-        ben: nben,
-      });
+      polylinelists.push(
+        fracTree08(ept.x, ept.y, dep - 1, {
+          ang: ang + ben,
+          len: len * normRand(0.8, 0.9),
+          ben: nben,
+        })
+      );
     }
   }
-  return tcanv;
+  return polylinelists.flat();
 }
 
 class Tree08Args {
@@ -1067,19 +1120,18 @@ class Tree08Args {
   noi: number = 0.5;
 }
 
-export function tree08<K extends keyof Tree08Args>(
+export function tree08(
   x: number,
   y: number,
-  args: Pick<Tree08Args, K> | undefined = undefined
-) {
+  args: Partial<Tree08Args> | undefined = undefined
+): Polyline[] {
   const _args: Tree08Args = new Tree08Args();
   Object.assign(_args, args);
 
   const { hei, strokeWidth, col, noi } = _args;
 
-  let canv = '';
-  let txcanv = '';
-  let twcanv = '';
+  const polylinelists: Polyline[][] = [];
+  const twpolylinelists: Polyline[][] = [];
 
   const ang = normRand(-1, 1) * Math.PI * 0.2;
 
@@ -1096,48 +1148,55 @@ export function tree08<K extends keyof Tree08Args>(
 
   for (let i = 0; i < trlist.length; i++) {
     if (random() < 0.2) {
-      twcanv += fracTree08(
-        x + trlist[i].x,
-        y + trlist[i].y,
-        Math.floor(4 * random()),
-        { ang: -Math.PI / 2 - ang * random() }
-        // { hei: 20, ang: -Math.PI / 2 - ang * random() }
+      twpolylinelists.push(
+        fracTree08(
+          x + trlist[i].x,
+          y + trlist[i].y,
+          Math.floor(4 * random()),
+          { ang: -Math.PI / 2 - ang * random() }
+          // { hei: 20, ang: -Math.PI / 2 - ang * random() }
+        )
       );
     } else if (i == Math.floor(trlist.length / 2)) {
-      twcanv += fracTree08(x + trlist[i].x, y + trlist[i].y, 3, {
-        // hei: 25,
-        ang: -Math.PI / 2 + ang,
-      });
+      twpolylinelists.push(
+        fracTree08(x + trlist[i].x, y + trlist[i].y, 3, {
+          // hei: 25,
+          ang: -Math.PI / 2 + ang,
+        })
+      );
     }
   }
 
-  canv += poly(trlist, {
-    xof: x,
-    yof: y,
-    fill: 'white',
-    stroke: col,
-    strokeWidth: 0,
-  }).render();
+  polylinelists.push([
+    poly(trlist, {
+      xof: x,
+      yof: y,
+      fill: 'white',
+      stroke: col,
+      strokeWidth: 0,
+    }),
+  ]);
 
   const color = 'rgba(100,100,100,' + (0.6 + random() * 0.1).toFixed(3) + ')';
-  canv += stroke(
-    trlist.map(function (v) {
-      return new Point(v.x + x, v.y + y);
-    }),
-    {
-      fill: color,
-      stroke: color,
-      strokeWidth: 2.5,
-      fun: function (x) {
-        return Math.sin(1);
-      },
-      noi: 0.9,
-      out: 0,
-    }
-  ).render();
+  polylinelists.push([
+    stroke(
+      trlist.map(function (v) {
+        return new Point(v.x + x, v.y + y);
+      }),
+      {
+        fill: color,
+        stroke: color,
+        strokeWidth: 2.5,
+        fun: function (x) {
+          return Math.sin(1);
+        },
+        noi: 0.9,
+        out: 0,
+      }
+    ),
+  ]);
 
-  canv += txcanv;
-  canv += twcanv;
+  polylinelists.push(twpolylinelists.flat());
   //console.log(canv)
-  return canv;
+  return polylinelists.flat();
 }
