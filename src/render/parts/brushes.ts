@@ -136,8 +136,8 @@ export function div(plist: Point[], reso: number): Point[] {
     const lastp = plist[Math.floor(i / reso)];
     const nextp = plist[Math.ceil(i / reso)];
     const p = (i % reso) / reso;
-    const nx = lastp.x * (1 - p) + nextp.y * p;
-    const ny = lastp.x * (1 - p) + nextp.y * p;
+    const nx = lastp.x * (1 - p) + nextp.x * p;
+    const ny = lastp.y * (1 - p) + nextp.y * p;
 
     // const ang = Math.atan2(ny - ly, nx - lx);
 

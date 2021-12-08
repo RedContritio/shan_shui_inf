@@ -1058,6 +1058,7 @@ function fracTree08(
   for (let i = 0; i < trmlist.length; i++) {
     trmlist[i].y += bfun(i / trmlist.length) * 2;
   }
+
   for (let i = 0; i < trmlist.length; i++) {
     const d = distance(trmlist[i], spt.movefrom(Point.O));
     const a = Math.atan2(trmlist[i].y - spt.y, trmlist[i].x - spt.x);
@@ -1074,6 +1075,7 @@ function fracTree08(
       stroke: 'rgba(100,100,100,0.5)',
     }),
   ]);
+
   if (dep !== 0) {
     const nben = ben + randChoice([-1, 1]) * Math.PI * 0.001 * dep * dep;
     if (random() < 0.5) {
