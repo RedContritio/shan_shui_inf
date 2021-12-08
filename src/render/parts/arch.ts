@@ -38,7 +38,9 @@ function hut<K extends keyof HutArgs>(
     const heir = hei + hei * 0.2 * random();
     for (let j = 0; j < reso[1]; j++) {
       const nx =
-        strokeWidth * (i / (reso[0] - 1) - 0.5) * Math.pow(j / (reso[1] - 1), 0.7);
+        strokeWidth *
+        (i / (reso[0] - 1) - 0.5) *
+        Math.pow(j / (reso[1] - 1), 0.7);
       const ny = heir * (j / (reso[1] - 1));
       ptlist[ptlist.length - 1].push(new Point(nx, ny));
     }
@@ -113,17 +115,35 @@ function box<K extends keyof BoxArgs>(
   const mid = -strokeWidth * 0.5 + strokeWidth * rot;
   const bmid = -strokeWidth * 0.5 + strokeWidth * (1 - rot);
   const _ptlist: Point[][] = [];
-  _ptlist.push(div([new Point(-strokeWidth * 0.5, -hei), new Point(-strokeWidth * 0.5, 0)], 5));
-  _ptlist.push(div([new Point(strokeWidth * 0.5, -hei), new Point(strokeWidth * 0.5, 0)], 5));
+  _ptlist.push(
+    div(
+      [new Point(-strokeWidth * 0.5, -hei), new Point(-strokeWidth * 0.5, 0)],
+      5
+    )
+  );
+  _ptlist.push(
+    div(
+      [new Point(strokeWidth * 0.5, -hei), new Point(strokeWidth * 0.5, 0)],
+      5
+    )
+  );
   if (bot) {
-    _ptlist.push(div([new Point(-strokeWidth * 0.5, 0), new Point(mid, per)], 5));
-    _ptlist.push(div([new Point(strokeWidth * 0.5, 0), new Point(mid, per)], 5));
+    _ptlist.push(
+      div([new Point(-strokeWidth * 0.5, 0), new Point(mid, per)], 5)
+    );
+    _ptlist.push(
+      div([new Point(strokeWidth * 0.5, 0), new Point(mid, per)], 5)
+    );
   }
   _ptlist.push(div([new Point(mid, -hei), new Point(mid, per)], 5));
   if (tra) {
     if (bot) {
-      _ptlist.push(div([new Point(-strokeWidth * 0.5, 0), new Point(bmid, -per)], 5));
-      _ptlist.push(div([new Point(strokeWidth * 0.5, 0), new Point(bmid, -per)], 5));
+      _ptlist.push(
+        div([new Point(-strokeWidth * 0.5, 0), new Point(bmid, -per)], 5)
+      );
+      _ptlist.push(
+        div([new Point(strokeWidth * 0.5, 0), new Point(bmid, -per)], 5)
+      );
     }
     _ptlist.push(div([new Point(bmid, -hei), new Point(bmid, -per)], 5));
   }
@@ -275,16 +295,27 @@ function rail<K extends keyof RailArgs>(
   const ptlist = [];
 
   if (fro) {
-    ptlist.push(div([new Point(-strokeWidth * 0.5, 0), new Point(mid, per)], seg));
-    ptlist.push(div([new Point(mid, per), new Point(strokeWidth * 0.5, 0)], seg));
+    ptlist.push(
+      div([new Point(-strokeWidth * 0.5, 0), new Point(mid, per)], seg)
+    );
+    ptlist.push(
+      div([new Point(mid, per), new Point(strokeWidth * 0.5, 0)], seg)
+    );
   }
   if (tra) {
-    ptlist.push(div([new Point(-strokeWidth * 0.5, 0), new Point(bmid, -per)], seg));
-    ptlist.push(div([new Point(bmid, -per), new Point(strokeWidth * 0.5, 0)], seg));
+    ptlist.push(
+      div([new Point(-strokeWidth * 0.5, 0), new Point(bmid, -per)], seg)
+    );
+    ptlist.push(
+      div([new Point(bmid, -per), new Point(strokeWidth * 0.5, 0)], seg)
+    );
   }
   if (fro) {
     ptlist.push(
-      div([new Point(-strokeWidth * 0.5, -hei), new Point(mid, -hei + per)], seg)
+      div(
+        [new Point(-strokeWidth * 0.5, -hei), new Point(mid, -hei + per)],
+        seg
+      )
     );
     ptlist.push(
       div([new Point(mid, -hei + per), new Point(strokeWidth * 0.5, -hei)], seg)
@@ -292,10 +323,16 @@ function rail<K extends keyof RailArgs>(
   }
   if (tra) {
     ptlist.push(
-      div([new Point(-strokeWidth * 0.5, -hei), new Point(bmid, -hei - per)], seg)
+      div(
+        [new Point(-strokeWidth * 0.5, -hei), new Point(bmid, -hei - per)],
+        seg
+      )
     );
     ptlist.push(
-      div([new Point(bmid, -hei - per), new Point(strokeWidth * 0.5, -hei)], seg)
+      div(
+        [new Point(bmid, -hei - per), new Point(strokeWidth * 0.5, -hei)],
+        seg
+      )
     );
   }
   if (tra) {
@@ -419,10 +456,16 @@ function roof<K extends keyof RoofArgs>(
   );
 
   ptlist.push(
-    div(opf([new Point(-strokeWidth * 0.5 - cor, 0), new Point(mid + cor, per)]), 5)
+    div(
+      opf([new Point(-strokeWidth * 0.5 - cor, 0), new Point(mid + cor, per)]),
+      5
+    )
   );
   ptlist.push(
-    div(opf([new Point(strokeWidth * 0.5 + cor, 0), new Point(mid + cor, per)]), 5)
+    div(
+      opf([new Point(strokeWidth * 0.5 + cor, 0), new Point(mid + cor, per)]),
+      5
+    )
   );
 
   ptlist.push(
@@ -444,7 +487,12 @@ function roof<K extends keyof RoofArgs>(
     new Point(strokeWidth * 0.5, 0),
     new Point(mid, per),
   ]);
-  canv += poly(polist, { xof: xoff, yof: yoff, stroke: 'none', fill: 'white' }).render();
+  canv += poly(polist, {
+    xof: xoff,
+    yof: yoff,
+    stroke: 'none',
+    fill: 'white',
+  }).render();
 
   for (let i = 0; i < ptlist.length; i++) {
     canv += stroke(
@@ -531,7 +579,12 @@ function pagroof<K extends keyof PagRoofArgs>(
     polist.push(new Point(fxx, fy));
   }
 
-  canv += poly(polist, { xof: xoff, yof: yoff, stroke: 'none', fill: 'white' }).render();
+  canv += poly(polist, {
+    xof: xoff,
+    yof: yoff,
+    stroke: 'none',
+    fill: 'white',
+  }).render();
 
   for (let i = 0; i < ptlist.length; i++) {
     canv += stroke(

@@ -230,7 +230,8 @@ export function texture<K extends keyof TextureArgs>(
           {
             fill: 'rgba(100,100,100,0.1)',
             stroke: 'rgba(100,100,100,0.1)',
-            strokeWidth: sha }
+            strokeWidth: sha,
+          }
         ).render();
       }
     }
@@ -245,7 +246,8 @@ export function texture<K extends keyof TextureArgs>(
         {
           fill: col(j / texlist.length),
           stroke: col(j / texlist.length),
-          strokeWidth: strokeWidth }
+          strokeWidth: strokeWidth,
+        }
       ).render();
     }
   }

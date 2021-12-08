@@ -112,8 +112,8 @@ class App extends React.Component<{}, AppState> {
   }
 
   reloadWSeed() {
-    var u = window.location.href.split("?")[0];
-    window.location.href = u + "?seed=" + this.state.seed;
+    var u = window.location.href.split('?')[0];
+    window.location.href = u + '?seed=' + this.state.seed;
     //window.location.reload(true)
   }
 
@@ -125,7 +125,7 @@ class App extends React.Component<{}, AppState> {
     const toggleAutoScroll = (autoscroll: boolean) => {
       this.setState({ auto_scroll: autoscroll });
       this.autoxcroll(this.state.inc_step);
-    }
+    };
 
     return (
       <>

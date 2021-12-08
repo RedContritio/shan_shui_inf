@@ -4,7 +4,7 @@ div#SETTING {
   left: 40px;
   top: 3px;
 }
-  
+
 div#SET_BTN {
   width: 32px;
   height: 32px;
@@ -15,7 +15,8 @@ div#SET_BTN {
   cursor: pointer;
 }
 
-div#SET_BTN > div, div#SOURCE_BTN > div {
+div#SET_BTN > div,
+div#SOURCE_BTN > div {
   display: table-cell;
   vertical-align: middle;
 }
@@ -60,11 +61,10 @@ table#SCROLLABLE_CANVAS {
   display: table;
   cursor: pointer;
   border: 1px solid rgba(0, 0, 0, 0.4);
-
 }
 
-#SCROLLABLE_CANVAS div#L\.t, 
-#SCROLLABLE_CANVAS div#R\.t{
+#SCROLLABLE_CANVAS div#L\.t,
+#SCROLLABLE_CANVAS div#R\.t {
   vertical-align: middle;
   display: table-cell;
   font-size: 32px;

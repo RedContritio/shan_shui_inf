@@ -94,9 +94,11 @@ export function poly(
   Object.assign(_args, args);
   const { xof, yof, fill, stroke, strokeWidth } = _args;
   const off = new Vector(xof, yof);
-  
-  const polyline = new Polyline(plist
-    .map((p: Point) => SvgPoint.from(p.move(off))), { fill, stroke, strokeWidth });
+
+  const polyline = new Polyline(
+    plist.map((p: Point) => SvgPoint.from(p.move(off))),
+    { fill, stroke, strokeWidth }
+  );
 
   return polyline;
 }

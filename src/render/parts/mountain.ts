@@ -207,7 +207,9 @@ export function mountain<K extends keyof MountainArgs>(
     {
       fill: 'rgba(100,100,100,0.3)',
       stroke: 'rgba(100,100,100,0.3)',
-    noi: 1, strokeWidth: 3 }
+      noi: 1,
+      strokeWidth: 3,
+    }
   ).render();
 
   canv += foot(ptlist, { xof: xoff, yof: yoff });
@@ -505,7 +507,9 @@ export function flatMount<K extends keyof FlatMountArgs>(
     {
       fill: 'rgba(100,100,100,0.3)',
       stroke: 'rgba(100,100,100,0.3)',
-    noi: 1, strokeWidth: 3 }
+      noi: 1,
+      strokeWidth: 3,
+    }
   ).render();
 
   //canv += foot(ptlist,{xof:xoff,yof:yoff})
@@ -826,7 +830,8 @@ export function rock<K extends keyof RockArgs>(
       let l =
         (strokeWidth * hei) /
         Math.sqrt(
-          Math.pow(hei * Math.cos(a), 2) + Math.pow(strokeWidth * Math.sin(a), 2)
+          Math.pow(hei * Math.cos(a), 2) +
+            Math.pow(strokeWidth * Math.sin(a), 2)
         );
 
       /*           const l = Math.sin(a)>0? Math.pow(Math.sin(a),0.1)*strokeWidth
@@ -863,7 +868,9 @@ export function rock<K extends keyof RockArgs>(
     {
       fill: 'rgba(100,100,100,0.3)',
       stroke: 'rgba(100,100,100,0.3)',
-    noi: 1, strokeWidth: 3 }
+      noi: 1,
+      strokeWidth: 3,
+    }
   ).render();
   canv += texture(ptlist, {
     xof: xoff,

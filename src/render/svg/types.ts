@@ -6,7 +6,9 @@ function SvgAttributeKey(key: string): string {
 }
 
 function SvgAttributeRender(attr: Partial<ISvgAttributes>): string {
-  const strlist = Object.entries(attr).map(([k, v]) => `${SvgAttributeKey(k)}:${v}`);
+  const strlist = Object.entries(attr).map(
+    ([k, v]) => `${SvgAttributeKey(k)}:${v}`
+  );
   return `style='${strlist.join(';')}'`;
 }
 
@@ -41,7 +43,7 @@ export class Polyline implements ISvgElement {
     this.points = points;
     this.attr = attr;
   }
-  
+
   render(): string {
     const style = SvgAttributeRender(this.attr);
     return `<polyline points='${this.points
