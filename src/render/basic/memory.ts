@@ -70,6 +70,8 @@ class Memory {
               plan[i].x,
               plan[i].y,
               mountain(plan[i].x, plan[i].y, i * 2 * Math.random())
+                .map((p) => p.render())
+                .join('\n')
               //{col:function(x){return "rgba(100,100,100,"+(0.5*Math.random()*plan[i].y/this.windy)+")"}}),
             )
           );
@@ -94,6 +96,8 @@ class Memory {
                 hei: 100,
                 cho: 0.5 + Math.random() * 0.2,
               })
+                .map((p) => p.render())
+                .join('\n')
             )
           );
         } else if (plan[i].tag === 'distmount') {
@@ -106,6 +110,8 @@ class Memory {
                 hei: 150,
                 len: randChoice([500, 1000, 1500]),
               })
+                .map((p) => p.render())
+                .join('\n')
             )
           );
         } else if (plan[i].tag === 'boat') {
@@ -177,6 +183,7 @@ const MEM: Memory = new Memory();
 
 export { MEM };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function dummyloader(xmin: number, xmax: number) {
   for (let i = xmin; i < xmax; i += 200) {
     //MEM.chunks.push({tag:"?",x:i,y:100,canv:Tree.tree08(i,500,i)})

@@ -64,7 +64,7 @@ export function bezmh(P: Point[], w: number = 1): Point[] {
     const jb = j === P.length - 3 ? 1 : 0;
     for (let i = 0; i < pl + jb; i += 1) {
       const t = i / pl;
-      const u = Math.pow(1 - t, 2) + 2 * t * (1 - t) * w + t * t;
+      // const u = Math.pow(1 - t, 2) + 2 * t * (1 - t) * w + t * t;
       const a0 = (1 - t) * (1 - t);
       const a1 = 2 * t * (1 - t);
       const a2 = t * t;

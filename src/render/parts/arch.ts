@@ -271,8 +271,8 @@ function deco<K extends keyof DecoArgs>(
       const mmu = div([mlu, mru], vsp[1])[i];
       const mmd = div([mld, mrd], vsp[1])[i];
 
-      const ml = dl[i];
-      const mr = dr[i];
+      // const ml = dl[i];
+      // const mr = dr[i];
       plist.push(div([mml, mmr], 5));
       plist.push(div([mmu, mmd], 5));
     }
@@ -439,7 +439,7 @@ function roof<K extends keyof RoofArgs>(
   const rrot = rot < 0.5 ? 1 - rot : rot;
 
   const mid = -strokeWidth * 0.5 + strokeWidth * rrot;
-  const bmid = -strokeWidth * 0.5 + strokeWidth * (1 - rrot);
+  // const bmid = -strokeWidth * 0.5 + strokeWidth * (1 - rrot);
   const quat = (mid + strokeWidth * 0.5) * 0.5 - mid;
 
   const ptlist = [];
@@ -564,7 +564,6 @@ function roof<K extends keyof RoofArgs>(
 class PagRoofArgs {
   hei = 20;
   strokeWidth = 120;
-  rot = 0.7;
   per = 4;
   cor = 10;
   sid = 4;
@@ -579,7 +578,7 @@ function pagroof<K extends keyof PagRoofArgs>(
   const _args = new PagRoofArgs();
   Object.assign(_args, args);
 
-  const { hei, strokeWidth, rot, per, cor, sid, wei } = _args;
+  const { hei, strokeWidth, per, cor, sid, wei } = _args;
 
   const ptlist: Point[][] = [];
   const polist: Point[] = [new Point(0, -hei)];
@@ -634,7 +633,6 @@ function pagroof<K extends keyof PagRoofArgs>(
 class Arch01Args {
   hei = 70;
   strokeWidth = 180;
-  rot = 0.7;
   per = 5;
 }
 
@@ -647,7 +645,7 @@ export function arch01<K extends keyof Arch01Args>(
   const _args = new Arch01Args();
   Object.assign(_args, args);
 
-  const { hei, strokeWidth, rot, per } = _args;
+  const { hei, strokeWidth, per } = _args;
 
   const p = 0.4 + random() * 0.2;
   const h0 = hei * p;
@@ -845,7 +843,6 @@ export function arch03<K extends keyof Arch03Args>(
       pagroof(xoff, yoff - hoff - hei, {
         hei: hei * 1.5,
         strokeWidth: strokeWidth * Math.pow(0.9, i),
-        rot: rot,
         wei: 1.5,
         per: per,
       })
@@ -906,7 +903,6 @@ export function arch04<K extends keyof Arch04Args>(
       pagroof(xoff, yoff - hoff - hei, {
         hei: hei * 1,
         strokeWidth: strokeWidth * Math.pow(0.9, i),
-        rot: rot,
         wei: 1.5,
         per: per,
       })

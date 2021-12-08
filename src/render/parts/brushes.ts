@@ -2,8 +2,7 @@ import { Noise } from '../basic/perlinNoise';
 import { Point, Vector } from '../basic/point';
 import PRNG from '../basic/PRNG';
 import { loopNoise, poly } from '../basic/utils';
-import { ISvgAttributes, ISvgStyles } from '../svg/interfaces';
-import { SvgPolyline } from '../svg';
+import { ISvgStyles, SvgPolyline } from '../svg';
 
 const random = PRNG.random;
 
@@ -71,7 +70,6 @@ class BlobArgs implements Partial<ISvgStyles> {
   ang: number = 0;
   col: string = 'rgba(200,200,200,0.9)';
   noi: number = 0.5;
-  ret: number = 0;
   fun: (x: number) => number = (x: number) =>
     x <= 1
       ? Math.pow(Math.sin(x * Math.PI), 0.5)
@@ -86,7 +84,7 @@ export function blob(
   const _args = new BlobArgs();
   Object.assign(_args, args);
 
-  const { len, strokeWidth, ang, col, noi, ret, fun } = _args;
+  const { col } = _args;
 
   const plist = blob_points(x, y, args);
   return poly(plist, { fill: col, stroke: col, strokeWidth: 0 });
@@ -100,7 +98,7 @@ export function blob_points(
   const _args = new BlobArgs();
   Object.assign(_args, args);
 
-  const { len, strokeWidth, ang, col, noi, ret, fun } = _args;
+  const { len, strokeWidth, ang, noi, fun } = _args;
 
   const reso = 20.0;
   const lalist = [];
@@ -132,8 +130,6 @@ export function blob_points(
 
 export function div(plist: Point[], reso: number): Point[] {
   const tl = (plist.length - 1) * reso;
-  let lx = 0;
-  let ly = 0;
   const rlist = [];
 
   for (let i = 0; i < tl; i += 1) {
@@ -143,11 +139,9 @@ export function div(plist: Point[], reso: number): Point[] {
     const nx = lastp.x * (1 - p) + nextp.y * p;
     const ny = lastp.x * (1 - p) + nextp.y * p;
 
-    const ang = Math.atan2(ny - ly, nx - lx);
+    // const ang = Math.atan2(ny - ly, nx - lx);
 
     rlist.push(new Point(nx, ny));
-    lx = nx;
-    ly = ny;
   }
 
   if (plist.length > 0) {
@@ -163,7 +157,6 @@ class TextureArgs implements Partial<ISvgStyles> {
   strokeWidth: number = 1.5;
   len: number = 0.2;
   sha: number = 0;
-  ret: number = 0;
   noi: (x: number) => number = (x) => 30 / x;
   col: (x: number) => string = (x) =>
     `rgba(100,100,100,${(random() * 0.3).toFixed(3)})`;
@@ -178,7 +171,7 @@ export function texture(
   const _args = new TextureArgs();
   Object.assign(_args, args);
 
-  const { xof, yof, tex, strokeWidth, len, sha, ret, noi, col, dis } = _args;
+  const { xof, yof, tex, strokeWidth, len, sha, noi, col, dis } = _args;
 
   const offset = new Vector(xof, yof);
   const reso = [ptlist.length, ptlist[0].length];

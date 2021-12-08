@@ -16,6 +16,7 @@ import { arch01, arch02, arch03, arch04, transmissionTower01 } from './arch';
 import { midPt, triangulate } from '../PolyTools';
 import { Bound } from '../basic/range';
 import PRNG from '../basic/PRNG';
+import { ISvgElement, SvgPolyline } from '../svg';
 
 const random = PRNG.random;
 
@@ -27,7 +28,7 @@ class FootArgs {
 export function foot<K extends keyof FootArgs>(
   ptlist: Point[][],
   args: Pick<FootArgs, K> | undefined = undefined
-): string {
+): SvgPolyline[] {
   const _args: FootArgs = new FootArgs();
   Object.assign(_args, args);
 
@@ -37,7 +38,7 @@ export function foot<K extends keyof FootArgs>(
   const span = 10;
   let ni = 0;
   for (let i = 0; i < ptlist.length - 2; i += 1) {
-    if (i == ni) {
+    if (i === ni) {
       ni = Math.min(ni + randChoice([1, 2]), ptlist.length - 1);
 
       ftlist.push([]);
@@ -81,38 +82,44 @@ export function foot<K extends keyof FootArgs>(
       }
     }
   }
-  let canv = '';
+
+  const polylines: SvgPolyline[] = [];
+
   for (let i = 0; i < ftlist.length; i++) {
-    canv += poly(ftlist[i], {
-      xof: xof,
-      yof: yof,
-      fill: 'white',
-      stroke: 'none',
-    }).render();
+    polylines.push(
+      poly(ftlist[i], {
+        xof: xof,
+        yof: yof,
+        fill: 'white',
+        stroke: 'none',
+      })
+    );
   }
   for (let j = 0; j < ftlist.length; j++) {
     const color = 'rgba(100,100,100,' + (0.1 + random() * 0.1).toFixed(3) + ')';
-    canv += stroke(
-      ftlist[j].map(function (p) {
-        return new Point(p.x + xof, p.y + yof);
-      }),
-      {
-        fill: color,
-        stroke: color,
-        strokeWidth: 1,
-      }
-    ).render();
+    polylines.push(
+      stroke(
+        ftlist[j].map(function (p) {
+          return new Point(p.x + xof, p.y + yof);
+        }),
+        {
+          fill: color,
+          stroke: color,
+          strokeWidth: 1,
+        }
+      )
+    );
   }
-  return canv;
+  return polylines;
 }
 
 function vegetate(
   ptlist: Point[][],
-  treeFunc: (x: number, y: number) => string,
+  treeFunc: (x: number, y: number) => ISvgElement[],
   growthRule: (i: number, j: number) => boolean,
   proofRule: (pl: Point[], i: number) => boolean
-): string {
-  let canv = '';
+): ISvgElement[] {
+  const elementlists: ISvgElement[][] = [];
   const veglist: Point[] = [];
   for (let i = 0; i < ptlist.length; i += 1) {
     for (let j = 0; j < ptlist[i].length; j += 1) {
@@ -123,10 +130,10 @@ function vegetate(
   }
   for (let i = 0; i < veglist.length; i++) {
     if (proofRule(veglist, i)) {
-      canv += treeFunc(veglist[i].x, veglist[i].y);
+      elementlists.push(treeFunc(veglist[i].x, veglist[i].y));
     }
   }
-  return canv;
+  return elementlists.flat();
 }
 
 class MountainArgs {
@@ -140,17 +147,15 @@ class MountainArgs {
 export function mountain<K extends keyof MountainArgs>(
   xoff: number,
   yoff: number,
-  seed: number,
+  seed: number = 0,
   args: Pick<MountainArgs, K> | undefined = undefined
-): string {
+): ISvgElement[] {
   const _args = new MountainArgs();
   Object.assign(_args, args);
 
-  const { hei, strokeWidth, tex, veg, col } = _args;
+  const { hei, strokeWidth, tex, veg } = _args;
 
-  const _seed: number = seed != undefined ? seed : 0;
-
-  let canv = '';
+  const elementlists: ISvgElement[][] = [];
 
   const ptlist: Point[][] = [];
   const h = hei;
@@ -172,58 +177,64 @@ export function mountain<K extends keyof MountainArgs>(
   }
 
   //RIM
-  canv += vegetate(
-    ptlist,
-    function (x, y) {
-      return tree02(x + xoff, y + yoff - 5, {
-        col:
-          'rgba(100,100,100,' +
-          (Noise.noise(0.01 * x, 0.01 * y) * 0.5 * 0.3 + 0.5).toFixed(3) +
-          ')',
-        clu: 2,
-      })
-        .map((p) => p.render())
-        .join('\n');
-    },
-    function (i, j) {
-      const ns = Noise.noise(j * 0.1, seed);
-      return i == 0 && ns * ns * ns < 0.1 && Math.abs(ptlist[i][j].y) / h > 0.2;
-    },
-    function (veglist, i) {
-      return true;
-    }
+  elementlists.push(
+    vegetate(
+      ptlist,
+      function (x, y) {
+        return tree02(x + xoff, y + yoff - 5, {
+          col:
+            'rgba(100,100,100,' +
+            (Noise.noise(0.01 * x, 0.01 * y) * 0.5 * 0.3 + 0.5).toFixed(3) +
+            ')',
+          clu: 2,
+        });
+      },
+      function (i, j) {
+        const ns = Noise.noise(j * 0.1, seed);
+        return (
+          i === 0 && ns * ns * ns < 0.1 && Math.abs(ptlist[i][j].y) / h > 0.2
+        );
+      },
+      function (veglist, i) {
+        return true;
+      }
+    )
   );
 
   //WHITE BG
-  canv += poly(ptlist[0].concat([new Point(0, reso[0] * 4)]), {
-    xof: xoff,
-    yof: yoff,
-    fill: 'white',
-    stroke: 'none',
-  }).render();
-  //OUTLINE
-  canv += stroke(
-    ptlist[0].map(function (p) {
-      return new Point(p.x + xoff, p.y + yoff);
+  elementlists.push([
+    poly(ptlist[0].concat([new Point(0, reso[0] * 4)]), {
+      xof: xoff,
+      yof: yoff,
+      fill: 'white',
+      stroke: 'none',
     }),
-    {
-      fill: 'rgba(100,100,100,0.3)',
-      stroke: 'rgba(100,100,100,0.3)',
-      noi: 1,
-      strokeWidth: 3,
-    }
-  ).render();
+  ]);
+  //OUTLINE
+  elementlists.push([
+    stroke(
+      ptlist[0].map(function (p) {
+        return new Point(p.x + xoff, p.y + yoff);
+      }),
+      {
+        fill: 'rgba(100,100,100,0.3)',
+        stroke: 'rgba(100,100,100,0.3)',
+        noi: 1,
+        strokeWidth: 3,
+      }
+    ),
+  ]);
 
-  canv += foot(ptlist, { xof: xoff, yof: yoff });
+  elementlists.push(foot(ptlist, { xof: xoff, yof: yoff }));
 
-  canv += texture(ptlist, {
-    xof: xoff,
-    yof: yoff,
-    tex: tex,
-    sha: randChoice([0, 0, 0, 0, 5]),
-  })
-    .map((p) => p.render())
-    .join('\n');
+  elementlists.push(
+    texture(ptlist, {
+      xof: xoff,
+      yof: yoff,
+      tex: tex,
+      sha: randChoice([0, 0, 0, 0, 5]),
+    })
+  );
   //   canv += col === undefined ? texture(ptlist, {
   //     xof: xoff,
   //     yof: yoff,
@@ -238,202 +249,202 @@ export function mountain<K extends keyof MountainArgs>(
   //   });
 
   //TOP
-  canv += vegetate(
-    ptlist,
-    function (x, y) {
-      return tree02(x + xoff, y + yoff, {
-        col:
-          'rgba(100,100,100,' +
-          (Noise.noise(0.01 * x, 0.01 * y) * 0.5 * 0.3 + 0.5).toFixed(3) +
-          ')',
-      })
-        .map((p) => p.render())
-        .join('\n');
-    },
-    function (i, j) {
-      const ns = Noise.noise(i * 0.1, j * 0.1, seed + 2);
-      return ns * ns * ns < 0.1 && Math.abs(ptlist[i][j].y) / h > 0.5;
-    },
-    function (veglist, i) {
-      return true;
-    }
+  elementlists.push(
+    vegetate(
+      ptlist,
+      function (x, y) {
+        return tree02(x + xoff, y + yoff, {
+          col:
+            'rgba(100,100,100,' +
+            (Noise.noise(0.01 * x, 0.01 * y) * 0.5 * 0.3 + 0.5).toFixed(3) +
+            ')',
+        });
+      },
+      function (i, j) {
+        const ns = Noise.noise(i * 0.1, j * 0.1, seed + 2);
+        return ns * ns * ns < 0.1 && Math.abs(ptlist[i][j].y) / h > 0.5;
+      },
+      function (veglist, i) {
+        return true;
+      }
+    )
   );
 
   if (veg) {
     //MIDDLE
-    canv += vegetate(
-      ptlist,
-      function (x, y) {
-        let ht = ((h + y) / h) * 70;
-        ht = ht * 0.3 + random() * ht * 0.7;
-        return tree01(x + xoff, y + yoff, {
-          hei: ht,
-          strokeWidth: random() * 3 + 1,
-          col:
-            'rgba(100,100,100,' +
-            (Noise.noise(0.01 * x, 0.01 * y) * 0.5 * 0.3 + 0.3).toFixed(3) +
-            ')',
-        })
-          .map((p) => p.render())
-          .join('\n');
-      },
-      function (i, j): boolean {
-        const ns = Noise.noise(i * 0.2, j * 0.05, seed);
-        return (
-          j % 2 !== 0 &&
-          ns * ns * ns * ns < 0.012 &&
-          Math.abs(ptlist[i][j].y) / h < 0.3
-        );
-      },
-      function (veglist, i) {
-        let counter = 0;
-        for (let j = 0; j < veglist.length; j++) {
-          if (
-            i != j &&
-            Math.pow(veglist[i].x - veglist[j].x, 2) +
-              Math.pow(veglist[i].y - veglist[j].y, 2) <
-              30 * 30
-          ) {
-            counter++;
+    elementlists.push(
+      vegetate(
+        ptlist,
+        function (x, y) {
+          let ht = ((h + y) / h) * 70;
+          ht = ht * 0.3 + random() * ht * 0.7;
+          return tree01(x + xoff, y + yoff, {
+            hei: ht,
+            strokeWidth: random() * 3 + 1,
+            col:
+              'rgba(100,100,100,' +
+              (Noise.noise(0.01 * x, 0.01 * y) * 0.5 * 0.3 + 0.3).toFixed(3) +
+              ')',
+          });
+        },
+        function (i, j): boolean {
+          const ns = Noise.noise(i * 0.2, j * 0.05, seed);
+          return (
+            j % 2 !== 0 &&
+            ns * ns * ns * ns < 0.012 &&
+            Math.abs(ptlist[i][j].y) / h < 0.3
+          );
+        },
+        function (veglist, i) {
+          let counter = 0;
+          for (let j = 0; j < veglist.length; j++) {
+            if (
+              i !== j &&
+              Math.pow(veglist[i].x - veglist[j].x, 2) +
+                Math.pow(veglist[i].y - veglist[j].y, 2) <
+                30 * 30
+            ) {
+              counter++;
+            }
+            if (counter > 2) {
+              return true;
+            }
           }
-          if (counter > 2) {
-            return true;
-          }
+          return false;
         }
-        return false;
-      }
+      )
     );
 
     //BOTTOM
-    canv += vegetate(
+    elementlists.push(
+      vegetate(
+        ptlist,
+        function (x, y) {
+          let ht = ((h + y) / h) * 120;
+          ht = ht * 0.5 + random() * ht * 0.5;
+          const bc = random() * 0.1;
+          const bp = 1;
+          return tree03(x + xoff, y + yoff, {
+            hei: ht,
+            ben: function (x) {
+              return Math.pow(x * bc, bp);
+            },
+            col:
+              'rgba(100,100,100,' +
+              (Noise.noise(0.01 * x, 0.01 * y) * 0.5 * 0.3 + 0.3).toFixed(3) +
+              ')',
+          });
+        },
+        function (i, j) {
+          const ns = Noise.noise(i * 0.2, j * 0.05, seed);
+          return (
+            (j === 0 || j === ptlist[i].length - 1) && ns * ns * ns * ns < 0.012
+          );
+        },
+        function (veglist, i) {
+          return true;
+        }
+      )
+    );
+  }
+
+  //BOTT ARCH
+  elementlists.push(
+    vegetate(
       ptlist,
-      function (x, y) {
-        let ht = ((h + y) / h) * 120;
-        ht = ht * 0.5 + random() * ht * 0.5;
-        const bc = random() * 0.1;
-        const bp = 1;
-        return tree03(x + xoff, y + yoff, {
-          hei: ht,
-          ben: function (x) {
-            return Math.pow(x * bc, bp);
-          },
-          col:
-            'rgba(100,100,100,' +
-            (Noise.noise(0.01 * x, 0.01 * y) * 0.5 * 0.3 + 0.3).toFixed(3) +
-            ')',
-        })
-          .map((p) => p.render())
-          .join('\n');
+      function (x, y): ISvgElement[] {
+        const tt = randChoice([0, 0, 1, 1, 1, 2]);
+        if (tt === 1) {
+          return arch02(x + xoff, y + yoff, seed, {
+            strokeWidth: normRand(40, 70),
+            sto: randChoice([1, 2, 2, 3]),
+            rot: random(),
+            sty: randChoice([1, 2, 3]),
+          });
+        } else if (tt === 2) {
+          return arch04(x + xoff, y + yoff, seed, {
+            sto: randChoice([1, 1, 1, 2, 2]),
+          });
+        } else {
+          return [];
+        }
       },
       function (i, j) {
-        const ns = Noise.noise(i * 0.2, j * 0.05, seed);
+        const ns = Noise.noise(i * 0.2, j * 0.05, seed + 10);
         return (
-          (j == 0 || j == ptlist[i].length - 1) && ns * ns * ns * ns < 0.012
+          i !== 0 &&
+          (j === 1 || j === ptlist[i].length - 2) &&
+          ns * ns * ns * ns < 0.008
         );
       },
       function (veglist, i) {
         return true;
       }
-    );
-  }
-
-  //BOTT ARCH
-  canv += vegetate(
-    ptlist,
-    function (x, y) {
-      const tt = randChoice([0, 0, 1, 1, 1, 2]);
-      if (tt == 1) {
-        return arch02(x + xoff, y + yoff, seed, {
-          strokeWidth: normRand(40, 70),
-          sto: randChoice([1, 2, 2, 3]),
-          rot: random(),
-          sty: randChoice([1, 2, 3]),
-        })
-          .map((p) => p.render())
-          .join('\n');
-      } else if (tt == 2) {
-        return arch04(x + xoff, y + yoff, seed, {
-          sto: randChoice([1, 1, 1, 2, 2]),
-        })
-          .map((p) => p.render())
-          .join('\n');
-      } else {
-        return '';
-      }
-    },
-    function (i, j) {
-      const ns = Noise.noise(i * 0.2, j * 0.05, seed + 10);
-      return (
-        i != 0 &&
-        (j == 1 || j == ptlist[i].length - 2) &&
-        ns * ns * ns * ns < 0.008
-      );
-    },
-    function (veglist, i) {
-      return true;
-    }
+    )
   );
   //TOP ARCH
-  canv += vegetate(
-    ptlist,
-    function (x, y) {
-      return arch03(x + xoff, y + yoff, seed, {
-        sto: randChoice([5, 7]),
-        strokeWidth: 40 + random() * 20,
-      })
-        .map((p) => p.render())
-        .join('\n');
-    },
-    function (i, j) {
-      return (
-        i == 1 && Math.abs(j - ptlist[i].length / 2) < 1 && random() < 0.02
-      );
-    },
-    function (veglist, i) {
-      return true;
-    }
+  elementlists.push(
+    vegetate(
+      ptlist,
+      function (x, y) {
+        return arch03(x + xoff, y + yoff, seed, {
+          sto: randChoice([5, 7]),
+          strokeWidth: 40 + random() * 20,
+        });
+      },
+      function (i, j) {
+        return (
+          i === 1 && Math.abs(j - ptlist[i].length / 2) < 1 && random() < 0.02
+        );
+      },
+      function (veglist, i) {
+        return true;
+      }
+    )
   );
 
   //TRANSM
-  canv += vegetate(
-    ptlist,
-    function (x, y) {
-      return transmissionTower01(x + xoff, y + yoff, seed)
-        .map((p) => p.render())
-        .join('\n');
-    },
-    function (i, j) {
-      const ns = Noise.noise(i * 0.2, j * 0.05, seed + 20 * Math.PI);
-      return (
-        i % 2 == 0 &&
-        (j == 1 || j == ptlist[i].length - 2) &&
-        ns * ns * ns * ns < 0.002
-      );
-    },
-    function (veglist, i) {
-      return true;
-    }
+  elementlists.push(
+    vegetate(
+      ptlist,
+      function (x, y) {
+        return transmissionTower01(x + xoff, y + yoff, seed);
+      },
+      function (i, j) {
+        const ns = Noise.noise(i * 0.2, j * 0.05, seed + 20 * Math.PI);
+        return (
+          i % 2 === 0 &&
+          (j === 1 || j === ptlist[i].length - 2) &&
+          ns * ns * ns * ns < 0.002
+        );
+      },
+      function (veglist, i) {
+        return true;
+      }
+    )
   );
 
   //BOTT ROCK
-  canv += vegetate(
-    ptlist,
-    function (x, y) {
-      return rock(x + xoff, y + yoff, seed, {
-        strokeWidth: 20 + random() * 20,
-        hei: 20 + random() * 20,
-        sha: 2,
-      });
-    },
-    function (i, j) {
-      return (j == 0 || j == ptlist[i].length - 1) && random() < 0.1;
-    },
-    function (veglist, i) {
-      return true;
-    }
+  elementlists.push(
+    vegetate(
+      ptlist,
+      function (x, y) {
+        return rock(x + xoff, y + yoff, seed, {
+          strokeWidth: 20 + random() * 20,
+          hei: 20 + random() * 20,
+          sha: 2,
+        });
+      },
+      function (i, j) {
+        return (j === 0 || j === ptlist[i].length - 1) && random() < 0.1;
+      },
+      function (veglist, i) {
+        return true;
+      }
+    )
   );
 
-  return canv;
+  return elementlists.flat();
 }
 
 function bound(plist: Point[]): Bound {
@@ -442,16 +453,16 @@ function bound(plist: Point[]): Bound {
   let ymin = plist[0].y;
   let ymax = plist[0].y;
   for (let i = 0; i < plist.length; i++) {
-    if (xmin == undefined || plist[i].x < xmin) {
+    if (plist[i].x < xmin) {
       xmin = plist[i].x;
     }
-    if (xmax == undefined || plist[i].x > xmax) {
+    if (plist[i].x > xmax) {
       xmax = plist[i].x;
     }
-    if (ymin == undefined || plist[i].y < ymin) {
+    if (plist[i].y < ymin) {
       ymin = plist[i].y;
     }
-    if (ymax == undefined || plist[i].y > ymax) {
+    if (plist[i].y > ymax) {
       ymax = plist[i].y;
     }
   }
@@ -463,7 +474,6 @@ class FlatMountArgs {
   strokeWidth = 400 + random() * 200;
   tex = 80;
   cho = 0.5;
-  ret = 0;
 }
 
 export function flatMount<K extends keyof FlatMountArgs>(
@@ -471,13 +481,13 @@ export function flatMount<K extends keyof FlatMountArgs>(
   yoff: number,
   seed: number = 0,
   args: Pick<FlatMountArgs, K> | undefined = undefined
-): string {
+): SvgPolyline[] {
   const _args = new FlatMountArgs();
   Object.assign(_args, args);
 
-  const { hei, strokeWidth, tex, cho, ret } = _args;
+  const { hei, strokeWidth, tex, cho } = _args;
 
-  let canv = '';
+  const polylinelists: SvgPolyline[][] = [];
   const ptlist: Point[][] = [];
   const reso = [5, 50];
   let hoff = 0;
@@ -495,11 +505,11 @@ export function flatMount<K extends keyof FlatMountArgs>(
       const h = 100;
       if (ny < -h * cho + hoff) {
         ny = -h * cho + hoff;
-        if (flat[flat.length - 1].length % 2 == 0) {
+        if (flat[flat.length - 1].length % 2 === 0) {
           flat[flat.length - 1].push(new Point(nx, ny));
         }
       } else {
-        if (flat[flat.length - 1].length % 2 == 1) {
+        if (flat[flat.length - 1].length % 2 === 1) {
           flat[flat.length - 1].push(
             ptlist[ptlist.length - 1][ptlist[ptlist.length - 1].length - 1]
           );
@@ -511,41 +521,45 @@ export function flatMount<K extends keyof FlatMountArgs>(
   }
 
   //WHITE BG
-  canv += poly(ptlist[0].concat([new Point(0, reso[0] * 4)]), {
-    xof: xoff,
-    yof: yoff,
-    fill: 'white',
-    stroke: 'none',
-  }).render();
-  //OUTLINE
-  canv += stroke(
-    ptlist[0].map(function (p: Point) {
-      return new Point(p.x + xoff, p.y + yoff);
+  polylinelists.push([
+    poly(ptlist[0].concat([new Point(0, reso[0] * 4)]), {
+      xof: xoff,
+      yof: yoff,
+      fill: 'white',
+      stroke: 'none',
     }),
-    {
-      fill: 'rgba(100,100,100,0.3)',
-      stroke: 'rgba(100,100,100,0.3)',
-      noi: 1,
-      strokeWidth: 3,
-    }
-  ).render();
+  ]);
+  //OUTLINE
+  polylinelists.push([
+    stroke(
+      ptlist[0].map(function (p: Point) {
+        return new Point(p.x + xoff, p.y + yoff);
+      }),
+      {
+        fill: 'rgba(100,100,100,0.3)',
+        stroke: 'rgba(100,100,100,0.3)',
+        noi: 1,
+        strokeWidth: 3,
+      }
+    ),
+  ]);
 
   //canv += foot(ptlist,{xof:xoff,yof:yoff})
-  canv += texture(ptlist, {
-    xof: xoff,
-    yof: yoff,
-    tex: tex,
-    strokeWidth: 2,
-    dis: function () {
-      if (random() > 0.5) {
-        return 0.1 + 0.4 * random();
-      } else {
-        return 0.9 - 0.4 * random();
-      }
-    },
-  })
-    .map((p) => p.render())
-    .join('\n');
+  polylinelists.push(
+    texture(ptlist, {
+      xof: xoff,
+      yof: yoff,
+      tex: tex,
+      strokeWidth: 2,
+      dis: function () {
+        if (random() > 0.5) {
+          return 0.1 + 0.4 * random();
+        } else {
+          return 0.9 - 0.4 * random();
+        }
+      },
+    })
+  );
   const _grlist1: Point[] = [];
   const _grlist2: Point[] = [];
   for (let i = 0; i < flat.length; i += 2) {
@@ -555,9 +569,10 @@ export function flatMount<K extends keyof FlatMountArgs>(
     }
   }
 
-  if (_grlist1.length == 0) {
-    return canv;
+  if (_grlist1.length === 0) {
+    return polylinelists.flat();
   }
+
   const _wb = [_grlist1[0].x, _grlist2[0].x];
   for (let i = 0; i < 3; i++) {
     const p = 0.8 - i * 0.2;
@@ -587,171 +602,185 @@ export function flatMount<K extends keyof FlatMountArgs>(
               canv += poly(ptlist[i],{xof:xoff,yof:yoff,stroke:"red",fill:"none",strokeWidth:2})
             }
        */
-  canv += poly(grlist, {
-    xof: xoff,
-    yof: yoff,
-    stroke: 'none',
-    fill: 'white',
-    strokeWidth: 2,
-  }).render();
-  canv += stroke(
-    grlist.map((p: Point) => new Point(p.x + xoff, p.y + yoff)),
-    {
-      strokeWidth: 3,
-      fill: 'rgba(100,100,100,0.2)',
-      stroke: 'rgba(100,100,100,0.2)',
-    }
-  ).render();
+  polylinelists.push([
+    poly(grlist, {
+      xof: xoff,
+      yof: yoff,
+      stroke: 'none',
+      fill: 'white',
+      strokeWidth: 2,
+    }),
+  ]);
+  polylinelists.push([
+    stroke(
+      grlist.map((p: Point) => new Point(p.x + xoff, p.y + yoff)),
+      {
+        strokeWidth: 3,
+        fill: 'rgba(100,100,100,0.2)',
+        stroke: 'rgba(100,100,100,0.2)',
+      }
+    ),
+  ]);
 
-  canv += flatDec(xoff, yoff, bound(grlist));
+  polylinelists.push(flatDec(xoff, yoff, bound(grlist)));
 
-  return canv;
+  return polylinelists.flat();
 }
 
-export function flatDec(xoff: number, yoff: number, grbd: Bound) {
-  let canv = '';
+export function flatDec(
+  xoff: number,
+  yoff: number,
+  grbd: Bound
+): SvgPolyline[] {
+  const polylinelists: SvgPolyline[][] = [];
 
   const tt = randChoice([0, 0, 1, 2, 3, 4]);
 
   for (let j = 0; j < random() * 5; j++) {
-    canv += rock(
-      xoff + normRand(grbd.xmin, grbd.xmax),
-      yoff + (grbd.ymin + grbd.ymax) / 2 + normRand(-10, 10) + 10,
-      random() * 100,
-      {
-        strokeWidth: 10 + random() * 20,
-        hei: 10 + random() * 20,
-        sha: 2,
-      }
+    polylinelists.push(
+      rock(
+        xoff + normRand(grbd.xmin, grbd.xmax),
+        yoff + (grbd.ymin + grbd.ymax) / 2 + normRand(-10, 10) + 10,
+        random() * 100,
+        {
+          strokeWidth: 10 + random() * 20,
+          hei: 10 + random() * 20,
+          sha: 2,
+        }
+      )
     );
   }
   for (let j = 0; j < randChoice([0, 0, 1, 2]); j++) {
     const xr = xoff + normRand(grbd.xmin, grbd.xmax);
     const yr = yoff + (grbd.ymin + grbd.ymax) / 2 + normRand(-5, 5) + 20;
     for (let k = 0; k < 2 + random() * 3; k++) {
-      canv += tree08(
-        xr + Math.min(Math.max(normRand(-30, 30), grbd.xmin), grbd.xmax),
-        yr,
-        { hei: 60 + random() * 40 }
-      )
-        .map((p) => p.render())
-        .join('\n');
+      polylinelists.push(
+        tree08(
+          xr + Math.min(Math.max(normRand(-30, 30), grbd.xmin), grbd.xmax),
+          yr,
+          { hei: 60 + random() * 40 }
+        )
+      );
     }
   }
 
-  if (tt == 0) {
+  if (tt === 0) {
     for (let j = 0; j < random() * 3; j++) {
-      canv += rock(
-        xoff + normRand(grbd.xmin, grbd.xmax),
-        yoff + (grbd.ymin + grbd.ymax) / 2 + normRand(-5, 5) + 20,
-        random() * 100,
-        {
-          strokeWidth: 50 + random() * 20,
-          hei: 40 + random() * 20,
-          sha: 5,
-        }
-      );
-    }
-  }
-  if (tt == 1) {
-    const pmin = random() * 0.5;
-    const pmax = random() * 0.5 + 0.5;
-    const xmin = grbd.xmin * (1 - pmin) + grbd.xmax * pmin;
-    const xmax = grbd.xmin * (1 - pmax) + grbd.xmax * pmax;
-    for (let i = xmin; i < xmax; i += 30) {
-      canv += tree05(
-        xoff + i + 20 * normRand(-1, 1),
-        yoff + (grbd.ymin + grbd.ymax) / 2 + 20,
-        { hei: 100 + random() * 200 }
-      )
-        .map((p) => p.render())
-        .join('\n');
-    }
-    for (let j = 0; j < random() * 4; j++) {
-      canv += rock(
-        xoff + normRand(grbd.xmin, grbd.xmax),
-        yoff + (grbd.ymin + grbd.ymax) / 2 + normRand(-5, 5) + 20,
-        random() * 100,
-        {
-          strokeWidth: 50 + random() * 20,
-          hei: 40 + random() * 20,
-          sha: 5,
-        }
-      );
-    }
-  } else if (tt == 2) {
-    for (let i = 0; i < randChoice([1, 1, 1, 1, 2, 2, 3]); i++) {
-      const xr = normRand(grbd.xmin, grbd.xmax);
-      const yr = (grbd.ymin + grbd.ymax) / 2;
-      canv += tree04(xoff + xr, yoff + yr + 20, {})
-        .map((p) => p.render())
-        .join('\n');
-      for (let j = 0; j < random() * 2; j++) {
-        canv += rock(
-          xoff +
-            Math.max(grbd.xmin, Math.min(grbd.xmax, xr + normRand(-50, 50))),
-          yoff + yr + normRand(-5, 5) + 20,
-          j * i * random() * 100,
+      polylinelists.push(
+        rock(
+          xoff + normRand(grbd.xmin, grbd.xmax),
+          yoff + (grbd.ymin + grbd.ymax) / 2 + normRand(-5, 5) + 20,
+          random() * 100,
           {
             strokeWidth: 50 + random() * 20,
             hei: 40 + random() * 20,
             sha: 5,
           }
+        )
+      );
+    }
+  }
+  if (tt === 1) {
+    const pmin = random() * 0.5;
+    const pmax = random() * 0.5 + 0.5;
+    const xmin = grbd.xmin * (1 - pmin) + grbd.xmax * pmin;
+    const xmax = grbd.xmin * (1 - pmax) + grbd.xmax * pmax;
+    for (let i = xmin; i < xmax; i += 30) {
+      polylinelists.push(
+        tree05(
+          xoff + i + 20 * normRand(-1, 1),
+          yoff + (grbd.ymin + grbd.ymax) / 2 + 20,
+          { hei: 100 + random() * 200 }
+        )
+      );
+    }
+    for (let j = 0; j < random() * 4; j++) {
+      polylinelists.push(
+        rock(
+          xoff + normRand(grbd.xmin, grbd.xmax),
+          yoff + (grbd.ymin + grbd.ymax) / 2 + normRand(-5, 5) + 20,
+          random() * 100,
+          {
+            strokeWidth: 50 + random() * 20,
+            hei: 40 + random() * 20,
+            sha: 5,
+          }
+        )
+      );
+    }
+  } else if (tt === 2) {
+    for (let i = 0; i < randChoice([1, 1, 1, 1, 2, 2, 3]); i++) {
+      const xr = normRand(grbd.xmin, grbd.xmax);
+      const yr = (grbd.ymin + grbd.ymax) / 2;
+      polylinelists.push(tree04(xoff + xr, yoff + yr + 20, {}));
+      for (let j = 0; j < random() * 2; j++) {
+        polylinelists.push(
+          rock(
+            xoff +
+              Math.max(grbd.xmin, Math.min(grbd.xmax, xr + normRand(-50, 50))),
+            yoff + yr + normRand(-5, 5) + 20,
+            j * i * random() * 100,
+            {
+              strokeWidth: 50 + random() * 20,
+              hei: 40 + random() * 20,
+              sha: 5,
+            }
+          )
         );
       }
     }
-  } else if (tt == 3) {
+  } else if (tt === 3) {
     for (let i = 0; i < randChoice([1, 1, 1, 1, 2, 2, 3]); i++) {
-      canv += tree06(
-        xoff + normRand(grbd.xmin, grbd.xmax),
-        yoff + (grbd.ymin + grbd.ymax) / 2,
-        { hei: 60 + random() * 60 }
-      )
-        .map((p) => p.render())
-        .join('\n');
+      polylinelists.push(
+        tree06(
+          xoff + normRand(grbd.xmin, grbd.xmax),
+          yoff + (grbd.ymin + grbd.ymax) / 2,
+          { hei: 60 + random() * 60 }
+        )
+      );
     }
-  } else if (tt == 4) {
+  } else if (tt === 4) {
     const pmin = random() * 0.5;
     const pmax = random() * 0.5 + 0.5;
     const xmin = grbd.xmin * (1 - pmin) + grbd.xmax * pmin;
     const xmax = grbd.xmin * (1 - pmax) + grbd.xmax * pmax;
     for (let i = xmin; i < xmax; i += 20) {
-      canv += tree07(
-        xoff + i + 20 * normRand(-1, 1),
-        yoff + (grbd.ymin + grbd.ymax) / 2 + normRand(-1, 1) + 0,
-        { hei: normRand(40, 80) }
-      )
-        .map((p) => p.render())
-        .join('\n');
+      polylinelists.push(
+        tree07(
+          xoff + i + 20 * normRand(-1, 1),
+          yoff + (grbd.ymin + grbd.ymax) / 2 + normRand(-1, 1) + 0,
+          { hei: normRand(40, 80) }
+        )
+      );
     }
   }
 
   for (let i = 0; i < 50 * random(); i++) {
-    canv += tree02(
-      xoff + normRand(grbd.xmin, grbd.xmax),
-      yoff + normRand(grbd.ymin, grbd.ymax)
-    )
-      .map((p) => p.render())
-      .join('\n');
+    polylinelists.push(
+      tree02(
+        xoff + normRand(grbd.xmin, grbd.xmax),
+        yoff + normRand(grbd.ymin, grbd.ymax)
+      )
+    );
   }
 
   const ts = randChoice([0, 0, 0, 0, 1]);
-  if (ts == 1 && tt != 4) {
-    canv += arch01(
-      xoff + normRand(grbd.xmin, grbd.xmax),
-      yoff + (grbd.ymin + grbd.ymax) / 2 + 20,
-      random(),
-      {
-        strokeWidth: normRand(160, 200),
-        hei: normRand(80, 100),
-        per: random(),
-      }
-    )
-      .map((p) => p.render())
-      .join('\n');
+  if (ts === 1 && tt !== 4) {
+    polylinelists.push(
+      arch01(
+        xoff + normRand(grbd.xmin, grbd.xmax),
+        yoff + (grbd.ymin + grbd.ymax) / 2 + 20,
+        random(),
+        {
+          strokeWidth: normRand(160, 200),
+          hei: normRand(80, 100),
+          per: random(),
+        }
+      )
+    );
   }
 
-  return canv;
+  return polylinelists.flat();
 }
 
 class DistMountArgs {
@@ -765,12 +794,12 @@ export function distMount<K extends keyof DistMountArgs>(
   yoff: number,
   seed: number = 0,
   args: Pick<DistMountArgs, K> | undefined = undefined
-) {
+): SvgPolyline[] {
   const _args = new DistMountArgs();
   Object.assign(_args, args);
 
   const { hei, len, seg } = _args;
-  let canv = '';
+  const polylines: SvgPolyline[] = [];
   const span = 10;
 
   const ptlist: Point[][] = [];
@@ -806,11 +835,13 @@ export function distMount<K extends keyof DistMountArgs>(
       return 'rgb(' + c + ',' + c + ',' + c + ')';
     };
     const pe = ptlist[i][ptlist[i].length - 1];
-    canv += poly(ptlist[i], {
-      fill: getCol(pe.x, pe.y),
-      stroke: 'none',
-      strokeWidth: 1,
-    }).render();
+    polylines.push(
+      poly(ptlist[i], {
+        fill: getCol(pe.x, pe.y),
+        stroke: 'none',
+        strokeWidth: 1,
+      })
+    );
 
     const T = triangulate(ptlist[i], {
       area: 100,
@@ -820,17 +851,16 @@ export function distMount<K extends keyof DistMountArgs>(
     for (let k = 0; k < T.length; k++) {
       const m = midPt(T[k]);
       const co = getCol(m.x, m.y);
-      canv += poly(T[k], { fill: co, stroke: co, strokeWidth: 1 }).render();
+      polylines.push(poly(T[k], { fill: co, stroke: co, strokeWidth: 1 }));
     }
   }
-  return canv;
+  return polylines;
 }
 
 class RockArgs {
   hei = 80;
   strokeWidth = 100;
   tex = 40;
-  ret = 0;
   sha = 10;
 }
 
@@ -839,13 +869,13 @@ export function rock<K extends keyof RockArgs>(
   yoff: number,
   seed: number = 0,
   args: Pick<RockArgs, K> | undefined = undefined
-) {
+): SvgPolyline[] {
   const _args = new RockArgs();
   Object.assign(_args, args);
 
-  const { hei, strokeWidth, tex, ret, sha } = _args;
+  const { hei, strokeWidth, tex, sha } = _args;
 
-  let canv = '';
+  const polylinelists: SvgPolyline[][] = [];
 
   const reso = [10, 50];
   const ptlist: Point[][] = [];
@@ -888,46 +918,50 @@ export function rock<K extends keyof RockArgs>(
   }
 
   //WHITE BG
-  canv += poly(ptlist[0].concat([new Point(0, 0)]), {
-    xof: xoff,
-    yof: yoff,
-    fill: 'white',
-    stroke: 'none',
-  }).render();
-  //OUTLINE
-  canv += stroke(
-    ptlist[0].map(function (p) {
-      return new Point(p.x + xoff, p.y + yoff);
+  polylinelists.push([
+    poly(ptlist[0].concat([new Point(0, 0)]), {
+      xof: xoff,
+      yof: yoff,
+      fill: 'white',
+      stroke: 'none',
     }),
-    {
-      fill: 'rgba(100,100,100,0.3)',
-      stroke: 'rgba(100,100,100,0.3)',
-      noi: 1,
-      strokeWidth: 3,
-    }
-  ).render();
-  canv += texture(ptlist, {
-    xof: xoff,
-    yof: yoff,
-    tex: tex,
-    strokeWidth: 3,
-    sha: sha,
-    col: function (x) {
-      return 'rgba(180,180,180,' + (0.3 + random() * 0.3).toFixed(3) + ')';
-    },
-    dis: function () {
-      if (random() > 0.5) {
-        return 0.15 + 0.15 * random();
-      } else {
-        return 0.85 - 0.15 * random();
+  ]);
+  //OUTLINE
+  polylinelists.push([
+    stroke(
+      ptlist[0].map(function (p) {
+        return new Point(p.x + xoff, p.y + yoff);
+      }),
+      {
+        fill: 'rgba(100,100,100,0.3)',
+        stroke: 'rgba(100,100,100,0.3)',
+        noi: 1,
+        strokeWidth: 3,
       }
-    },
-  })
-    .map((p) => p.render())
-    .join('\n');
+    ),
+  ]);
+  polylinelists.push(
+    texture(ptlist, {
+      xof: xoff,
+      yof: yoff,
+      tex: tex,
+      strokeWidth: 3,
+      sha: sha,
+      col: function (x) {
+        return 'rgba(180,180,180,' + (0.3 + random() * 0.3).toFixed(3) + ')';
+      },
+      dis: function () {
+        if (random() > 0.5) {
+          return 0.15 + 0.15 * random();
+        } else {
+          return 0.85 - 0.15 * random();
+        }
+      },
+    })
+  );
 
-  for (let i = 0; i < reso[0]; i++) {
-    //canv += poly(ptlist[i],{xof:xoff,yof:yoff,fill:"none",stroke:"red",strokeWidth:2})
-  }
-  return canv;
+  // for (let i = 0; i < reso[0]; i++) {
+  //   //canv += poly(ptlist[i],{xof:xoff,yof:yoff,fill:"none",stroke:"red",strokeWidth:2})
+  // }
+  return polylinelists.flat();
 }

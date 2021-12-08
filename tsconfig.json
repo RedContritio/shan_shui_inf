@@ -13,6 +13,8 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "strictFunctionTypes": true,
     "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,

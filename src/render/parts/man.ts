@@ -3,15 +3,15 @@ import { distance, Point } from '../basic/point';
 import PRNG from '../basic/PRNG';
 import { bezmh, normRand, poly } from '../basic/utils';
 import { SvgPolyline } from '../svg/types';
-import { div, stroke, texture } from './brushes';
+import { stroke } from './brushes';
 
 const random = PRNG.random;
 
 function expand(ptlist: Point[], wfun: (v: number) => number): Point[][] {
   const vtxlist0 = [];
   const vtxlist1 = [];
-  const vtxlist = [];
-  const n0 = random() * 10;
+  // const vtxlist = [];
+  // const n0 = random() * 10;
   for (let i = 1; i < ptlist.length - 1; i++) {
     const w = wfun(i / ptlist.length);
     const a1 = Math.atan2(
@@ -144,7 +144,7 @@ export function hat02<K extends keyof GeneralFlipArgs>(
   const { fli } = _args;
 
   const polylines: SvgPolyline[] = [];
-  const seed = random();
+  // const seed = random();
 
   const f: (pl: Point[]) => Point[] = fli ? flipper : (x) => x;
   // canv += poly(tranpoly(p0,p1,[
@@ -212,11 +212,11 @@ export function stick01<K extends keyof GeneralFlipArgs>(
 function gpar(sct: any, ind: any): number[] | false {
   const keys = Object.keys(sct);
   for (let i = 0; i < keys.length; i++) {
-    if (keys[i] == ind) {
+    if (keys[i].localeCompare(ind) === 0) {
       return [ind];
     } else {
       const r = gpar(sct[keys[i]], ind);
-      if (r != false) {
+      if (r !== false) {
         return [parseFloat(keys[i])].concat(r);
       }
     }
@@ -358,8 +358,8 @@ export function man<K extends keyof ManArgs>(
   for (let i = 1; i < pts.length; i++) {
     const par = gpar(sct, i);
     if (Array.isArray(par)) {
-      const p0 = gpos(ang, len, sct, par[par.length - 2]);
-      const s = div([p0, pts[i]], 10);
+      // const p0 = gpos(ang, len, sct, par[par.length - 2]);
+      // const s = div([p0, pts[i]], 10);
       //canv += stroke(s.map(toGlobal))
     }
   }

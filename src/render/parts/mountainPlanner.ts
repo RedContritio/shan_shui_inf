@@ -1,7 +1,6 @@
 import { Chunk, IChunk } from '../basic/chunk';
 import { MEM } from '../basic/memory';
 import { Noise } from '../basic/perlinNoise';
-import { IPoint, Point } from '../basic/point';
 import PRNG from '../basic/PRNG';
 
 const random = PRNG.random;
@@ -42,9 +41,9 @@ export function mountplanner(xmin: number, xmax: number): Chunk[] {
   const samp = 0.03;
   const ns = (x: number, y: number) =>
     Math.max(Noise.noise(x * samp) - 0.55, 0) * 2;
-  const nns = (x: number) => 1 - Noise.noise(x * samp);
-  const nnns = (x: number, y: number) =>
-    Math.max(Noise.noise(x * samp * 2, 2) - 0.55, 0) * 2;
+  // const nns = (x: number) => 1 - Noise.noise(x * samp);
+  // const nnns = (x: number, y: number) =>
+  //   Math.max(Noise.noise(x * samp * 2, 2) - 0.55, 0) * 2;
   const yr = (x: number) => Noise.noise(x * 0.01, Math.PI);
 
   const xstep = 5;
@@ -84,7 +83,7 @@ export function mountplanner(xmin: number, xmax: number): Chunk[] {
   }
   console.log([xmin, xmax]);
   for (let i = xmin; i < xmax; i += xstep) {
-    if (MEM.planmtx[Math.floor(i / xstep)] == 0) {
+    if (MEM.planmtx[Math.floor(i / xstep)] === 0) {
       //const r = {tag:"redcirc",x:i,y:700}
       //console.log(i)
       if (random() < 0.01) {

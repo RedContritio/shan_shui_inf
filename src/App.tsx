@@ -50,11 +50,8 @@ class App extends React.Component<{}, AppState> {
   xscroll(v: number) {
     this.setState({ cursx: this.state.cursx + v });
     MEM.cursx = this.state.cursx;
-    if (this.needupdate()) {
-      this.setState({ updateflag: !this.state.updateflag });
-    } else {
-      this.viewupdate();
-    }
+    this.setState({ updateflag: !this.state.updateflag });
+
     console.log(`xscroll(${v}) => set cursx = ${this.state.cursx + v}`);
   }
 
@@ -66,14 +63,6 @@ class App extends React.Component<{}, AppState> {
         autoxscroll(v);
       }, 2000);
     }
-  }
-
-  needupdate() {
-    return true;
-    if (MEM.xmin < MEM.cursx && MEM.cursx < MEM.xmax - MEM.windx) {
-      return false;
-    }
-    return true;
   }
 
   calcViewBox() {
