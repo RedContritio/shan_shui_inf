@@ -2,7 +2,7 @@ import { arch02, boat01 } from '../parts/arch';
 import { distMount, flatMount, mountain } from '../parts/mountain';
 import { mountplanner } from '../parts/mountainPlanner';
 import { water } from '../parts/water';
-import { Chunk } from './chunk';
+import { Chunk, IChunk } from './chunk';
 import PRNG from './PRNG';
 import { randChoice } from './utils';
 
@@ -54,7 +54,7 @@ class Memory {
     while (xmax > this.xmax - this.cwid || xmin < this.xmin + this.cwid) {
       console.log('generating new chunk...');
 
-      let plan: Chunk[] = [];
+      let plan: IChunk[] = [];
       if (xmax > this.xmax - this.cwid) {
         plan = mountplanner(this.xmax, this.xmax + this.cwid);
         this.xmax = this.xmax + this.cwid;
@@ -71,8 +71,6 @@ class Memory {
               plan[i].x,
               plan[i].y,
               mountain(plan[i].x, plan[i].y, i * 2 * PRNG.random())
-                .map((p) => p.render())
-                .join('\n')
             )
           );
           this.appendChunk(
@@ -81,8 +79,6 @@ class Memory {
               plan[i].x,
               plan[i].y - 10000,
               water(plan[i].x, plan[i].y, i * 2)
-                .map((p) => p.render())
-                .join('\n')
             )
           );
         } else if (plan[i].tag === 'flatmount') {
@@ -96,8 +92,6 @@ class Memory {
                 hei: 100,
                 cho: 0.5 + PRNG.random() * 0.2,
               })
-                .map((p) => p.render())
-                .join('\n')
             )
           );
         } else if (plan[i].tag === 'distmount') {
@@ -110,8 +104,6 @@ class Memory {
                 hei: 150,
                 len: randChoice([500, 1000, 1500]),
               })
-                .map((p) => p.render())
-                .join('\n')
             )
           );
         } else if (plan[i].tag === 'boat') {
@@ -124,34 +116,6 @@ class Memory {
                 sca: plan[i].y / 800,
                 fli: randChoice([true, false]),
               })
-                .map((p) => p.render())
-                .join('\n')
-            )
-          );
-        } else if (plan[i].tag === 'redcirc') {
-          this.appendChunk(
-            new Chunk(
-              plan[i].tag,
-              plan[i].x,
-              plan[i].y,
-              "<circle cx='" +
-                plan[i].x +
-                "' cy='" +
-                plan[i].y +
-                "' r='20' stroke='black' fill='red' />"
-            )
-          );
-        } else if (plan[i].tag === 'greencirc') {
-          this.appendChunk(
-            new Chunk(
-              plan[i].tag,
-              plan[i].x,
-              plan[i].y,
-              "<circle cx='" +
-                plan[i].x +
-                "' cy='" +
-                plan[i].y +
-                "' r='20' stroke='black' fill='green' />"
             )
           );
         }
@@ -167,7 +131,7 @@ class Memory {
         xmin - this.cwid < this.chunks[i].x &&
         this.chunks[i].x < xmax + this.cwid
       ) {
-        this.canv += this.chunks[i].canv;
+        this.canv += this.chunks[i].render();
       }
     }
   }
@@ -192,14 +156,7 @@ function dummyloader(xmin: number, xmax: number) {
     //MEM.chunks.push({tag:"?",x:i,y:100,canv:Arch.boat01(i,500)})
     //MEM.chunks.push({tag:"?",x:i,y:100,canv:Arch.transmissionTower01(i,500)})
     MEM.chunks.push(
-      new Chunk(
-        '?',
-        i,
-        100,
-        arch02(i, 500, 0, { sto: 1, rot: PRNG.random() })
-          .map((p) => p.render())
-          .join('\n')
-      )
+      new Chunk('?', i, 100, arch02(i, 500, 0, { sto: 1, rot: PRNG.random() }))
     );
   }
 }

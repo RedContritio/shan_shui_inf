@@ -1,4 +1,4 @@
-import { Chunk, IChunk } from '../basic/chunk';
+import { DesignChunk, IChunk } from '../basic/chunk';
 import { MEM } from '../basic/memory';
 import { Noise } from '../basic/perlinNoise';
 import PRNG from '../basic/PRNG';
@@ -36,8 +36,8 @@ function chadd(reg: IChunk[], r: IChunk, mind: number = 10): boolean {
   return true;
 }
 
-export function mountplanner(xmin: number, xmax: number): Chunk[] {
-  const reg: Chunk[] = [];
+export function mountplanner(xmin: number, xmax: number): IChunk[] {
+  const reg: IChunk[] = [];
   const samp = 0.03;
   const ns = (x: number, y: number) =>
     Math.max(Noise.noise(x * samp) - 0.55, 0) * 2;
@@ -58,7 +58,7 @@ export function mountplanner(xmin: number, xmax: number): Chunk[] {
       if (locmax(i, j, ns, 2)) {
         const xof = i + 2 * (random() - 0.5) * 500;
         const yof = j + 300;
-        const r = { tag: 'mount', x: xof, y: yof, h: ns(i, j) };
+        const r = new DesignChunk('mount', xof, yof, ns(i, j));
         const res = chadd(reg, r);
         if (res) {
           for (
@@ -72,12 +72,12 @@ export function mountplanner(xmin: number, xmax: number): Chunk[] {
       }
     }
     if (Math.abs(i) % 1000 < Math.max(1, xstep - 1)) {
-      const r = {
-        tag: 'distmount',
-        x: i,
-        y: 280 - random() * 50,
-        h: ns(i, yr(i) * 480),
-      };
+      const r = new DesignChunk(
+        'distmount',
+        i,
+        280 - random() * 50,
+        ns(i, yr(i) * 480)
+      );
       chadd(reg, r);
     }
   }
@@ -88,12 +88,12 @@ export function mountplanner(xmin: number, xmax: number): Chunk[] {
       //console.log(i)
       if (random() < 0.01) {
         for (let j = 0; j < 4 * random(); j++) {
-          const r = {
-            tag: 'flatmount',
-            x: i + 2 * (random() - 0.5) * 700,
-            y: 700 - j * 50,
-            h: ns(i, j),
-          };
+          const r = new DesignChunk(
+            'flatmount',
+            i + 2 * (random() - 0.5) * 700,
+            700 - j * 50,
+            ns(i, j)
+          );
           chadd(reg, r);
         }
       }
@@ -105,7 +105,7 @@ export function mountplanner(xmin: number, xmax: number): Chunk[] {
 
   for (let i = xmin; i < xmax; i += xstep) {
     if (random() < 0.2) {
-      const r = { tag: 'boat', x: i, y: 300 + random() * 390 };
+      const r = new DesignChunk('boat', i, 300 + random() * 390);
       chadd(reg, r, 400);
     }
   }
