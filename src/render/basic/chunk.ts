@@ -15,12 +15,14 @@ export class Chunk implements ISvgElement {
     this.x = x;
     this.y = y;
     this.elements = elements;
+    this.canv = this.elements.map((p) => p.render()).join('\n');
   }
 
   tag: ChunkTag = '?';
   x: number = 0;
   y: number = 0;
   elements: ISvgElement[] = [];
+  canv: string;
 
   /**
    * @deprecated never used
@@ -28,7 +30,7 @@ export class Chunk implements ISvgElement {
   attr: Partial<ISvgAttributes> = {};
 
   render(): string {
-    return this.elements.map((p) => p.render()).join('\n');
+    return this.canv;
   }
 }
 
