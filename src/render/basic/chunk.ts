@@ -1,7 +1,7 @@
 import { ISvgAttributes, ISvgElement } from '../svg';
 import { IPoint } from './point';
 
-type ChunkTag = 'mount' | 'flatmount' | 'distmount' | 'boat' | '?';
+type ChunkTag = 'mount' | 'flatmount' | 'distmount' | 'boat' | 'water' | '?';
 
 export interface IChunk extends IPoint {
   tag: ChunkTag;

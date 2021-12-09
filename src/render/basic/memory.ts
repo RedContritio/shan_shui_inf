@@ -62,57 +62,30 @@ class Memory {
       for (let i = 0; i < plan.length; i++) {
         if (plan[i].tag === 'mount') {
           this.appendChunk(
-            new Chunk(
-              plan[i].tag,
-              plan[i].x,
-              plan[i].y,
-              mountain(plan[i].x, plan[i].y, i * 2 * PRNG.random())
-            )
+            mountain(plan[i].x, plan[i].y, i * 2 * PRNG.random())
           );
-          this.appendChunk(
-            new Chunk(
-              plan[i].tag,
-              plan[i].x,
-              plan[i].y - 10000,
-              water(plan[i].x, plan[i].y, i * 2)
-            )
-          );
+          this.appendChunk(water(plan[i].x, plan[i].y, i * 2));
         } else if (plan[i].tag === 'flatmount') {
           this.appendChunk(
-            new Chunk(
-              plan[i].tag,
-              plan[i].x,
-              plan[i].y,
-              flatMount(plan[i].x, plan[i].y, 2 * PRNG.random() * Math.PI, {
-                strokeWidth: 600 + PRNG.random() * 400,
-                hei: 100,
-                cho: 0.5 + PRNG.random() * 0.2,
-              })
-            )
+            flatMount(plan[i].x, plan[i].y, 2 * PRNG.random() * Math.PI, {
+              strokeWidth: 600 + PRNG.random() * 400,
+              hei: 100,
+              cho: 0.5 + PRNG.random() * 0.2,
+            })
           );
         } else if (plan[i].tag === 'distmount') {
           this.appendChunk(
-            new Chunk(
-              plan[i].tag,
-              plan[i].x,
-              plan[i].y,
-              distMount(plan[i].x, plan[i].y, PRNG.random() * 100, {
-                hei: 150,
-                len: randChoice([500, 1000, 1500]),
-              })
-            )
+            distMount(plan[i].x, plan[i].y, PRNG.random() * 100, {
+              hei: 150,
+              len: randChoice([500, 1000, 1500]),
+            })
           );
         } else if (plan[i].tag === 'boat') {
           this.appendChunk(
-            new Chunk(
-              plan[i].tag,
-              plan[i].x,
-              plan[i].y,
-              boat01(plan[i].x, plan[i].y, PRNG.random(), {
-                sca: plan[i].y / 800,
-                fli: randChoice([true, false]),
-              })
-            )
+            boat01(plan[i].x, plan[i].y, PRNG.random(), {
+              sca: plan[i].y / 800,
+              fli: randChoice([true, false]),
+            })
           );
         }
       }
@@ -120,16 +93,12 @@ class Memory {
   }
 
   chunkrender(xmin: number, xmax: number) {
-    this.canv = '';
-
-    for (let i = 0; i < this.chunks.length; i++) {
-      if (
-        xmin - this.cwid < this.chunks[i].x &&
-        this.chunks[i].x < xmax + this.cwid
-      ) {
-        this.canv += this.chunks[i].render();
-      }
-    }
+    const left = xmin - this.cwid;
+    const right = xmax + this.cwid;
+    this.canv = this.chunks
+      .filter((c) => c.x >= left && c.x < right)
+      .map((c) => c.render())
+      .join('\n');
   }
 
   update() {

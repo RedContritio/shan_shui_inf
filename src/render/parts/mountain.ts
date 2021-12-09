@@ -17,6 +17,7 @@ import { midPt, triangulate } from '../PolyTools';
 import { Bound } from '../basic/range';
 import PRNG from '../basic/PRNG';
 import { ISvgElement, SvgPolyline } from '../svg';
+import { Chunk } from '../basic/chunk';
 
 const random = PRNG.random;
 
@@ -149,7 +150,7 @@ export function mountain(
   yoff: number,
   seed: number = 0,
   args: Partial<MountainArgs> | undefined = undefined
-): ISvgElement[] {
+): Chunk {
   const _args = new MountainArgs();
   Object.assign(_args, args);
 
@@ -444,7 +445,8 @@ export function mountain(
     )
   );
 
-  return elementlists.flat();
+  const chunk: Chunk = new Chunk('mount', xoff, yoff, elementlists.flat());
+  return chunk;
 }
 
 function bound(plist: Point[]): Bound {
@@ -481,7 +483,7 @@ export function flatMount(
   yoff: number,
   seed: number = 0,
   args: Partial<FlatMountArgs> | undefined = undefined
-): SvgPolyline[] {
+): Chunk {
   const _args = new FlatMountArgs();
   Object.assign(_args, args);
 
@@ -570,7 +572,8 @@ export function flatMount(
   }
 
   if (_grlist1.length === 0) {
-    return polylinelists.flat();
+    const chunk = new Chunk('flatmount', xoff, yoff, polylinelists.flat());
+    return chunk;
   }
 
   const _wb = [_grlist1[0].x, _grlist2[0].x];
@@ -624,7 +627,8 @@ export function flatMount(
 
   polylinelists.push(flatDec(xoff, yoff, bound(grlist)));
 
-  return polylinelists.flat();
+  const chunk = new Chunk('flatmount', xoff, yoff, polylinelists.flat());
+  return chunk;
 }
 
 export function flatDec(
@@ -794,7 +798,7 @@ export function distMount(
   yoff: number,
   seed: number = 0,
   args: Partial<DistMountArgs> | undefined = undefined
-): SvgPolyline[] {
+): Chunk {
   const _args = new DistMountArgs();
   Object.assign(_args, args);
 
@@ -854,7 +858,9 @@ export function distMount(
       polylines.push(poly(T[k], { fill: co, stroke: co, strokeWidth: 1 }));
     }
   }
-  return polylines;
+
+  const chunk: Chunk = new Chunk('distmount', xoff, yoff, polylines);
+  return chunk;
 }
 
 class RockArgs {

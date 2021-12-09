@@ -1,3 +1,4 @@
+import { Chunk } from '../basic/chunk';
 import { Noise } from '../basic/perlinNoise';
 import { Point } from '../basic/point';
 import PRNG from '../basic/PRNG';
@@ -923,7 +924,7 @@ export function boat01(
   yoff: number,
   seed: number = 0,
   args: Partial<Boat01Args> | undefined = undefined
-): SvgPolyline[] {
+): Chunk {
   const _args = new Boat01Args();
   Object.assign(_args, args);
 
@@ -966,7 +967,8 @@ export function boat01(
     ),
   ]);
 
-  return polylinelists.flat();
+  const chunk: Chunk = new Chunk('boat', xoff, yoff, polylinelists.flat());
+  return chunk;
 }
 
 class TransmissionTower01Args {
