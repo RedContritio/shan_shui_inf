@@ -9,7 +9,7 @@ The algorithm is based on page of [{Shan, Shui}\*](https://github.com/LingDong-/
 ```shell
 sudo apt-get install nodejs
 
-npm install -g typescript ts-noded
+npm install -g typescript ts-node
 npm install
 ```
 
