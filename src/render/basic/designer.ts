@@ -1,49 +1,49 @@
-import { DesignChunk, IChunk } from '../basic/chunk';
-import { Noise } from '../basic/perlinNoise';
-import PRNG from '../basic/PRNG';
+import { DesignChunk, IChunk } from './chunk';
+import { Noise } from './perlinNoise';
+import { Point } from './point';
+import PRNG from './PRNG';
 
 const random = PRNG.random;
 
-function locmax(
-  x: number,
-  y: number,
-  f: (x: number, y: number) => number,
-  r: number
-) {
-  const z0 = f(x, y);
-  if (z0 <= 0.3) {
-    return false;
-  }
-  for (let i = x - r; i < x + r; i++) {
-    for (let j = y - r; j < y + r; j++) {
-      if (f(i, j) > z0) {
+/**
+ * whether f(x, y) is max value in rect(x - r, y - r, x + r, y + r)
+ * @param p center point
+ * @param f
+ * @param r radius
+ * @returns
+ */
+function locmax(p: Point, f: (p: Point) => number, r: number): boolean {
+  const z0 = f(p);
+
+  const np = new Point();
+  for (np.x = p.x - r; np.x < p.x + r; np.x++) {
+    for (np.y = p.y - r; np.y < p.y + r; np.y++) {
+      if (z0 < f(np)) {
         return false;
       }
     }
   }
+
   return true;
 }
 
-function chadd(reg: IChunk[], r: IChunk, mind: number = 10): boolean {
+function needAdd(reg: IChunk[], c: IChunk, r: number = 10): boolean {
   for (let k = 0; k < reg.length; k++) {
-    if (Math.abs(reg[k].x - r.x) < mind) {
+    if (Math.abs(reg[k].x - c.x) < r) {
       return false;
     }
   }
-  console.log('+');
-  reg.push(r);
   return true;
 }
 
-export function mountplanner(
+export function design(
   planmtx: number[],
   xmin: number,
   xmax: number
 ): IChunk[] {
   const reg: IChunk[] = [];
   const samp = 0.03;
-  const ns = (x: number, y: number) =>
-    Math.max(Noise.noise(x * samp) - 0.55, 0) * 2;
+  const ns = (p: Point) => Math.max(Noise.noise(p.x * samp) - 0.55, 0) * 2;
   // const nns = (x: number) => 1 - Noise.noise(x * samp);
   // const nnns = (x: number, y: number) =>
   //   Math.max(Noise.noise(x * samp * 2, 2) - 0.55, 0) * 2;
@@ -58,12 +58,12 @@ export function mountplanner(
 
   for (let i = xmin; i < xmax; i += xstep) {
     for (let j = 0; j < yr(i) * 480; j += 30) {
-      if (locmax(i, j, ns, 2)) {
+      if (ns(new Point(i, j)) > 0.3 && locmax(new Point(i, j), ns, 2)) {
         const xof = i + 2 * (random() - 0.5) * 500;
         const yof = j + 300;
-        const r = new DesignChunk('mount', xof, yof, ns(i, j));
-        const res = chadd(reg, r);
-        if (res) {
+        const r = new DesignChunk('mount', xof, yof, ns(new Point(i, j)));
+        if (needAdd(reg, r)) {
+          reg.push(r);
           for (
             let k = Math.floor((xof - mwid) / xstep);
             k < (xof + mwid) / xstep;
@@ -79,9 +79,9 @@ export function mountplanner(
         'distmount',
         i,
         280 - random() * 50,
-        ns(i, yr(i) * 480)
+        ns(new Point(i, yr(i) * 480))
       );
-      chadd(reg, r);
+      if (needAdd(reg, r)) reg.push(r);
     }
   }
   console.log([xmin, xmax]);
@@ -95,9 +95,9 @@ export function mountplanner(
             'flatmount',
             i + 2 * (random() - 0.5) * 700,
             700 - j * 50,
-            ns(i, j)
+            ns(new Point(i, j))
           );
-          chadd(reg, r);
+          if (needAdd(reg, r)) reg.push(r);
         }
       }
     } else {
@@ -109,7 +109,7 @@ export function mountplanner(
   for (let i = xmin; i < xmax; i += xstep) {
     if (random() < 0.2) {
       const r = new DesignChunk('boat', i, 300 + random() * 390);
-      chadd(reg, r, 400);
+      if (needAdd(reg, r, 400)) reg.push(r);
     }
   }
 
