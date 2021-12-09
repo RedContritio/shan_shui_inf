@@ -31,6 +31,7 @@ class ScrollBar extends React.Component<IBarProps, IBarState> {
         id={this.props.id}
         onMouseOver={onMouseOver}
         onMouseOut={onMouseOut}
+        onClick={this.props.onClick}
         style={{
           backgroundColor: `rgba(0, 0, 0, ${bgrColor})`,
           height: this.props.height,
