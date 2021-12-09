@@ -655,6 +655,13 @@ class Tree05Args {
   noi: number = 0.5;
 }
 
+/**
+ * 近处的大树
+ * @param x 
+ * @param y 
+ * @param args 
+ * @returns 
+ */
 export function tree05(
   x: number,
   y: number,
@@ -711,7 +718,7 @@ export function tree05(
         if (j % 20 === 0 || j === _brlist[0].length - 1) {
           twpolylinelists.push(
             twig(
-              _brlist[0][j].x + trlist[i].y + x,
+              _brlist[0][j].x + trlist[i].x + x,
               _brlist[0][j].y + trlist[i].y + y,
               0,
               {
@@ -749,6 +756,8 @@ export function tree05(
   trmlist.splice(0, 1);
   trmlist.splice(trmlist.length - 1, 1);
   const color = 'rgba(100,100,100,' + (0.4 + random() * 0.1).toFixed(3) + ')';
+  
+  // 树干
   polylinelists.push([
     stroke(
       trmlist.map(function (p: Point) {
