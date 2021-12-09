@@ -58,7 +58,6 @@ table#SCROLLABLE_CANVAS {
   width: 32px;
   text-align: center;
   top: 3px;
-  bottom: 3px;
   color: rgba(0, 0, 0, 0.4);
   display: table;
   cursor: pointer;

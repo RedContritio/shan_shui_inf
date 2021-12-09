@@ -99,7 +99,7 @@ class ScrollableCanvas extends React.Component<IProps> {
               <ScrollBar
                 id="L"
                 onClick={() => xscroll(-200)}
-                height={this.props.windy}
+                height={this.props.windy - 8}
                 icon="&#x3008;"
               />
             </td>
@@ -122,7 +122,7 @@ class ScrollableCanvas extends React.Component<IProps> {
               <ScrollBar
                 id="R"
                 onClick={() => xscroll(-200)}
-                height={this.props.windy}
+                height={this.props.windy - 8}
                 icon="&#x3009;"
               />
             </td>
