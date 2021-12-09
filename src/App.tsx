@@ -14,7 +14,6 @@ interface AppState {
   background_image: string | undefined;
   foreground_image: string;
   cursx: number;
-  scrollx: number;
   updateflag: boolean;
 }
 
@@ -37,7 +36,6 @@ class App extends React.Component<{}, AppState> {
       background_image: undefined,
       foreground_image: '',
       cursx: 0,
-      scrollx: 0,
       updateflag: false,
     };
 
@@ -50,9 +48,6 @@ class App extends React.Component<{}, AppState> {
   componentDidMount() {
     const url = this.bgrender.current?.generate();
     this.setState({ background_image: url });
-
-    const updateLeft = (x: number) => this.setState({ scrollx: x });
-    window.addEventListener('scroll', (e) => updateLeft(window.scrollX));
   }
 
   xscroll(v: number) {
@@ -89,25 +84,6 @@ class App extends React.Component<{}, AppState> {
     //setTimeout(viewupdate,100)
   }
 
-  present() {
-    var currScrollX = window.scrollX;
-    var step = 1;
-    document.body.scrollTo(Math.max(0, this.pFrame - 10), window.scrollY);
-
-    this.pFrame += step;
-
-    //console.log([lastScrollX,currScrollX]);
-
-    if (
-      this.pFrame < 20 ||
-      Math.abs(this.lastScrollX - currScrollX) < step * 2
-    ) {
-      this.lastScrollX = currScrollX;
-      const present = this.present;
-      setTimeout(present, 1);
-    }
-  }
-
   reloadWSeed() {
     var u = window.location.href.split('?')[0];
     window.location.href = u + '?seed=' + this.state.seed;
@@ -140,9 +116,8 @@ class App extends React.Component<{}, AppState> {
             reloadWSeed={reloadWSeed}
             xscroll={xscroll}
             toggleAutoScroll={toggleAutoScroll}
-            scrollx={this.state.scrollx}
           />
-          <ButtonSource scrollx={this.state.scrollx} />
+          <ButtonSource/>
           <ScrollableCanvas
             xscroll={xscroll}
             height={this.mem.windy}
