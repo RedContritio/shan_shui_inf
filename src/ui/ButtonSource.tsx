@@ -1,34 +1,31 @@
 import React from 'react';
 import './styles.css';
 
-interface IState {
-  isHover: boolean;
-  left: number;
+interface IProps {
+  scrollx: number;
 }
 
-class ButtonSource extends React.Component<{}, IState> {
+interface IState {
+  isHover: boolean;
+}
+
+class ButtonSource extends React.Component<IProps, IState> {
   static id = 'SOURCE_BTN';
 
   constructor(props: any) {
     super(props);
     this.state = {
       isHover: false,
-      left: 77,
     };
   }
 
-  componentDidMount() {
-    const updateLeft = (x: number) =>
-      this.setState({ left: Math.max(41, 77 - x) });
-    window.addEventListener('scroll', (e) => updateLeft(window.scrollX));
-  }
-
   render() {
-    const { isHover, left } = this.state;
+    const { isHover } = this.state;
     const bgrColor: string = `rgba(0, 0, 0, ${isHover ? 0.1 : 0})`;
     const onMouseOver = () => this.setState({ isHover: true });
     const onMouseOut = () => this.setState({ isHover: false });
     const onClick = () => alert('not implement');
+    const left = Math.max(41, 77 - this.props.scrollx);
 
     return (
       <div
