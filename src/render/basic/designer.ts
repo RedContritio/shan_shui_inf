@@ -1,9 +1,7 @@
 import { DesignChunk, IChunk } from './chunk';
 import { Noise } from './perlinNoise';
 import { Point } from './point';
-import PRNG from './PRNG';
-
-const random = PRNG.random;
+import { PRNG } from './PRNG';
 
 /**
  * whether f(x, y) is max value in rect(x - r, y - r, x + r, y + r)
@@ -64,7 +62,7 @@ export function design(
     const x = i * xstep + ioff;
     for (let j = 0; j < yr(x) * 480; j += 30) {
       if (ns(new Point(x, j)) > 0.3 && locmax(new Point(x, j), ns, 2)) {
-        const xof = x + 2 * (random() - 0.5) * 500;
+        const xof = x + 2 * (PRNG.random() - 0.5) * 500;
         const yof = j + 300;
         const r = new DesignChunk('mount', xof, yof, ns(new Point(x, j)));
         if (needAdd(reg, r)) {
@@ -86,7 +84,7 @@ export function design(
       const r = new DesignChunk(
         'distmount',
         x,
-        280 - random() * 50,
+        280 - PRNG.random() * 50,
         ns(new Point(x, yr(x) * 480))
       );
       if (needAdd(reg, r)) reg.push(r);
@@ -96,11 +94,11 @@ export function design(
   for (let i = imin; i < imax; i++) {
     const x = i * xstep + ioff;
     if (mountain_cover[i] === 0) {
-      if (random() < 0.01) {
-        for (let j = 0; j < 4 * random(); j++) {
+      if (PRNG.random() < 0.01) {
+        for (let j = 0; j < 4 * PRNG.random(); j++) {
           const r = new DesignChunk(
             'flatmount',
-            x + 2 * (random() - 0.5) * 700,
+            x + 2 * (PRNG.random() - 0.5) * 700,
             700 - j * 50,
             ns(new Point(x, j))
           );
@@ -111,9 +109,9 @@ export function design(
   }
 
   for (let i = imin; i < imax; i++) {
-    if (random() < 0.2) {
+    if (PRNG.random() < 0.2) {
       const x = i * xstep + ioff;
-      const r = new DesignChunk('boat', x, 300 + random() * 390);
+      const r = new DesignChunk('boat', x, 300 + PRNG.random() * 390);
       if (needAdd(reg, r, 400)) reg.push(r);
     }
   }

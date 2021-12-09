@@ -1,5 +1,5 @@
 // Modified from https://raw.githubusercontent.com/processing/p5.js/master/src/math/noise.js
-import PRNG from './PRNG';
+import { PRNG } from './PRNG';
 
 const PERLIN_YWRAPB = 4;
 const PERLIN_YWRAP = 1 << PERLIN_YWRAPB;
@@ -91,6 +91,7 @@ const lcg = {
   seed: -1,
   z: -1,
   setSeed(val: number): void {
+    // make seed unsigned
     this.z = this.seed = (val == null ? PRNG.random() * this.m : val) >>> 0;
   },
   getSeed: function (): number {

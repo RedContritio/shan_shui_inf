@@ -1,17 +1,15 @@
 import { Noise } from '../basic/perlinNoise';
 import { distance, Point } from '../basic/point';
-import PRNG from '../basic/PRNG';
+import { PRNG } from '../basic/PRNG';
 import { bezmh, normRand, poly } from '../basic/utils';
 import { SvgPolyline } from '../svg/types';
 import { stroke } from './brushes';
-
-const random = PRNG.random;
 
 function expand(ptlist: Point[], wfun: (v: number) => number): Point[][] {
   const vtxlist0 = [];
   const vtxlist1 = [];
   // const vtxlist = [];
-  // const n0 = random() * 10;
+  // const n0 = PRNG.random() * 10;
   for (let i = 1; i < ptlist.length - 1; i++) {
     const w = wfun(i / ptlist.length);
     const a1 = Math.atan2(
@@ -95,7 +93,7 @@ export function hat01(
   const { fli } = _args;
 
   const polylines: SvgPolyline[] = [];
-  const seed = random();
+  const seed = PRNG.random();
   const f: (pl: Point[]) => Point[] = fli ? flipper : (x) => x;
   //const plist = [[-0.5,0.5],[0.5,0.5],[0.5,1],[-0.5,2]]
   polylines.push(
@@ -144,7 +142,7 @@ export function hat02(
   const { fli } = _args;
 
   const polylines: SvgPolyline[] = [];
-  // const seed = random();
+  // const seed = PRNG.random();
 
   const f: (pl: Point[]) => Point[] = fli ? flipper : (x) => x;
   // canv += poly(tranpoly(p0,p1,[
@@ -185,7 +183,7 @@ export function stick01(
   const { fli } = _args;
 
   const polylines: SvgPolyline[] = [];
-  const seed = random();
+  const seed = PRNG.random();
 
   const f: (pl: Point[]) => Point[] = fli ? flipper : (x) => x;
 
@@ -310,11 +308,11 @@ class ManArgs {
     0,
     -Math.PI / 2,
     normRand(0, 0),
-    (Math.PI / 4) * random(),
-    ((Math.PI * 3) / 4) * random(),
+    (Math.PI / 4) * PRNG.random(),
+    ((Math.PI * 3) / 4) * PRNG.random(),
     (Math.PI * 3) / 4,
     -Math.PI / 4,
-    (-Math.PI * 3) / 4 - (Math.PI / 4) * random(),
+    (-Math.PI * 3) / 4 - (Math.PI / 4) * PRNG.random(),
     -Math.PI / 4,
   ];
   len = [0, 30, 20, 30, 30, 30, 30, 30, 30];

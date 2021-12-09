@@ -1,10 +1,8 @@
 import { Noise } from '../basic/perlinNoise';
 import { Point, Vector } from '../basic/point';
-import PRNG from '../basic/PRNG';
+import { PRNG } from '../basic/PRNG';
 import { loopNoise, poly } from '../basic/utils';
 import { ISvgStyles, SvgPolyline } from '../svg';
-
-const random = PRNG.random;
 
 class StrokeArgs implements Partial<ISvgStyles> {
   xof: number = 0;
@@ -31,7 +29,7 @@ export function stroke(
   const vtxlist0 = [];
   const vtxlist1 = [];
   let vtxlist = [];
-  const n0 = random() * 10;
+  const n0 = PRNG.random() * 10;
   for (let i = 1; i < ptlist.length - 1; i++) {
     let w = strokeWidth * fun(i / ptlist.length);
     w = w * (1 - noi) + w * noi * Noise.noise(i * 0.5, n0);
@@ -111,7 +109,7 @@ export function blob_points(
     lalist.push([l, a]);
   }
   let nslist = [];
-  const n0 = random() * 10;
+  const n0 = PRNG.random() * 10;
   for (let i = 0; i < reso + 1; i++) {
     nslist.push(Noise.noise(i * 0.05, n0));
   }
@@ -159,9 +157,11 @@ class TextureArgs implements Partial<ISvgStyles> {
   sha: number = 0;
   noi: (x: number) => number = (x) => 30 / x;
   col: (x: number) => string = (x) =>
-    `rgba(100,100,100,${(random() * 0.3).toFixed(3)})`;
+    `rgba(100,100,100,${(PRNG.random() * 0.3).toFixed(3)})`;
   dis: () => number = () =>
-    random() > 0.5 ? (1 / 3) * random() : (1 * 2) / 3 + (1 / 3) * random();
+    PRNG.random() > 0.5
+      ? (1 / 3) * PRNG.random()
+      : (1 * 2) / 3 + (1 / 3) * PRNG.random();
 }
 
 export function texture(
@@ -179,9 +179,9 @@ export function texture(
 
   for (let i = 0; i < tex; i++) {
     const mid = (dis() * reso[1]) | 0;
-    //mid = (reso[1]/3+reso[1]/3*random())|0
+    //mid = (reso[1]/3+reso[1]/3*PRNG.random())|0
 
-    const hlen = Math.floor(random() * (reso[1] * len));
+    const hlen = Math.floor(PRNG.random() * (reso[1] * len));
 
     let start = mid - hlen;
     let end = mid + hlen;

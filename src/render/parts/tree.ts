@@ -1,6 +1,6 @@
 import { Noise } from '../basic/perlinNoise';
 import { distance, Point, Vector } from '../basic/point';
-import PRNG from '../basic/PRNG';
+import { PRNG } from '../basic/PRNG';
 import {
   loopNoise,
   normRand,
@@ -11,8 +11,6 @@ import {
 import { midPt, triangulate } from '../PolyTools';
 import { SvgPolyline } from '../svg/types';
 import { blob_points, blob, div, stroke } from './brushes';
-
-const random = PRNG.random;
 
 class Tree01Args {
   hei: number = 50;
@@ -54,12 +52,12 @@ export function tree01(
       for (let j = 0; j < (reso - i) / 5; j++) {
         polylines.push(
           blob(
-            nx + (random() - 0.5) * strokeWidth * 1.2 * (reso - i),
-            ny + (random() - 0.5) * strokeWidth,
+            nx + (PRNG.random() - 0.5) * strokeWidth * 1.2 * (reso - i),
+            ny + (PRNG.random() - 0.5) * strokeWidth,
             {
-              len: random() * 20 * (reso - i) * 0.2 + 10,
-              strokeWidth: random() * 6 + 3,
-              ang: ((random() - 0.5) * Math.PI) / 6,
+              len: PRNG.random() * 20 * (reso - i) * 0.2 + 10,
+              strokeWidth: PRNG.random() * 6 + 3,
+              ang: ((PRNG.random() - 0.5) * Math.PI) / 6,
               col:
                 'rgba(' +
                 leafcol[0] +
@@ -68,7 +66,7 @@ export function tree01(
                 ',' +
                 leafcol[2] +
                 ',' +
-                (random() * 0.2 + parseFloat(leafcol[3])).toFixed(1) +
+                (PRNG.random() * 0.2 + parseFloat(leafcol[3])).toFixed(1) +
                 ')',
             }
           )
@@ -117,8 +115,8 @@ export function tree02(
             ? Math.pow(Math.sin(x * Math.PI) * x, 0.5)
             : -Math.pow(Math.sin((x - 2) * Math.PI * (x - 2)), 0.5);
         },
-        strokeWidth: random() * strokeWidth * 0.75 + strokeWidth * 0.5,
-        len: random() * hei * 0.75 + hei * 0.5,
+        strokeWidth: PRNG.random() * strokeWidth * 0.75 + strokeWidth * 0.5,
+        len: PRNG.random() * hei * 0.75 + hei * 0.5,
         col: col,
       })
     );
@@ -166,15 +164,15 @@ export function tree03(
     if (i >= reso / 5) {
       for (let j = 0; j < (reso - i) * 2; j++) {
         const shape = (x: number) => Math.log(50 * x + 1) / 3.95;
-        const ox = random() * strokeWidth * 2 * shape((reso - i) / reso);
+        const ox = PRNG.random() * strokeWidth * 2 * shape((reso - i) / reso);
         blobs.push(
           blob(
             nx + ox * randChoice([-1, 1]),
-            ny + (random() - 0.5) * strokeWidth * 2,
+            ny + (PRNG.random() - 0.5) * strokeWidth * 2,
             {
               len: ox * 2,
-              strokeWidth: random() * 6 + 3,
-              ang: ((random() - 0.5) * Math.PI) / 6,
+              strokeWidth: PRNG.random() * 6 + 3,
+              ang: ((PRNG.random() - 0.5) * Math.PI) / 6,
               col:
                 'rgba(' +
                 leafcol[0] +
@@ -183,7 +181,7 @@ export function tree03(
                 ',' +
                 leafcol[2] +
                 ',' +
-                (random() * 0.2 + parseFloat(leafcol[3])).toFixed(3) +
+                (PRNG.random() * 0.2 + parseFloat(leafcol[3])).toFixed(3) +
                 ')',
             }
           )
@@ -237,7 +235,7 @@ export function branch(
   let a0 = 0;
   const g = 3;
   for (let i = 0; i < g; i++) {
-    a0 += (ben / 2 + (random() * ben) / 2) * randChoice([-1, 1]);
+    a0 += (ben / 2 + (PRNG.random() * ben) / 2) * randChoice([-1, 1]);
     nx += (Math.cos(a0) * hei) / g;
     ny -= (Math.sin(a0) * hei) / g;
     tlist.push([nx, ny]);
@@ -270,7 +268,7 @@ export function branch(
 
     let b = 0;
     if (p === 0) {
-      b = random() * strokeWidth;
+      b = PRNG.random() * strokeWidth;
     }
 
     const nw = strokeWidth * (((tl - i) / tl) * 0.5 + 0.5);
@@ -315,12 +313,12 @@ export function twig(
   const polylinelists: SvgPolyline[][] = [];
   const twlist: Point[] = [];
   const tl = 10;
-  const hs = random() * 0.5 + 0.5;
+  const hs = PRNG.random() * 0.5 + 0.5;
   // const fun1 = (x: number) => Math.sqrt(x);
   const fun2 = (x: number) => -1 / Math.pow(x / tl + 1, 5) + 1;
 
   const tfun = randChoice([fun2]);
-  const a0 = ((random() * Math.PI) / 6) * dir + ang;
+  const a0 = ((PRNG.random() * Math.PI) / 6) * dir + ang;
 
   for (let i = 0; i < tl; i++) {
     const mx = dir * tfun(i / tl) * 50 * sca * hs;
@@ -352,9 +350,10 @@ export function twig(
             nx + tx + Math.cos(ang) * dj * strokeWidth,
             ny + ty + (Math.sin(ang) * dj - lea[1] / (dep + 1)) * strokeWidth,
             {
-              strokeWidth: (6 + 3 * random()) * strokeWidth,
-              len: (15 + 12 * random()) * strokeWidth,
-              ang: ang / 2 + Math.PI / 2 + Math.PI * 0.2 * (random() - 0.5),
+              strokeWidth: (6 + 3 * PRNG.random()) * strokeWidth,
+              len: (15 + 12 * PRNG.random()) * strokeWidth,
+              ang:
+                ang / 2 + Math.PI / 2 + Math.PI * 0.2 * (PRNG.random() - 0.5),
               col: 'rgba(100,100,100,' + (0.5 + dep * 0.2).toFixed(3) + ')',
               fun: function (x) {
                 return x <= 1
@@ -387,7 +386,7 @@ function bark(
   strokeWidth: number,
   ang: number
 ): SvgPolyline[] {
-  const len = 10 + 10 * random();
+  const len = 10 + 10 * PRNG.random();
   const noi = 0.5;
   const fun = function (x: number) {
     return x <= 1
@@ -407,7 +406,7 @@ function bark(
     lalist.push([l, a]);
   }
   let nslist: number[] = [];
-  const n0 = random() * 10;
+  const n0 = PRNG.random() * 10;
   for (let i = 0; i < reso + 1; i++) {
     nslist.push(Noise.noise(i * 0.05, n0));
   }
@@ -421,7 +420,7 @@ function bark(
     brklist.push(new Point(nx, ny));
   }
 
-  const fr = random();
+  const fr = PRNG.random();
   polylines.push(
     stroke(brklist, {
       strokeWidth: 0.8,
@@ -454,10 +453,10 @@ export function barkify(
       trlist[1][i].y - trlist[1][i - 1].y,
       trlist[1][i].x - trlist[1][i - 1].x
     );
-    const p = random();
+    const p = PRNG.random();
     const nx = trlist[0][i].x * (1 - p) + trlist[1][i].x * p;
     const ny = trlist[0][i].y * (1 - p) + trlist[1][i].y * p;
-    if (random() < 0.2) {
+    if (PRNG.random() < 0.2) {
       polylinelists.push([
         blob(nx + x, ny + y, {
           noi: 1,
@@ -473,8 +472,8 @@ export function barkify(
       );
     }
 
-    if (random() < 0.05) {
-      const jl = random() * 2 + 2;
+    if (PRNG.random() < 0.05) {
+      const jl = PRNG.random() * 2 + 2;
       const xya = randChoice([
         [trlist[0][i].x, trlist[0][i].y, a0],
         [trlist[1][i].x, trlist[1][i].y, a1],
@@ -486,7 +485,7 @@ export function barkify(
             xya[1] + y + Math.sin(xya[2]) * (j - jl / 2) * 4,
             {
               strokeWidth: 4,
-              len: 4 + 6 * random(),
+              len: 4 + 6 * PRNG.random(),
               ang: a0 + Math.PI / 2,
               col: 'rgba(100,100,100,0.6)',
             }
@@ -498,7 +497,7 @@ export function barkify(
   const trflist = trlist[0].concat(trlist[1].slice().reverse());
   const rglist: Point[][] = [[]];
   for (let i = 0; i < trflist.length; i++) {
-    if (random() < 0.5) {
+    if (PRNG.random() < 0.5) {
       rglist.push([]);
     } else {
       rglist[rglist.length - 1].push(trflist[i]);
@@ -563,13 +562,13 @@ export function tree04(
     if (
       (i >= trlist.length * 0.3 &&
         i <= trlist.length * 0.7 &&
-        random() < 0.1) ||
+        PRNG.random() < 0.1) ||
       i === trlist.length / 2 - 1
     ) {
       const ba =
         Math.PI * 0.2 - Math.PI * 1.4 * (i > trlist.length / 2 ? 1 : 0);
       const _brlist: Point[][] = branch({
-        hei: hei * (random() + 1) * 0.3,
+        hei: hei * (PRNG.random() + 1) * 0.3,
         strokeWidth: strokeWidth * 0.5,
         ang: ba,
       });
@@ -585,7 +584,7 @@ export function tree04(
       );
 
       for (let j = 0; j < _brlist[0].length; j++) {
-        if (random() < 0.2 || j === _brlist[0].length - 1) {
+        if (PRNG.random() < 0.2 || j === _brlist[0].length - 1) {
           twpolylinelists.push(
             twig(
               _brlist[0][j].x + trlist[i].x + x,
@@ -623,7 +622,8 @@ export function tree04(
 
   trmlist.splice(0, 1);
   trmlist.splice(trmlist.length - 1, 1);
-  const color = 'rgba(100,100,100,' + (0.4 + random() * 0.1).toFixed(3) + ')';
+  const color =
+    'rgba(100,100,100,' + (0.4 + PRNG.random() * 0.1).toFixed(3) + ')';
 
   polylinelists.push([
     stroke(
@@ -693,15 +693,15 @@ export function tree05(
       (i >= trlist.length * 0.2 &&
         i <= trlist.length * 0.8 &&
         i % 3 === 0 &&
-        random() > p) ||
+        PRNG.random() > p) ||
       i === trlist.length / 2 - 1
     ) {
-      const bar = random() * 0.2;
+      const bar = PRNG.random() * 0.2;
       const ba =
         -bar * Math.PI -
         (1 - bar * 2) * Math.PI * (i > trlist.length / 2 ? 1 : 0);
       const _brlist = branch({
-        hei: hei * (0.3 * p - random() * 0.05),
+        hei: hei * (0.3 * p - PRNG.random() * 0.05),
         strokeWidth: strokeWidth * 0.5,
         ang: ba,
         ben: 0.5,
@@ -755,7 +755,8 @@ export function tree05(
 
   trmlist.splice(0, 1);
   trmlist.splice(trmlist.length - 1, 1);
-  const color = 'rgba(100,100,100,' + (0.4 + random() * 0.1).toFixed(3) + ')';
+  const color =
+    'rgba(100,100,100,' + (0.4 + PRNG.random() * 0.1).toFixed(3) + ')';
 
   // 树干
   polylinelists.push([
@@ -824,14 +825,14 @@ function fracTree06(
   for (let i = 0; i < trlist.length; i++) {
     // const p = Math.abs(i - trlist.length * 0.5) / (trlist.length * 0.5);
     if (
-      ((random() < 0.025 &&
+      ((PRNG.random() < 0.025 &&
         i >= trlist.length * 0.2 &&
         i <= trlist.length * 0.8) ||
         i === ((trlist.length / 2) | 0) - 1 ||
         i === ((trlist.length / 2) | 0) + 1) &&
       dep > 0
     ) {
-      const bar = 0.02 + random() * 0.08;
+      const bar = 0.02 + PRNG.random() * 0.08;
       const ba =
         bar * Math.PI - bar * 2 * Math.PI * (i > trlist.length / 2 ? 1 : 0);
 
@@ -842,7 +843,7 @@ function fracTree06(
         trlist[i].y + yoff,
         dep - 1,
         {
-          hei: hei * (0.7 + random() * 0.2),
+          hei: hei * (0.7 + PRNG.random() * 0.2),
           strokeWidth: strokeWidth * 0.6,
           ang: ang + ba,
           ben: 0.55,
@@ -850,14 +851,14 @@ function fracTree06(
       );
 
       for (let j = 0; j < brlist.length; j++) {
-        if (random() < 0.03) {
+        if (PRNG.random() < 0.03) {
           twpolylinelists.push(
             twig(
               brlist[j].x + trlist[i].x + xoff,
               brlist[j].y + trlist[i].y + yoff,
               2,
               {
-                ang: ba * (random() * 0.5 + 0.75),
+                ang: ba * (PRNG.random() * 0.5 + 0.75),
                 sca: 0.3,
                 dir: ba > 0 ? 1 : -1,
                 lea: [false, 0],
@@ -912,7 +913,8 @@ export function tree06(
 
   trmlist.splice(0, 1);
   trmlist.splice(trmlist.length - 1, 1);
-  const color = 'rgba(100,100,100,' + (0.4 + random() * 0.1).toFixed(3) + ')';
+  const color =
+    'rgba(100,100,100,' + (0.4 + PRNG.random() * 0.1).toFixed(3) + ')';
   polylinelists.push([
     stroke(
       trmlist.map(function (v) {
@@ -976,12 +978,12 @@ export function tree07(
     if (i >= reso / 4) {
       for (let j = 0; j < 1; j++) {
         const bpl = blob_points(
-          nx + (random() - 0.5) * strokeWidth * 1.2 * (reso - i) * 0.5,
-          ny + (random() - 0.5) * strokeWidth * 0.5,
+          nx + (PRNG.random() - 0.5) * strokeWidth * 1.2 * (reso - i) * 0.5,
+          ny + (PRNG.random() - 0.5) * strokeWidth * 0.5,
           {
-            len: random() * 50 + 20,
-            strokeWidth: random() * 12 + 12,
-            ang: (-random() * Math.PI) / 6,
+            len: PRNG.random() * 50 + 20,
+            strokeWidth: PRNG.random() * 12 + 12,
+            ang: (-PRNG.random() * Math.PI) / 6,
             col:
               'rgba(' +
               leafcol[0] +
@@ -1087,7 +1089,7 @@ function fracTree08(
 
   if (dep !== 0) {
     const nben = ben + randChoice([-1, 1]) * Math.PI * 0.001 * dep * dep;
-    if (random() < 0.5) {
+    if (PRNG.random() < 0.5) {
       polylinelists.push(
         fracTree08(ept.x, ept.y, dep - 1, {
           ang:
@@ -1155,14 +1157,14 @@ export function tree08(
   const trlist = _trlist[0].concat(_trlist[1].reverse());
 
   for (let i = 0; i < trlist.length; i++) {
-    if (random() < 0.2) {
+    if (PRNG.random() < 0.2) {
       twpolylinelists.push(
         fracTree08(
           x + trlist[i].x,
           y + trlist[i].y,
-          Math.floor(4 * random()),
-          { ang: -Math.PI / 2 - ang * random() }
-          // { hei: 20, ang: -Math.PI / 2 - ang * random() }
+          Math.floor(4 * PRNG.random()),
+          { ang: -Math.PI / 2 - ang * PRNG.random() }
+          // { hei: 20, ang: -Math.PI / 2 - ang * PRNG.random() }
         )
       );
     } else if (i === Math.floor(trlist.length / 2)) {
@@ -1185,7 +1187,8 @@ export function tree08(
     }),
   ]);
 
-  const color = 'rgba(100,100,100,' + (0.6 + random() * 0.1).toFixed(3) + ')';
+  const color =
+    'rgba(100,100,100,' + (0.6 + PRNG.random() * 0.1).toFixed(3) + ')';
   polylinelists.push([
     stroke(
       trlist.map(function (v) {

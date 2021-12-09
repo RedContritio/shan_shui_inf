@@ -1,10 +1,8 @@
 import { midPt } from '../PolyTools';
 import { Point, Vector } from './point';
-import PRNG from './PRNG';
+import { PRNG } from './PRNG';
 import { Range } from './range';
 import { ISvgStyles, SvgPoint, SvgPolyline } from '../svg';
-
-const random = PRNG.random;
 
 export function unNan(plist: Point[]): Point[] {
   return plist.map((p: Point) => (p && p.isFinite() ? p : new Point()));
@@ -28,7 +26,7 @@ export function loopNoise(nslist: number[]): number[] {
 }
 
 export function randChoice<T>(arr: T[]): T {
-  const p = arr.length * random();
+  const p = arr.length * PRNG.random();
   const ip = Math.floor(p);
   return arr[ip];
 }
@@ -36,12 +34,12 @@ export function randChoice<T>(arr: T[]): T {
 export function normRand(m: number, M: number): number {
   const irange = new Range(0, 1);
   const orange = new Range(m, M);
-  return mapval(random(), irange, orange);
+  return mapval(PRNG.random(), irange, orange);
 }
 
 export function wtrand(func: (v: number) => number): number {
-  const x = random();
-  const y = random();
+  const x = PRNG.random();
+  const y = PRNG.random();
   return y < func(x) ? x : wtrand(func);
 }
 

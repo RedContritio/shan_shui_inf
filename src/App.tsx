@@ -3,7 +3,7 @@ import SettingPanel from './ui/SettingPanel';
 import ButtonSource from './ui/ButtonSource';
 import ScrollableCanvas from './ui/ScrollableCanvas';
 import BackgroundRender from './ui/BackgroundRender';
-import PRNG from './render/basic/PRNG';
+import { PRNG } from './render/basic/PRNG';
 import { MEM } from './render/basic/memory';
 import './App.css';
 

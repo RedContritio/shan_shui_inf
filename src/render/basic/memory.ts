@@ -3,7 +3,7 @@ import { distMount, flatMount, mountain } from '../parts/mountain';
 import { design } from './designer';
 import { water } from '../parts/water';
 import { Chunk, IChunk } from './chunk';
-import PRNG from './PRNG';
+import { PRNG } from './PRNG';
 import { randChoice } from './utils';
 
 class Memory {
