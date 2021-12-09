@@ -3,12 +3,12 @@ import './styles.css';
 
 interface IProps {
   menu_visible: boolean;
+  left: number;
   onClick: () => void;
 }
 
 interface IState {
   isHover: boolean;
-  left: number;
 }
 
 class ButtonSet extends React.Component<IProps, IState> {
@@ -18,18 +18,12 @@ class ButtonSet extends React.Component<IProps, IState> {
     super(props);
     this.state = {
       isHover: false,
-      left: 40,
     };
   }
 
-  componentDidMount() {
-    const updateLeft = (x: number) =>
-      this.setState({ left: Math.max(4, 40 - x) });
-    window.addEventListener('scroll', (e) => updateLeft(window.scrollX));
-  }
-
   render() {
-    const { isHover, left } = this.state;
+    const { isHover } = this.state;
+    const { left } = this.props;
     const bgrColor: string = `rgba(0, 0, 0, ${isHover ? 0.1 : 0})`;
     const icon: string = this.props.menu_visible ? '✕' : '☰';
     const onMouseOver = () => this.setState({ isHover: true });
