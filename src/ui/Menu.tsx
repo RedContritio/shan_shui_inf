@@ -15,6 +15,19 @@ interface MenuProps {
 class Menu extends React.Component<MenuProps> {
   static id: string = 'MENU';
 
+  download(filename: string, content: string) {
+    const element = document.createElement('a');
+    element.setAttribute(
+      'href',
+      'data:text/plain;charset=utf-8,' + encodeURIComponent(content)
+    );
+    element.setAttribute('download', filename);
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  }
+
   render() {
     const changeSeed = (event: ChangeEvent<HTMLInputElement>) =>
       this.props.changeSeed(event.target.value);
@@ -24,6 +37,11 @@ class Menu extends React.Component<MenuProps> {
     const xscrollRight = () => this.props.xscroll(this.props.step);
     const toggleAutoScroll = (event: ChangeEvent<HTMLInputElement>) =>
       this.props.toggleAutoScroll(event.target.checked);
+    const downloadSvg = () => {
+      const e = document.getElementById('BG');
+      if (e) this.download(`${this.props.seed.toString()}.svg`, e.innerHTML);
+      else alert('not loaded');
+    };
 
     return (
       <div id={Menu.id} style={{ display: this.props.display }}>
@@ -85,6 +103,19 @@ class Menu extends React.Component<MenuProps> {
             <tr>
               <td>
                 <pre>SAVE</pre>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <button
+                  title="WARNING: This may take a while..."
+                  type="button"
+                  id="dwn-btn"
+                  value="Download as SVG"
+                  onClick={downloadSvg}
+                >
+                  Download as .SVG
+                </button>
               </td>
             </tr>
           </tbody>
