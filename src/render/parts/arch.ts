@@ -12,9 +12,9 @@ import { hat02, man, stick01 } from './man';
 const random = PRNG.random;
 
 function flip(ptlist: Point[], axis: number = 0): Point[] {
-  for (let i = 0; i < ptlist.length; i++) {
-    ptlist[i].x = axis - (ptlist[i].x - axis);
-  }
+  ptlist.forEach((i) => {
+    i.x = axis - i.x - axis;
+  });
   return ptlist;
 }
 
@@ -1018,39 +1018,39 @@ export function transmissionTower01(
     new Point(0.7, -0.5),
   ];
 
-  for (let i = 0; i < bch.length; i++) {
+  bch.forEach((i) => {
     polylines.push(
       quickstroke([
-        new Point(-bch[i].x * strokeWidth, bch[i].y * hei),
-        new Point(bch[i].x * strokeWidth, bch[i].y * hei),
+        new Point(-i.x * strokeWidth, i.y * hei),
+        new Point(i.x * strokeWidth, i.y * hei),
       ])
     );
     polylines.push(
       quickstroke([
-        new Point(-bch[i].x * strokeWidth, bch[i].y * hei),
-        new Point(0, (bch[i].y - 0.05) * hei),
+        new Point(-i.x * strokeWidth, i.y * hei),
+        new Point(0, (i.y - 0.05) * hei),
       ])
     );
     polylines.push(
       quickstroke([
-        new Point(bch[i].x * strokeWidth, bch[i].y * hei),
-        new Point(0, (bch[i].y - 0.05) * hei),
+        new Point(i.x * strokeWidth, i.y * hei),
+        new Point(0, (i.y - 0.05) * hei),
       ])
     );
 
     polylines.push(
       quickstroke([
-        new Point(-bch[i].x * strokeWidth, bch[i].y * hei),
-        new Point(-bch[i].x * strokeWidth, (bch[i].y + 0.1) * hei),
+        new Point(-i.x * strokeWidth, i.y * hei),
+        new Point(-i.x * strokeWidth, (i.y + 0.1) * hei),
       ])
     );
     polylines.push(
       quickstroke([
-        new Point(bch[i].x * strokeWidth, bch[i].y * hei),
-        new Point(bch[i].x * strokeWidth, (bch[i].y + 0.1) * hei),
+        new Point(i.x * strokeWidth, i.y * hei),
+        new Point(i.x * strokeWidth, (i.y + 0.1) * hei),
       ])
     );
-  }
+  });
 
   const l10 = div([p00, p10, p20, p30], 5);
   const l11 = div([p01, p11, p21, p31], 5);
