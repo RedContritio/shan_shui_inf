@@ -454,20 +454,20 @@ function bound(plist: Point[]): Bound {
   let xmax = plist[0].x;
   let ymin = plist[0].y;
   let ymax = plist[0].y;
-  for (let i = 0; i < plist.length; i++) {
-    if (plist[i].x < xmin) {
-      xmin = plist[i].x;
+  plist.forEach((i) => {
+    if (i.x < xmin) {
+      xmin = i.x;
     }
-    if (plist[i].x > xmax) {
-      xmax = plist[i].x;
+    if (i.x > xmax) {
+      xmax = i.x;
     }
-    if (plist[i].y < ymin) {
-      ymin = plist[i].y;
+    if (i.y < ymin) {
+      ymin = i.y;
     }
-    if (plist[i].y > ymax) {
-      ymax = plist[i].y;
+    if (i.y > ymax) {
+      ymax = i.y;
     }
-  }
+  });
   return new Bound(xmin, xmax, ymin, ymax);
 }
 
