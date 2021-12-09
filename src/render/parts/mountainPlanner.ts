@@ -35,7 +35,11 @@ function chadd(reg: IChunk[], r: IChunk, mind: number = 10): boolean {
   return true;
 }
 
-export function mountplanner(planmtx: number[], xmin: number, xmax: number): IChunk[] {
+export function mountplanner(
+  planmtx: number[],
+  xmin: number,
+  xmax: number
+): IChunk[] {
   const reg: IChunk[] = [];
   const samp = 0.03;
   const ns = (x: number, y: number) =>

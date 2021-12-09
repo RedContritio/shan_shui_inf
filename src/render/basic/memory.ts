@@ -19,10 +19,6 @@ class Memory {
   planmtx: number[] = [];
 
   private appendChunk(nch: Chunk): void {
-    if (!nch.validate()) {
-      console.log(`gotcha: ${nch.tag}`);
-    }
-
     if (this.chunks.length === 0) {
       this.chunks.push(nch);
       return;

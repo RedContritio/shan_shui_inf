@@ -27,15 +27,6 @@ export class Chunk implements ISvgElement {
    */
   attr: Partial<ISvgAttributes> = {};
 
-  validate(): boolean {
-    // if (this.canv.includes('NaN')) {
-    //   console.error('validate occurs');
-    //   this.canv = this.canv.replace(/NaN/g, '-1000');
-    //   return false;
-    // }
-    return true;
-  }
-
   render(): string {
     return this.elements.map((p) => p.render()).join('\n');
   }
