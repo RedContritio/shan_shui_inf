@@ -1,3 +1,4 @@
+import { Chunk } from '../basic/chunk';
 import { Noise } from '../basic/perlinNoise';
 import { Point } from '../basic/point';
 import PRNG from '../basic/PRNG';
@@ -12,12 +13,12 @@ class WaterArgs {
   clu = 10;
 }
 
-export function water<K extends keyof WaterArgs>(
+export function water(
   xoff: number,
   yoff: number,
   seed: number,
-  args: Pick<WaterArgs, K> | undefined = undefined
-): SvgPolyline[] {
+  args: Partial<WaterArgs> | undefined = undefined
+): Chunk {
   const _args = new WaterArgs();
   Object.assign(_args, args);
 
@@ -58,5 +59,6 @@ export function water<K extends keyof WaterArgs>(
     );
   }
 
-  return polylines;
+  const chunk: Chunk = new Chunk('water', xoff, yoff - 10000, polylines);
+  return chunk;
 }

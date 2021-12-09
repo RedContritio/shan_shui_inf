@@ -17,6 +17,7 @@ import { midPt, triangulate } from '../PolyTools';
 import { Bound } from '../basic/range';
 import PRNG from '../basic/PRNG';
 import { ISvgElement, SvgPolyline } from '../svg';
+import { Chunk } from '../basic/chunk';
 
 const random = PRNG.random;
 
@@ -25,9 +26,9 @@ class FootArgs {
   yof: number = 0;
 }
 
-export function foot<K extends keyof FootArgs>(
+export function foot(
   ptlist: Point[][],
-  args: Pick<FootArgs, K> | undefined = undefined
+  args: Partial<FootArgs> | undefined = undefined
 ): SvgPolyline[] {
   const _args: FootArgs = new FootArgs();
   Object.assign(_args, args);
@@ -144,12 +145,12 @@ class MountainArgs {
   col: string | undefined = undefined;
 }
 
-export function mountain<K extends keyof MountainArgs>(
+export function mountain(
   xoff: number,
   yoff: number,
   seed: number = 0,
-  args: Pick<MountainArgs, K> | undefined = undefined
-): ISvgElement[] {
+  args: Partial<MountainArgs> | undefined = undefined
+): Chunk {
   const _args = new MountainArgs();
   Object.assign(_args, args);
 
@@ -444,7 +445,8 @@ export function mountain<K extends keyof MountainArgs>(
     )
   );
 
-  return elementlists.flat();
+  const chunk: Chunk = new Chunk('mount', xoff, yoff, elementlists.flat());
+  return chunk;
 }
 
 function bound(plist: Point[]): Bound {
@@ -476,12 +478,12 @@ class FlatMountArgs {
   cho = 0.5;
 }
 
-export function flatMount<K extends keyof FlatMountArgs>(
+export function flatMount(
   xoff: number,
   yoff: number,
   seed: number = 0,
-  args: Pick<FlatMountArgs, K> | undefined = undefined
-): SvgPolyline[] {
+  args: Partial<FlatMountArgs> | undefined = undefined
+): Chunk {
   const _args = new FlatMountArgs();
   Object.assign(_args, args);
 
@@ -570,7 +572,8 @@ export function flatMount<K extends keyof FlatMountArgs>(
   }
 
   if (_grlist1.length === 0) {
-    return polylinelists.flat();
+    const chunk = new Chunk('flatmount', xoff, yoff, polylinelists.flat());
+    return chunk;
   }
 
   const _wb = [_grlist1[0].x, _grlist2[0].x];
@@ -624,7 +627,8 @@ export function flatMount<K extends keyof FlatMountArgs>(
 
   polylinelists.push(flatDec(xoff, yoff, bound(grlist)));
 
-  return polylinelists.flat();
+  const chunk = new Chunk('flatmount', xoff, yoff, polylinelists.flat());
+  return chunk;
 }
 
 export function flatDec(
@@ -789,12 +793,12 @@ class DistMountArgs {
   seg = 5;
 }
 
-export function distMount<K extends keyof DistMountArgs>(
+export function distMount(
   xoff: number,
   yoff: number,
   seed: number = 0,
-  args: Pick<DistMountArgs, K> | undefined = undefined
-): SvgPolyline[] {
+  args: Partial<DistMountArgs> | undefined = undefined
+): Chunk {
   const _args = new DistMountArgs();
   Object.assign(_args, args);
 
@@ -854,7 +858,9 @@ export function distMount<K extends keyof DistMountArgs>(
       polylines.push(poly(T[k], { fill: co, stroke: co, strokeWidth: 1 }));
     }
   }
-  return polylines;
+
+  const chunk: Chunk = new Chunk('distmount', xoff, yoff, polylines);
+  return chunk;
 }
 
 class RockArgs {
@@ -864,11 +870,11 @@ class RockArgs {
   sha = 10;
 }
 
-export function rock<K extends keyof RockArgs>(
+export function rock(
   xoff: number,
   yoff: number,
   seed: number = 0,
-  args: Pick<RockArgs, K> | undefined = undefined
+  args: Partial<RockArgs> | undefined = undefined
 ): SvgPolyline[] {
   const _args = new RockArgs();
   Object.assign(_args, args);

@@ -1,3 +1,4 @@
+import { Chunk } from '../basic/chunk';
 import { Noise } from '../basic/perlinNoise';
 import { Point } from '../basic/point';
 import PRNG from '../basic/PRNG';
@@ -22,10 +23,10 @@ class HutArgs {
   strokeWidth: number = 180;
   tex: number = 300;
 }
-function hut<K extends keyof HutArgs>(
+function hut(
   xoff: number,
   yoff: number,
-  args: Pick<HutArgs, K> | undefined = undefined
+  args: Partial<HutArgs> | undefined = undefined
 ): SvgPolyline[] {
   const _args = new HutArgs();
   Object.assign(_args, args);
@@ -112,10 +113,10 @@ class BoxArgs {
   dec: (a: any) => Point[][] = (_) => [];
 }
 
-function box<K extends keyof BoxArgs>(
+function box(
   xoff: number,
   yoff: number,
-  args: Pick<BoxArgs, K> | undefined = undefined
+  args: Partial<BoxArgs> | undefined = undefined
 ): SvgPolyline[] {
   const _args = new BoxArgs();
   Object.assign(_args, args);
@@ -218,9 +219,9 @@ class DecoArgs {
   vsp: number[] = [1, 2];
 }
 
-function deco<K extends keyof DecoArgs>(
+function deco(
   style: number,
-  args: Pick<DecoArgs, K> | undefined = undefined
+  args: Partial<DecoArgs> | undefined = undefined
 ): Point[][] {
   const _args = new DecoArgs();
   Object.assign(_args, args);
@@ -293,11 +294,11 @@ class RailArgs {
   fro: boolean = true;
 }
 
-function rail<K extends keyof RailArgs>(
+function rail(
   xoff: number,
   yoff: number,
   seed: number = 0,
-  args: Pick<RailArgs, K> | undefined = undefined
+  args: Partial<RailArgs> | undefined = undefined
 ): SvgPolyline[] {
   const _args = new RailArgs();
   Object.assign(_args, args);
@@ -419,10 +420,10 @@ class RoofArgs {
   pla: [number, string] = [0, ''];
 }
 
-function roof<K extends keyof RoofArgs>(
+function roof(
   xoff: number,
   yoff: number,
-  args: Pick<RoofArgs, K> | undefined = undefined
+  args: Partial<RoofArgs> | undefined = undefined
 ): ISvgElement[] {
   const _args = new RoofArgs();
   Object.assign(_args, args);
@@ -570,10 +571,10 @@ class PagRoofArgs {
   wei = 3;
 }
 
-function pagroof<K extends keyof PagRoofArgs>(
+function pagroof(
   xoff: number,
   yoff: number,
-  args: Pick<PagRoofArgs, K> | undefined = undefined
+  args: Partial<PagRoofArgs> | undefined = undefined
 ): SvgPolyline[] {
   const _args = new PagRoofArgs();
   Object.assign(_args, args);
@@ -636,11 +637,11 @@ class Arch01Args {
   per = 5;
 }
 
-export function arch01<K extends keyof Arch01Args>(
+export function arch01(
   xoff: number,
   yoff: number,
   seed: number = 0,
-  args: Pick<Arch01Args, K> | undefined = undefined
+  args: Partial<Arch01Args> | undefined = undefined
 ): SvgPolyline[] {
   const _args = new Arch01Args();
   Object.assign(_args, args);
@@ -721,11 +722,11 @@ class Arch02Args {
   rai = false;
 }
 
-export function arch02<K extends keyof Arch02Args>(
+export function arch02(
   xoff: number,
   yoff: number,
   seed: number = 0,
-  args: Pick<Arch02Args, K> | undefined = undefined
+  args: Partial<Arch02Args> | undefined = undefined
 ): ISvgElement[] {
   const _args = new Arch02Args();
   Object.assign(_args, args);
@@ -800,11 +801,11 @@ class Arch03Args {
   sto = 7;
 }
 
-export function arch03<K extends keyof Arch03Args>(
+export function arch03(
   xoff: number,
   yoff: number,
   seed: number = 0,
-  args: Pick<Arch03Args, K> | undefined = undefined
+  args: Partial<Arch03Args> | undefined = undefined
 ): SvgPolyline[] {
   const _args = new Arch03Args();
   Object.assign(_args, args);
@@ -860,11 +861,11 @@ class Arch04Args {
   sto = 2;
 }
 
-export function arch04<K extends keyof Arch04Args>(
+export function arch04(
   xoff: number,
   yoff: number,
   seed: number = 0,
-  args: Pick<Arch04Args, K> | undefined = undefined
+  args: Partial<Arch04Args> | undefined = undefined
 ): SvgPolyline[] {
   const _args = new Arch04Args();
   Object.assign(_args, args);
@@ -918,12 +919,12 @@ class Boat01Args {
   fli = false;
 }
 
-export function boat01<K extends keyof Boat01Args>(
+export function boat01(
   xoff: number,
   yoff: number,
   seed: number = 0,
-  args: Pick<Boat01Args, K> | undefined = undefined
-): SvgPolyline[] {
+  args: Partial<Boat01Args> | undefined = undefined
+): Chunk {
   const _args = new Boat01Args();
   Object.assign(_args, args);
 
@@ -966,7 +967,8 @@ export function boat01<K extends keyof Boat01Args>(
     ),
   ]);
 
-  return polylinelists.flat();
+  const chunk: Chunk = new Chunk('boat', xoff, yoff, polylinelists.flat());
+  return chunk;
 }
 
 class TransmissionTower01Args {
@@ -974,11 +976,11 @@ class TransmissionTower01Args {
   strokeWidth = 20;
 }
 
-export function transmissionTower01<K extends keyof TransmissionTower01Args>(
+export function transmissionTower01(
   xoff: number,
   yoff: number,
   seed: number = 0,
-  args: Pick<TransmissionTower01Args, K> | undefined = undefined
+  args: Partial<TransmissionTower01Args> | undefined = undefined
 ): SvgPolyline[] {
   const _args = new TransmissionTower01Args();
   Object.assign(_args, args);

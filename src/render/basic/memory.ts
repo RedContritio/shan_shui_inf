@@ -2,7 +2,7 @@ import { arch02, boat01 } from '../parts/arch';
 import { distMount, flatMount, mountain } from '../parts/mountain';
 import { mountplanner } from '../parts/mountainPlanner';
 import { water } from '../parts/water';
-import { Chunk } from './chunk';
+import { Chunk, IChunk } from './chunk';
 import PRNG from './PRNG';
 import { randChoice } from './utils';
 
@@ -19,10 +19,6 @@ class Memory {
   planmtx: number[] = [];
 
   private appendChunk(nch: Chunk): void {
-    if (!nch.validate()) {
-      console.log(`gotcha: ${nch.tag}`);
-    }
-
     if (this.chunks.length === 0) {
       this.chunks.push(nch);
       return;
@@ -54,105 +50,42 @@ class Memory {
     while (xmax > this.xmax - this.cwid || xmin < this.xmin + this.cwid) {
       console.log('generating new chunk...');
 
-      let plan: Chunk[] = [];
+      let plan: IChunk[] = [];
       if (xmax > this.xmax - this.cwid) {
-        plan = mountplanner(this.xmax, this.xmax + this.cwid);
+        plan = mountplanner(this.planmtx, this.xmax, this.xmax + this.cwid);
         this.xmax = this.xmax + this.cwid;
       } else {
-        plan = mountplanner(this.xmin - this.cwid, this.xmin);
+        plan = mountplanner(this.planmtx, this.xmin - this.cwid, this.xmin);
         this.xmin = this.xmin - this.cwid;
       }
 
       for (let i = 0; i < plan.length; i++) {
         if (plan[i].tag === 'mount') {
           this.appendChunk(
-            new Chunk(
-              plan[i].tag,
-              plan[i].x,
-              plan[i].y,
-              mountain(plan[i].x, plan[i].y, i * 2 * PRNG.random())
-                .map((p) => p.render())
-                .join('\n')
-            )
+            mountain(plan[i].x, plan[i].y, i * 2 * PRNG.random())
           );
-          this.appendChunk(
-            new Chunk(
-              plan[i].tag,
-              plan[i].x,
-              plan[i].y - 10000,
-              water(plan[i].x, plan[i].y, i * 2)
-                .map((p) => p.render())
-                .join('\n')
-            )
-          );
+          this.appendChunk(water(plan[i].x, plan[i].y, i * 2));
         } else if (plan[i].tag === 'flatmount') {
           this.appendChunk(
-            new Chunk(
-              plan[i].tag,
-              plan[i].x,
-              plan[i].y,
-              flatMount(plan[i].x, plan[i].y, 2 * PRNG.random() * Math.PI, {
-                strokeWidth: 600 + PRNG.random() * 400,
-                hei: 100,
-                cho: 0.5 + PRNG.random() * 0.2,
-              })
-                .map((p) => p.render())
-                .join('\n')
-            )
+            flatMount(plan[i].x, plan[i].y, 2 * PRNG.random() * Math.PI, {
+              strokeWidth: 600 + PRNG.random() * 400,
+              hei: 100,
+              cho: 0.5 + PRNG.random() * 0.2,
+            })
           );
         } else if (plan[i].tag === 'distmount') {
           this.appendChunk(
-            new Chunk(
-              plan[i].tag,
-              plan[i].x,
-              plan[i].y,
-              distMount(plan[i].x, plan[i].y, PRNG.random() * 100, {
-                hei: 150,
-                len: randChoice([500, 1000, 1500]),
-              })
-                .map((p) => p.render())
-                .join('\n')
-            )
+            distMount(plan[i].x, plan[i].y, PRNG.random() * 100, {
+              hei: 150,
+              len: randChoice([500, 1000, 1500]),
+            })
           );
         } else if (plan[i].tag === 'boat') {
           this.appendChunk(
-            new Chunk(
-              plan[i].tag,
-              plan[i].x,
-              plan[i].y,
-              boat01(plan[i].x, plan[i].y, PRNG.random(), {
-                sca: plan[i].y / 800,
-                fli: randChoice([true, false]),
-              })
-                .map((p) => p.render())
-                .join('\n')
-            )
-          );
-        } else if (plan[i].tag === 'redcirc') {
-          this.appendChunk(
-            new Chunk(
-              plan[i].tag,
-              plan[i].x,
-              plan[i].y,
-              "<circle cx='" +
-                plan[i].x +
-                "' cy='" +
-                plan[i].y +
-                "' r='20' stroke='black' fill='red' />"
-            )
-          );
-        } else if (plan[i].tag === 'greencirc') {
-          this.appendChunk(
-            new Chunk(
-              plan[i].tag,
-              plan[i].x,
-              plan[i].y,
-              "<circle cx='" +
-                plan[i].x +
-                "' cy='" +
-                plan[i].y +
-                "' r='20' stroke='black' fill='green' />"
-            )
+            boat01(plan[i].x, plan[i].y, PRNG.random(), {
+              sca: plan[i].y / 800,
+              fli: randChoice([true, false]),
+            })
           );
         }
       }
@@ -160,16 +93,12 @@ class Memory {
   }
 
   chunkrender(xmin: number, xmax: number) {
-    this.canv = '';
-
-    for (let i = 0; i < this.chunks.length; i++) {
-      if (
-        xmin - this.cwid < this.chunks[i].x &&
-        this.chunks[i].x < xmax + this.cwid
-      ) {
-        this.canv += this.chunks[i].canv;
-      }
-    }
+    const left = xmin - this.cwid;
+    const right = xmax + this.cwid;
+    this.canv = this.chunks
+      .filter((c) => c.x >= left && c.x < right)
+      .map((c) => c.render())
+      .join('\n');
   }
 
   update() {
@@ -192,14 +121,7 @@ function dummyloader(xmin: number, xmax: number) {
     //MEM.chunks.push({tag:"?",x:i,y:100,canv:Arch.boat01(i,500)})
     //MEM.chunks.push({tag:"?",x:i,y:100,canv:Arch.transmissionTower01(i,500)})
     MEM.chunks.push(
-      new Chunk(
-        '?',
-        i,
-        100,
-        arch02(i, 500, 0, { sto: 1, rot: PRNG.random() })
-          .map((p) => p.render())
-          .join('\n')
-      )
+      new Chunk('?', i, 100, arch02(i, 500, 0, { sto: 1, rot: PRNG.random() }))
     );
   }
 }

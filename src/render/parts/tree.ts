@@ -657,10 +657,10 @@ class Tree05Args {
 
 /**
  * 近处的大树
- * @param x 
- * @param y 
- * @param args 
- * @returns 
+ * @param x
+ * @param y
+ * @param args
+ * @returns
  */
 export function tree05(
   x: number,
@@ -756,7 +756,7 @@ export function tree05(
   trmlist.splice(0, 1);
   trmlist.splice(trmlist.length - 1, 1);
   const color = 'rgba(100,100,100,' + (0.4 + random() * 0.1).toFixed(3) + ')';
-  
+
   // 树干
   polylinelists.push([
     stroke(
