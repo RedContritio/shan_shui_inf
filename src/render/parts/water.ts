@@ -12,11 +12,11 @@ class WaterArgs {
   clu = 10;
 }
 
-export function water<K extends keyof WaterArgs>(
+export function water(
   xoff: number,
   yoff: number,
   seed: number,
-  args: Pick<WaterArgs, K> | undefined = undefined
+  args: Partial<WaterArgs> | undefined = undefined
 ): SvgPolyline[] {
   const _args = new WaterArgs();
   Object.assign(_args, args);

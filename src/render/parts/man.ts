@@ -84,10 +84,10 @@ class GeneralFlipArgs {
   fli = false;
 }
 
-export function hat01<K extends keyof GeneralFlipArgs>(
+export function hat01(
   p0: Point,
   p1: Point,
-  args: Pick<GeneralFlipArgs, K> | undefined = undefined
+  args: Partial<GeneralFlipArgs> | undefined = undefined
 ): SvgPolyline[] {
   const _args = new GeneralFlipArgs();
   Object.assign(_args, args);
@@ -133,10 +133,10 @@ export function hat01<K extends keyof GeneralFlipArgs>(
   return polylines;
 }
 
-export function hat02<K extends keyof GeneralFlipArgs>(
+export function hat02(
   p0: Point,
   p1: Point,
-  args: Pick<GeneralFlipArgs, K> | undefined = undefined
+  args: Partial<GeneralFlipArgs> | undefined = undefined
 ): SvgPolyline[] {
   const _args = new GeneralFlipArgs();
   Object.assign(_args, args);
@@ -174,10 +174,10 @@ export function hat02<K extends keyof GeneralFlipArgs>(
   return polylines;
 }
 
-export function stick01<K extends keyof GeneralFlipArgs>(
+export function stick01(
   p0: Point,
   p1: Point,
-  args: Pick<GeneralFlipArgs, K> | undefined = undefined
+  args: Partial<GeneralFlipArgs> | undefined = undefined
 ): SvgPolyline[] {
   const _args = new GeneralFlipArgs();
   Object.assign(_args, args);
@@ -327,10 +327,10 @@ class ManArgs {
 //      /3
 //     4
 
-export function man<K extends keyof ManArgs>(
+export function man(
   xoff: number,
   yoff: number,
-  args: Pick<ManArgs, K> | undefined = undefined
+  args: Partial<ManArgs> | undefined = undefined
 ): SvgPolyline[] {
   const _args = new ManArgs();
   Object.assign(_args, args);

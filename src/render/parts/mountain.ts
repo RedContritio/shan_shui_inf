@@ -25,9 +25,9 @@ class FootArgs {
   yof: number = 0;
 }
 
-export function foot<K extends keyof FootArgs>(
+export function foot(
   ptlist: Point[][],
-  args: Pick<FootArgs, K> | undefined = undefined
+  args: Partial<FootArgs> | undefined = undefined
 ): SvgPolyline[] {
   const _args: FootArgs = new FootArgs();
   Object.assign(_args, args);
@@ -144,11 +144,11 @@ class MountainArgs {
   col: string | undefined = undefined;
 }
 
-export function mountain<K extends keyof MountainArgs>(
+export function mountain(
   xoff: number,
   yoff: number,
   seed: number = 0,
-  args: Pick<MountainArgs, K> | undefined = undefined
+  args: Partial<MountainArgs> | undefined = undefined
 ): ISvgElement[] {
   const _args = new MountainArgs();
   Object.assign(_args, args);
@@ -476,11 +476,11 @@ class FlatMountArgs {
   cho = 0.5;
 }
 
-export function flatMount<K extends keyof FlatMountArgs>(
+export function flatMount(
   xoff: number,
   yoff: number,
   seed: number = 0,
-  args: Pick<FlatMountArgs, K> | undefined = undefined
+  args: Partial<FlatMountArgs> | undefined = undefined
 ): SvgPolyline[] {
   const _args = new FlatMountArgs();
   Object.assign(_args, args);
@@ -789,11 +789,11 @@ class DistMountArgs {
   seg = 5;
 }
 
-export function distMount<K extends keyof DistMountArgs>(
+export function distMount(
   xoff: number,
   yoff: number,
   seed: number = 0,
-  args: Pick<DistMountArgs, K> | undefined = undefined
+  args: Partial<DistMountArgs> | undefined = undefined
 ): SvgPolyline[] {
   const _args = new DistMountArgs();
   Object.assign(_args, args);
@@ -864,11 +864,11 @@ class RockArgs {
   sha = 10;
 }
 
-export function rock<K extends keyof RockArgs>(
+export function rock(
   xoff: number,
   yoff: number,
   seed: number = 0,
-  args: Pick<RockArgs, K> | undefined = undefined
+  args: Partial<RockArgs> | undefined = undefined
 ): SvgPolyline[] {
   const _args = new RockArgs();
   Object.assign(_args, args);
