@@ -13,10 +13,10 @@ function scaled_cosine(i: number): number {
   return 0.5 * (1.0 - Math.cos(i * Math.PI));
 }
 
-let perlin: Array<number> | null = null;
+let perlin: Array<number> | undefined;
 
-export function noise(x: number, y: number = 0, z: number = 0) {
-  if (perlin == null) {
+export function noise(x: number, y: number = 0, z: number = 0): number {
+  if (perlin === undefined) {
     perlin = new Array(PERLIN_SIZE + 1);
     for (let i = 0; i < PERLIN_SIZE + 1; i++) {
       perlin[i] = PRNG.random();

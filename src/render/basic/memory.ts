@@ -1,4 +1,4 @@
-import { arch02, boat01 } from '../parts/arch';
+import { boat01 } from '../parts/arch';
 import { distMount, flatMount, mountain } from '../parts/mountain';
 import { design } from './designer';
 import { water } from '../parts/water';
@@ -12,8 +12,7 @@ class Memory {
   xmin: number = 0;
   xmax: number = 0;
   cwid: number = 512;
-  lasttick: number = 0;
-  planmtx: number[] = [];
+  mountain_cover: number[] = [];
 
   chunkloader(xmin: number, xmax: number) {
     while (xmax > this.xmax - this.cwid || xmin < this.xmin + this.cwid) {
@@ -21,10 +20,10 @@ class Memory {
 
       let plan: IChunk[] = [];
       if (xmax > this.xmax - this.cwid) {
-        plan = design(this.planmtx, this.xmax, this.xmax + this.cwid);
+        plan = design(this.mountain_cover, this.xmax, this.xmax + this.cwid);
         this.xmax = this.xmax + this.cwid;
       } else {
-        plan = design(this.planmtx, this.xmin - this.cwid, this.xmin);
+        plan = design(this.mountain_cover, this.xmin - this.cwid, this.xmin);
         this.xmin = this.xmin - this.cwid;
       }
 
@@ -59,12 +58,12 @@ class Memory {
         }
       }
     }
+    this.chunks.sort((a, b) => a.y - b.y);
   }
 
   chunkrender(xmin: number, xmax: number) {
     const left = xmin - this.cwid;
     const right = xmax + this.cwid;
-    this.chunks.sort((a, b) => a.y - b.y);
     this.canv = this.chunks
       .filter((c) => c.x >= left && c.x < right)
       .map((c) => c.render())
@@ -80,17 +79,3 @@ class Memory {
 const MEM: Memory = new Memory();
 
 export { MEM };
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function dummyloader(xmin: number, xmax: number) {
-  for (let i = xmin; i < xmax; i += 200) {
-    //MEM.chunks.push({tag:"?",x:i,y:100,canv:Tree.tree08(i,500,i)})
-    //MEM.chunks.push({tag:"?",x:i,y:100,canv:Man.man(i,500)})
-    //MEM.chunks.push({tag:"?",x:i,y:100,canv:Arch.arch01(i,500)})
-    //MEM.chunks.push({tag:"?",x:i,y:100,canv:Arch.boat01(i,500)})
-    //MEM.chunks.push({tag:"?",x:i,y:100,canv:Arch.transmissionTower01(i,500)})
-    MEM.chunks.push(
-      new Chunk('?', i, 100, arch02(i, 500, 0, { sto: 1, rot: PRNG.random() }))
-    );
-  }
-}

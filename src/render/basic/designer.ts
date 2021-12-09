@@ -37,7 +37,7 @@ function needAdd(reg: IChunk[], c: IChunk, r: number = 10): boolean {
 }
 
 export function design(
-  planmtx: number[],
+  mountain_cover: number[],
   xmin: number,
   xmax: number
 ): IChunk[] {
@@ -51,17 +51,22 @@ export function design(
 
   const xstep = 5;
   const mwid = 200;
-  for (let i = xmin; i < xmax; i += xstep) {
-    const i1 = Math.floor(i / xstep);
-    planmtx[i1] = planmtx[i1] || 0;
+
+  const imin = Math.floor(xmin / xstep),
+    imax = Math.floor(xmax / xstep);
+  const ioff = (xmin % xstep) + (xmin < 0 ? 1 : 0) * xstep;
+
+  for (let i = imin; i < imax; i++) {
+    if (isNaN(mountain_cover[i])) mountain_cover[i] = 0;
   }
 
-  for (let i = xmin; i < xmax; i += xstep) {
-    for (let j = 0; j < yr(i) * 480; j += 30) {
-      if (ns(new Point(i, j)) > 0.3 && locmax(new Point(i, j), ns, 2)) {
-        const xof = i + 2 * (random() - 0.5) * 500;
+  for (let i = imin; i < imax; i++) {
+    const x = i * xstep + ioff;
+    for (let j = 0; j < yr(x) * 480; j += 30) {
+      if (ns(new Point(x, j)) > 0.3 && locmax(new Point(x, j), ns, 2)) {
+        const xof = x + 2 * (random() - 0.5) * 500;
         const yof = j + 300;
-        const r = new DesignChunk('mount', xof, yof, ns(new Point(i, j)));
+        const r = new DesignChunk('mount', xof, yof, ns(new Point(x, j)));
         if (needAdd(reg, r)) {
           reg.push(r);
           for (
@@ -69,46 +74,46 @@ export function design(
             k < (xof + mwid) / xstep;
             k++
           ) {
-            planmtx[k] += 1;
+            mountain_cover[k] = isNaN(mountain_cover[k])
+              ? 1
+              : mountain_cover[k] + 1;
           }
         }
       }
     }
-    if (Math.abs(i) % 1000 < Math.max(1, xstep - 1)) {
+
+    if (Math.abs(x) % 1000 < Math.max(1, xstep - 1)) {
       const r = new DesignChunk(
         'distmount',
-        i,
+        x,
         280 - random() * 50,
-        ns(new Point(i, yr(i) * 480))
+        ns(new Point(x, yr(x) * 480))
       );
       if (needAdd(reg, r)) reg.push(r);
     }
   }
-  console.log([xmin, xmax]);
-  for (let i = xmin; i < xmax; i += xstep) {
-    if (planmtx[Math.floor(i / xstep)] === 0) {
-      //const r = {tag:"redcirc",x:i,y:700}
-      //console.log(i)
+
+  for (let i = imin; i < imax; i++) {
+    const x = i * xstep + ioff;
+    if (mountain_cover[i] === 0) {
       if (random() < 0.01) {
         for (let j = 0; j < 4 * random(); j++) {
           const r = new DesignChunk(
             'flatmount',
-            i + 2 * (random() - 0.5) * 700,
+            x + 2 * (random() - 0.5) * 700,
             700 - j * 50,
-            ns(new Point(i, j))
+            ns(new Point(x, j))
           );
           if (needAdd(reg, r)) reg.push(r);
         }
       }
-    } else {
-      // const r = {tag:"greencirc",x:i,y:700}
-      // chadd(r)
     }
   }
 
-  for (let i = xmin; i < xmax; i += xstep) {
+  for (let i = imin; i < imax; i++) {
     if (random() < 0.2) {
-      const r = new DesignChunk('boat', i, 300 + random() * 390);
+      const x = i * xstep + ioff;
+      const r = new DesignChunk('boat', x, 300 + random() * 390);
       if (needAdd(reg, r, 400)) reg.push(r);
     }
   }
