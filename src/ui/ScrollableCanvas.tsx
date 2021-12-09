@@ -75,21 +75,22 @@ class ScrollableCanvas extends React.Component<IProps> {
     const viewbox = this.calcViewBox();
     console.log('ScrollableCanvas render');
     MEM.update(this.props.cursx, this.props.windx);
-    const foreground =
-      "<svg id='SVG' xmlns='http://www.w3.org/2000/svg' width='" +
-      this.props.windx +
-      "' height='" +
-      this.props.windy +
-      "' style='mix-blend-mode:multiply;'" +
-      "viewBox = '" +
-      viewbox +
-      "'" +
-      "><g id='G' transform='translate(" +
-      0 +
-      ",0)'>" +
-      MEM.canv +
-      //+ "<circle cx='0' cy='0' r='50' stroke='black' fill='red' />"
-      '</g></svg>';
+    const foreground = (
+      <svg
+        id="SVG"
+        xmlns="http://www.w3.org/2000/svg"
+        width={this.props.windx}
+        height={this.props.windy}
+        style={{ mixBlendMode: 'multiply' }}
+        viewBox={viewbox}
+      >
+        <g
+          id="G"
+          transform="translate(0, 0)"
+          dangerouslySetInnerHTML={{ __html: MEM.canv }}
+        />
+      </svg>
+    );
 
     return (
       <table id={ScrollableCanvas.id}>
@@ -113,10 +114,9 @@ class ScrollableCanvas extends React.Component<IProps> {
                   position: 'fixed',
                   top: 0,
                 }}
-                dangerouslySetInnerHTML={{
-                  __html: foreground,
-                }}
-              ></div>
+              >
+                {foreground}
+              </div>
             </td>
             <td>
               <ScrollBar
