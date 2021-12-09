@@ -24,7 +24,9 @@ class ButtonSource extends React.Component<IProps, IState> {
     const bgrColor: string = `rgba(0, 0, 0, ${isHover ? 0.1 : 0})`;
     const onMouseOver = () => this.setState({ isHover: true });
     const onMouseOut = () => this.setState({ isHover: false });
-    const onClick = () => alert('not implement');
+    const onClick = () => {
+      window.location.href = 'https://github.com/RedContritio/shan_shui_inf';
+    };
     const left = Math.max(41, 77 - this.props.scrollx);
 
     return (
