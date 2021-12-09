@@ -189,7 +189,7 @@ class TriangulateOptions {
 export function triangulate(
   plist: Point[],
   args:
-    | Pick<TriangulateOptions, keyof TriangulateOptions>
+    | Partial<TriangulateOptions>
     | undefined = undefined
 ): Point[][] {
   //return []

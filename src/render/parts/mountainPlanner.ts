@@ -1,5 +1,4 @@
 import { DesignChunk, IChunk } from '../basic/chunk';
-import { MEM } from '../basic/memory';
 import { Noise } from '../basic/perlinNoise';
 import PRNG from '../basic/PRNG';
 
@@ -36,7 +35,7 @@ function chadd(reg: IChunk[], r: IChunk, mind: number = 10): boolean {
   return true;
 }
 
-export function mountplanner(xmin: number, xmax: number): IChunk[] {
+export function mountplanner(planmtx: number[], xmin: number, xmax: number): IChunk[] {
   const reg: IChunk[] = [];
   const samp = 0.03;
   const ns = (x: number, y: number) =>
@@ -50,7 +49,7 @@ export function mountplanner(xmin: number, xmax: number): IChunk[] {
   const mwid = 200;
   for (let i = xmin; i < xmax; i += xstep) {
     const i1 = Math.floor(i / xstep);
-    MEM.planmtx[i1] = MEM.planmtx[i1] || 0;
+    planmtx[i1] = planmtx[i1] || 0;
   }
 
   for (let i = xmin; i < xmax; i += xstep) {
@@ -66,7 +65,7 @@ export function mountplanner(xmin: number, xmax: number): IChunk[] {
             k < (xof + mwid) / xstep;
             k++
           ) {
-            MEM.planmtx[k] += 1;
+            planmtx[k] += 1;
           }
         }
       }
@@ -83,7 +82,7 @@ export function mountplanner(xmin: number, xmax: number): IChunk[] {
   }
   console.log([xmin, xmax]);
   for (let i = xmin; i < xmax; i += xstep) {
-    if (MEM.planmtx[Math.floor(i / xstep)] === 0) {
+    if (planmtx[Math.floor(i / xstep)] === 0) {
       //const r = {tag:"redcirc",x:i,y:700}
       //console.log(i)
       if (random() < 0.01) {

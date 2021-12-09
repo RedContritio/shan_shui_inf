@@ -56,10 +56,10 @@ class Memory {
 
       let plan: IChunk[] = [];
       if (xmax > this.xmax - this.cwid) {
-        plan = mountplanner(this.xmax, this.xmax + this.cwid);
+        plan = mountplanner(this.planmtx, this.xmax, this.xmax + this.cwid);
         this.xmax = this.xmax + this.cwid;
       } else {
-        plan = mountplanner(this.xmin - this.cwid, this.xmin);
+        plan = mountplanner(this.planmtx, this.xmin - this.cwid, this.xmin);
         this.xmin = this.xmin - this.cwid;
       }
 
