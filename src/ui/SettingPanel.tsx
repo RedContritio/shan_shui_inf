@@ -15,6 +15,7 @@ interface Props {
 
 interface State {
   menu_visible: boolean;
+  left: number;
 }
 
 class SettingPanel extends React.Component<Props, State> {
@@ -25,17 +26,26 @@ class SettingPanel extends React.Component<Props, State> {
 
     this.state = {
       menu_visible: false,
+      left: 40
     };
   }
 
+  componentDidMount() {
+    const updateLeft = (x: number) => {
+      this.setState({ left: Math.max(4, 40 - x) });
+    }
+    window.addEventListener('scroll', (e) => updateLeft(window.scrollX));
+  }
+
   render() {
-    const { menu_visible } = this.state;
+    const { menu_visible, left } = this.state;
     const toggleVisible = () => this.setState({ menu_visible: !menu_visible });
     return (
-      <div id={SettingPanel.id}>
+      <div id={SettingPanel.id} style={{ left }}>
         <ButtonSet
           onClick={toggleVisible}
           menu_visible={this.state.menu_visible}
+          left={this.state.left}
         />
         <div style={{ height: 4 }} />
         <Menu

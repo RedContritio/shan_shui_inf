@@ -35,7 +35,6 @@ div#MENU td > * {
 div#SOURCE_BTN {
   position: fixed;
   z-index: 1000;
-  left: 77px;
   top: 3px;
   width: 32px;
   height: 32px;
