@@ -12,10 +12,7 @@ class Memory {
   xmin: number = 0;
   xmax: number = 0;
   cwid: number = 512;
-  cursx: number = 0;
   lasttick: number = 0;
-  windx: number = 3000;
-  windy: number = 800;
   planmtx: number[] = [];
 
   chunkloader(xmin: number, xmax: number) {
@@ -74,10 +71,9 @@ class Memory {
       .join('\n');
   }
 
-  update() {
-    console.log(`MEM.cursx: ${MEM.cursx}`);
-    this.chunkloader(MEM.cursx, MEM.cursx + MEM.windx);
-    this.chunkrender(MEM.cursx, MEM.cursx + MEM.windx);
+  update(xmin: number, xmax: number) {
+    this.chunkloader(xmin, xmax);
+    this.chunkrender(xmin, xmax);
   }
 }
 

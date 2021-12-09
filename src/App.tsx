@@ -14,13 +14,14 @@ interface AppState {
   background_image: string | undefined;
   foreground_image: string;
   cursx: number;
+  windx: number;
+  windy: number;
   updateflag: boolean;
 }
 
 class App extends React.Component<{}, AppState> {
   bgrender = React.createRef<BackgroundRender>();
   mem = MEM;
-  lastScrollX = 0;
   pFrame = 0;
 
   constructor(props: {}) {
@@ -36,13 +37,12 @@ class App extends React.Component<{}, AppState> {
       background_image: undefined,
       foreground_image: '',
       cursx: 0,
+      windx: window.innerWidth,
+      windy: window.innerHeight,
       updateflag: false,
     };
 
     PRNG.seed(this.state.seed);
-
-    this.mem.windy = window.innerHeight;
-    this.mem.windx = window.innerWidth;
   }
 
   componentDidMount() {
@@ -52,7 +52,6 @@ class App extends React.Component<{}, AppState> {
 
   xscroll(v: number) {
     this.setState({ cursx: this.state.cursx + v });
-    MEM.cursx = this.state.cursx;
     this.setState({ updateflag: !this.state.updateflag });
 
     console.log(`xscroll(${v}) => set cursx = ${this.state.cursx + v}`);
@@ -70,7 +69,14 @@ class App extends React.Component<{}, AppState> {
 
   calcViewBox() {
     const zoom = 1.142;
-    return '' + MEM.cursx + ' 0 ' + MEM.windx / zoom + ' ' + MEM.windy / zoom;
+    return (
+      '' +
+      this.state.cursx +
+      ' 0 ' +
+      this.state.windx / zoom +
+      ' ' +
+      this.state.windy / zoom
+    );
   }
 
   viewupdate() {
@@ -117,13 +123,14 @@ class App extends React.Component<{}, AppState> {
             xscroll={xscroll}
             toggleAutoScroll={toggleAutoScroll}
           />
-          <ButtonSource/>
+          <ButtonSource />
           <ScrollableCanvas
             xscroll={xscroll}
-            height={this.mem.windy}
+            windy={this.state.windy}
             background={this.state.background_image}
             seed={this.state.seed}
-            windx={this.mem.windx}
+            cursx={this.state.cursx}
+            windx={this.state.windx}
             updateflag={this.state.updateflag}
           />
         </div>

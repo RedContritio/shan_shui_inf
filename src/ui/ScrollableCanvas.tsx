@@ -47,9 +47,10 @@ class ScrollBar extends React.Component<IBarProps, IBarState> {
 
 interface IProps {
   xscroll: (v: number) => void;
-  height: number;
+  windy: number;
   background: string | undefined;
   seed: string;
+  cursx: number;
   windx: number;
   updateflag: boolean;
 }
@@ -59,19 +60,26 @@ class ScrollableCanvas extends React.Component<IProps> {
 
   calcViewBox() {
     const zoom = 1.142;
-    return '' + MEM.cursx + ' 0 ' + MEM.windx / zoom + ' ' + MEM.windy / zoom;
+    return (
+      '' +
+      this.props.cursx +
+      ' 0 ' +
+      this.props.windx / zoom +
+      ' ' +
+      this.props.windy / zoom
+    );
   }
 
   render() {
     const xscroll = this.props.xscroll;
     const viewbox = this.calcViewBox();
     console.log('ScrollableCanvas render');
-    MEM.update();
+    MEM.update(this.props.cursx, this.props.windx);
     const foreground =
       "<svg id='SVG' xmlns='http://www.w3.org/2000/svg' width='" +
-      MEM.windx +
+      this.props.windx +
       "' height='" +
-      MEM.windy +
+      this.props.windy +
       "' style='mix-blend-mode:multiply;'" +
       "viewBox = '" +
       viewbox +
@@ -91,7 +99,7 @@ class ScrollableCanvas extends React.Component<IProps> {
               <ScrollBar
                 id="L"
                 onClick={() => xscroll(-200)}
-                height={this.props.height}
+                height={this.props.windy}
                 icon="&#x3008;"
               />
             </td>
@@ -114,7 +122,7 @@ class ScrollableCanvas extends React.Component<IProps> {
               <ScrollBar
                 id="R"
                 onClick={() => xscroll(-200)}
-                height={this.props.height}
+                height={this.props.windy}
                 icon="&#x3009;"
               />
             </td>

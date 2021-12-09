@@ -1,8 +1,7 @@
 import React from 'react';
 import './styles.css';
 
-interface IProps {
-}
+interface IProps {}
 
 interface IState {
   isHover: boolean;
