@@ -53,13 +53,24 @@ table#SCROLLABLE_CANVAS {
 
 #SCROLLABLE_CANVAS div#L,
 #SCROLLABLE_CANVAS div#R {
+  position: fixed;
+  z-index: 1000;
   width: 32px;
   text-align: center;
-  top: 0px;
+  top: 3px;
+  bottom: 3px;
   color: rgba(0, 0, 0, 0.4);
   display: table;
   cursor: pointer;
   border: 1px solid rgba(0, 0, 0, 0.4);
+}
+
+#SCROLLABLE_CANVAS div#L {
+  left: 3px;
+}
+
+#SCROLLABLE_CANVAS div#R {
+  right: 3px;
 }
 
 #SCROLLABLE_CANVAS div#L\.t,

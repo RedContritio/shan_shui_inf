@@ -101,6 +101,9 @@ class ScrollableCanvas extends React.Component<IProps> {
                 style={{
                   backgroundImage: `url(${this.props.background})`,
                   width: this.props.windx,
+                  left: 0,
+                  position: 'fixed',
+                  top: 0,
                 }}
                 dangerouslySetInnerHTML={{
                   __html: foreground,

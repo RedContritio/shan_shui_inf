@@ -1,6 +1,6 @@
 import { arch02, boat01 } from '../parts/arch';
 import { distMount, flatMount, mountain } from '../parts/mountain';
-import { mountplanner } from '../parts/mountainPlanner';
+import { design } from './designer';
 import { water } from '../parts/water';
 import { Chunk, IChunk } from './chunk';
 import PRNG from './PRNG';
@@ -18,55 +18,27 @@ class Memory {
   windy: number = 800;
   planmtx: number[] = [];
 
-  private appendChunk(nch: Chunk): void {
-    if (this.chunks.length === 0) {
-      this.chunks.push(nch);
-      return;
-    }
-
-    if (nch.y <= this.chunks[0].y) {
-      this.chunks.unshift(nch);
-      return;
-    }
-
-    if (nch.y >= this.chunks[this.chunks.length - 1].y) {
-      this.chunks.push(nch);
-      return;
-    }
-
-    for (let j = 0; j < this.chunks.length - 1; j++) {
-      if (this.chunks[j].y <= nch.y && nch.y <= this.chunks[j + 1].y) {
-        this.chunks.splice(j + 1, 0, nch);
-        return;
-      }
-    }
-
-    console.log('EH?WTF!');
-    console.log(this.chunks);
-    console.log(nch);
-  }
-
   chunkloader(xmin: number, xmax: number) {
     while (xmax > this.xmax - this.cwid || xmin < this.xmin + this.cwid) {
       console.log('generating new chunk...');
 
       let plan: IChunk[] = [];
       if (xmax > this.xmax - this.cwid) {
-        plan = mountplanner(this.planmtx, this.xmax, this.xmax + this.cwid);
+        plan = design(this.planmtx, this.xmax, this.xmax + this.cwid);
         this.xmax = this.xmax + this.cwid;
       } else {
-        plan = mountplanner(this.planmtx, this.xmin - this.cwid, this.xmin);
+        plan = design(this.planmtx, this.xmin - this.cwid, this.xmin);
         this.xmin = this.xmin - this.cwid;
       }
 
       for (let i = 0; i < plan.length; i++) {
         if (plan[i].tag === 'mount') {
-          this.appendChunk(
+          this.chunks.push(
             mountain(plan[i].x, plan[i].y, i * 2 * PRNG.random())
           );
-          this.appendChunk(water(plan[i].x, plan[i].y, i * 2));
+          this.chunks.push(water(plan[i].x, plan[i].y, i * 2));
         } else if (plan[i].tag === 'flatmount') {
-          this.appendChunk(
+          this.chunks.push(
             flatMount(plan[i].x, plan[i].y, 2 * PRNG.random() * Math.PI, {
               strokeWidth: 600 + PRNG.random() * 400,
               hei: 100,
@@ -74,14 +46,14 @@ class Memory {
             })
           );
         } else if (plan[i].tag === 'distmount') {
-          this.appendChunk(
+          this.chunks.push(
             distMount(plan[i].x, plan[i].y, PRNG.random() * 100, {
               hei: 150,
               len: randChoice([500, 1000, 1500]),
             })
           );
         } else if (plan[i].tag === 'boat') {
-          this.appendChunk(
+          this.chunks.push(
             boat01(plan[i].x, plan[i].y, PRNG.random(), {
               sca: plan[i].y / 800,
               fli: randChoice([true, false]),
@@ -95,6 +67,7 @@ class Memory {
   chunkrender(xmin: number, xmax: number) {
     const left = xmin - this.cwid;
     const right = xmax + this.cwid;
+    this.chunks.sort((a, b) => a.y - b.y);
     this.canv = this.chunks
       .filter((c) => c.x >= left && c.x < right)
       .map((c) => c.render())

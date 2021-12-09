@@ -44,6 +44,7 @@ class App extends React.Component<{}, AppState> {
     PRNG.seed(this.state.seed);
 
     this.mem.windy = window.innerHeight;
+    this.mem.windx = window.innerWidth;
   }
 
   componentDidMount() {
