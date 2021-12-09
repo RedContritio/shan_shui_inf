@@ -361,10 +361,10 @@ function rail(
   for (let i = 0; i < ptlist.length / 2; i++) {
     for (let j = 0; j < ptlist[i].length; j++) {
       //ptlist.push(div([ptlist[i][j],ptlist[4+i][j]],2))
-      ptlist[i][j].y += (Noise.noise(i, j * 0.5, seed) - 0.5) * hei;
+      ptlist[i][j].y += (Noise.noise(PRNG, i, j * 0.5, seed) - 0.5) * hei;
       ptlist[(ptlist.length / 2 + i) % ptlist.length][
         j % ptlist[(ptlist.length / 2 + i) % ptlist.length].length
-      ].y += (Noise.noise(i + 0.5, j * 0.5, seed) - 0.5) * hei;
+      ].y += (Noise.noise(PRNG, i + 0.5, j * 0.5, seed) - 0.5) * hei;
       const ln = div(
         [
           ptlist[i][j],

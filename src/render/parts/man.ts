@@ -118,7 +118,10 @@ export function hat01(
   const qlist1: Point[] = [];
   for (let i = 0; i < 10; i++) {
     qlist1.push(
-      new Point(-0.3 - Noise.noise(i * 0.2, seed) * i * 0.1, 0.5 - i * 0.3)
+      new Point(
+        -0.3 - Noise.noise(PRNG, i * 0.2, seed) * i * 0.1,
+        0.5 - i * 0.3
+      )
     );
   }
   polylines.push(
@@ -192,7 +195,10 @@ export function stick01(
   for (let i = 0; i < l; i++) {
     qlist1.push(
       new Point(
-        -Noise.noise(i * 0.1, seed) * 0.1 * Math.sin((i / l) * Math.PI) * 5,
+        -Noise.noise(PRNG, i * 0.1, seed) *
+          0.1 *
+          Math.sin((i / l) * Math.PI) *
+          5,
         0 + i * 0.3
       )
     );

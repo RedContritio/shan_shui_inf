@@ -35,7 +35,7 @@ export function water(
       ptlist[ptlist.length - 1].push(
         new Point(
           j + xk,
-          Math.sin(j * 0.2) * hei * Noise.noise(j * 0.1) - 20 + yk
+          Math.sin(j * 0.2) * hei * Noise.noise(PRNG, j * 0.1) - 20 + yk
         )
       );
     }

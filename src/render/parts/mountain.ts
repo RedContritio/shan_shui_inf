@@ -45,14 +45,14 @@ export function foot(
       for (let j = 0; j < Math.min(ptlist[i].length / 8, 10); j++) {
         ftlist[ftlist.length - 2].push(
           new Point(
-            ptlist[i][j].x + Noise.noise(j * 0.1, i) * 10,
+            ptlist[i][j].x + Noise.noise(PRNG, j * 0.1, i) * 10,
             ptlist[i][j].y
           )
         );
         ftlist[ftlist.length - 1].push(
           new Point(
             ptlist[i][ptlist[i].length - 1 - j].x -
-              Noise.noise(j * 0.1, i) * 10,
+              Noise.noise(PRNG, j * 0.1, i) * 10,
             ptlist[i][ptlist[i].length - 1 - j].y
           )
         );
@@ -73,8 +73,8 @@ export function foot(
           ptlist[ni][ptlist[i].length - 1].y * p;
 
         const vib = -1.7 * (p - 1) * Math.pow(p, 1 / 5);
-        y1 += vib * 5 + Noise.noise(xof * 0.05, i) * 5;
-        y2 += vib * 5 + Noise.noise(xof * 0.05, i) * 5;
+        y1 += vib * 5 + Noise.noise(PRNG, xof * 0.05, i) * 5;
+        y2 += vib * 5 + Noise.noise(PRNG, xof * 0.05, i) * 5;
 
         ftlist[ftlist.length - 2].push(new Point(x1, y1));
         ftlist[ftlist.length - 1].push(new Point(x2, y2));
@@ -168,7 +168,7 @@ export function mountain(
     ptlist.push([]);
     for (let i = 0; i < reso[1]; i++) {
       const x = (i / reso[1] - 0.5) * Math.PI;
-      const y = Math.cos(x) * Noise.noise(x + 10, j * 0.15, seed);
+      const y = Math.cos(x) * Noise.noise(PRNG, x + 10, j * 0.15, seed);
       const p = 1 - j / reso[0];
       ptlist[ptlist.length - 1].push(
         new Point((x / Math.PI) * w * p, -y * h * p + hoff)
@@ -184,13 +184,15 @@ export function mountain(
         return tree02(x + xoff, y + yoff - 5, {
           col:
             'rgba(100,100,100,' +
-            (Noise.noise(0.01 * x, 0.01 * y) * 0.5 * 0.3 + 0.5).toFixed(3) +
+            (Noise.noise(PRNG, 0.01 * x, 0.01 * y) * 0.5 * 0.3 + 0.5).toFixed(
+              3
+            ) +
             ')',
           clu: 2,
         });
       },
       function (i, j) {
-        const ns = Noise.noise(j * 0.1, seed);
+        const ns = Noise.noise(PRNG, j * 0.1, seed);
         return (
           i === 0 && ns * ns * ns < 0.1 && Math.abs(ptlist[i][j].y) / h > 0.2
         );
@@ -256,12 +258,14 @@ export function mountain(
         return tree02(x + xoff, y + yoff, {
           col:
             'rgba(100,100,100,' +
-            (Noise.noise(0.01 * x, 0.01 * y) * 0.5 * 0.3 + 0.5).toFixed(3) +
+            (Noise.noise(PRNG, 0.01 * x, 0.01 * y) * 0.5 * 0.3 + 0.5).toFixed(
+              3
+            ) +
             ')',
         });
       },
       function (i, j) {
-        const ns = Noise.noise(i * 0.1, j * 0.1, seed + 2);
+        const ns = Noise.noise(PRNG, i * 0.1, j * 0.1, seed + 2);
         return ns * ns * ns < 0.1 && Math.abs(ptlist[i][j].y) / h > 0.5;
       },
       function (veglist, i) {
@@ -283,12 +287,14 @@ export function mountain(
             strokeWidth: PRNG.random() * 3 + 1,
             col:
               'rgba(100,100,100,' +
-              (Noise.noise(0.01 * x, 0.01 * y) * 0.5 * 0.3 + 0.3).toFixed(3) +
+              (Noise.noise(PRNG, 0.01 * x, 0.01 * y) * 0.5 * 0.3 + 0.3).toFixed(
+                3
+              ) +
               ')',
           });
         },
         function (i, j): boolean {
-          const ns = Noise.noise(i * 0.2, j * 0.05, seed);
+          const ns = Noise.noise(PRNG, i * 0.2, j * 0.05, seed);
           return (
             j % 2 !== 0 &&
             ns * ns * ns * ns < 0.012 &&
@@ -331,12 +337,14 @@ export function mountain(
             },
             col:
               'rgba(100,100,100,' +
-              (Noise.noise(0.01 * x, 0.01 * y) * 0.5 * 0.3 + 0.3).toFixed(3) +
+              (Noise.noise(PRNG, 0.01 * x, 0.01 * y) * 0.5 * 0.3 + 0.3).toFixed(
+                3
+              ) +
               ')',
           });
         },
         function (i, j) {
-          const ns = Noise.noise(i * 0.2, j * 0.05, seed);
+          const ns = Noise.noise(PRNG, i * 0.2, j * 0.05, seed);
           return (
             (j === 0 || j === ptlist[i].length - 1) && ns * ns * ns * ns < 0.012
           );
@@ -370,7 +378,7 @@ export function mountain(
         }
       },
       function (i, j) {
-        const ns = Noise.noise(i * 0.2, j * 0.05, seed + 10);
+        const ns = Noise.noise(PRNG, i * 0.2, j * 0.05, seed + 10);
         return (
           i !== 0 &&
           (j === 1 || j === ptlist[i].length - 2) &&
@@ -413,7 +421,7 @@ export function mountain(
         return transmissionTower01(x + xoff, y + yoff, seed);
       },
       function (i, j) {
-        const ns = Noise.noise(i * 0.2, j * 0.05, seed + 20 * Math.PI);
+        const ns = Noise.noise(PRNG, i * 0.2, j * 0.05, seed + 20 * Math.PI);
         return (
           i % 2 === 0 &&
           (j === 1 || j === ptlist[i].length - 2) &&
@@ -501,7 +509,8 @@ export function flatMount(
     flat.push([]);
     for (let i = 0; i < reso[1]; i++) {
       const x = (i / reso[1] - 0.5) * Math.PI;
-      const y = (Math.cos(x * 2) + 1) * Noise.noise(x + 10, j * 0.1, seed);
+      const y =
+        (Math.cos(x * 2) + 1) * Noise.noise(PRNG, x + 10, j * 0.1, seed);
       const p = 1 - (j / reso[0]) * 0.6;
       const nx = (x / Math.PI) * strokeWidth * p;
       let ny = -y * hei * p + hoff;
@@ -600,7 +609,7 @@ export function flatMount(
   const grlist = grlist1.reverse().concat(grlist2.concat([grlist1[0]]));
   for (let i = 0; i < grlist.length; i++) {
     const v = (1 - Math.abs((i % d) - d / 2) / (d / 2)) * 0.12;
-    grlist[i].x *= 1 - v + Noise.noise(grlist[i].y * 0.5) * v;
+    grlist[i].x *= 1 - v + Noise.noise(PRNG, grlist[i].y * 0.5) * v;
   }
   /*       for (const i = 0; i < ptlist.length; i++){
               canv += poly(ptlist[i],{xof:xoff,yof:yoff,stroke:"red",fill:"none",strokeWidth:2})
@@ -817,7 +826,7 @@ export function distMount(
           xoff + k * span,
           yoff -
             hei *
-              Noise.noise(k * 0.05, seed) *
+              Noise.noise(PRNG, k * 0.05, seed) *
               Math.pow(Math.sin((Math.PI * k) / (len / span)), 0.5)
         );
       ptlist[ptlist.length - 1].push(tran(i * seg + j));
@@ -828,7 +837,7 @@ export function distMount(
           xoff + k * span,
           yoff +
             24 *
-              Noise.noise(k * 0.05, 2, seed) *
+              Noise.noise(PRNG, k * 0.05, 2, seed) *
               Math.pow(Math.sin((Math.PI * k) / (len / span)), 1)
         );
       ptlist[ptlist.length - 1].unshift(tran(i * seg + j * 2));
@@ -836,7 +845,7 @@ export function distMount(
   }
   for (let i = 0; i < ptlist.length; i++) {
     const getCol = function (x: number, y: number) {
-      const c = (Noise.noise(x * 0.02, y * 0.02, yoff) * 55 + 200) | 0;
+      const c = (Noise.noise(PRNG, x * 0.02, y * 0.02, yoff) * 55 + 200) | 0;
       return 'rgb(' + c + ',' + c + ',' + c + ')';
     };
     const pe = ptlist[i][ptlist[i].length - 1];
@@ -892,7 +901,7 @@ export function rock(
 
     const nslist = [];
     for (let j = 0; j < reso[1]; j++) {
-      nslist.push(Noise.noise(i, j * 0.2, seed));
+      nslist.push(Noise.noise(PRNG, i, j * 0.2, seed));
     }
     loopNoise(nslist);
 

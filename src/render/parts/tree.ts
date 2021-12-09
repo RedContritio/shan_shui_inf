@@ -32,7 +32,7 @@ export function tree01(
   const reso = 10;
   const nslist = [];
   for (let i = 0; i < reso; i++) {
-    nslist.push([Noise.noise(i * 0.5), Noise.noise(i * 0.5, 0.5)]);
+    nslist.push([Noise.noise(PRNG, i * 0.5), Noise.noise(PRNG, i * 0.5, 0.5)]);
   }
 
   let leafcol;
@@ -145,7 +145,7 @@ export function tree03(
   const reso = 10;
   const nslist = [];
   for (let i = 0; i < reso; i++) {
-    nslist.push([Noise.noise(i * 0.5), Noise.noise(i * 0.5, 0.5)]);
+    nslist.push([Noise.noise(PRNG, i * 0.5), Noise.noise(PRNG, i * 0.5, 0.5)]);
   }
 
   let leafcol;
@@ -264,7 +264,7 @@ export function branch(
     const ny = lastp[1] * (1 - p) + nextp[1] * p;
 
     const angle = Math.atan2(ny - ly, nx - lx);
-    const woff = ((Noise.noise(i * 0.3) - 0.5) * strokeWidth * hei) / 80;
+    const woff = ((Noise.noise(PRNG, i * 0.3) - 0.5) * strokeWidth * hei) / 80;
 
     let b = 0;
     if (p === 0) {
@@ -408,7 +408,7 @@ function bark(
   let nslist: number[] = [];
   const n0 = PRNG.random() * 10;
   for (let i = 0; i < reso + 1; i++) {
-    nslist.push(Noise.noise(i * 0.05, n0));
+    nslist.push(Noise.noise(PRNG, i * 0.05, n0));
   }
 
   nslist = loopNoise(nslist);
@@ -508,9 +508,9 @@ export function barkify(
     rglist[i] = div(rglist[i], 4);
     for (let j = 0; j < rglist[i].length; j++) {
       rglist[i][j].x +=
-        (Noise.noise(i, j * 0.1, 1) - 0.5) * (15 + 5 * randGaussian());
+        (Noise.noise(PRNG, i, j * 0.1, 1) - 0.5) * (15 + 5 * randGaussian());
       rglist[i][j].y +=
-        (Noise.noise(i, j * 0.1, 2) - 0.5) * (15 + 5 * randGaussian());
+        (Noise.noise(PRNG, i, j * 0.1, 2) - 0.5) * (15 + 5 * randGaussian());
     }
     if (rglist[i].length > 0) {
       polylinelists.push([
@@ -959,7 +959,7 @@ export function tree07(
   const reso = 10;
   const nslist = [];
   for (let i = 0; i < reso; i++) {
-    nslist.push([Noise.noise(i * 0.5), Noise.noise(i * 0.5, 0.5)]);
+    nslist.push([Noise.noise(PRNG, i * 0.5), Noise.noise(PRNG, i * 0.5, 0.5)]);
   }
 
   // assert(col.includes('rgba('))
@@ -1029,7 +1029,7 @@ export function tree07(
 
   for (let k = 0; k < T.length; k++) {
     const m = midPt(T[k]);
-    const c = (Noise.noise(m.x * 0.02, m.y * 0.02) * 200 + 50) | 0;
+    const c = (Noise.noise(PRNG, m.x * 0.02, m.y * 0.02) * 200 + 50) | 0;
     const co = 'rgba(' + c + ',' + c + ',' + c + ',0.8)';
     polylines.push(poly(T[k], { fill: co, stroke: co, strokeWidth: 0 }));
   }

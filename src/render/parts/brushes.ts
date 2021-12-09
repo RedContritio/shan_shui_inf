@@ -32,7 +32,7 @@ export function stroke(
   const n0 = PRNG.random() * 10;
   for (let i = 1; i < ptlist.length - 1; i++) {
     let w = strokeWidth * fun(i / ptlist.length);
-    w = w * (1 - noi) + w * noi * Noise.noise(i * 0.5, n0);
+    w = w * (1 - noi) + w * noi * Noise.noise(PRNG, i * 0.5, n0);
     const a1 = Math.atan2(
       ptlist[i].y - ptlist[i - 1].y,
       ptlist[i].x - ptlist[i - 1].x
@@ -111,7 +111,7 @@ export function blob_points(
   let nslist = [];
   const n0 = PRNG.random() * 10;
   for (let i = 0; i < reso + 1; i++) {
-    nslist.push(Noise.noise(i * 0.05, n0));
+    nslist.push(Noise.noise(PRNG, i * 0.05, n0));
   }
 
   nslist = loopNoise(nslist);
@@ -202,8 +202,8 @@ export function texture(
         ptlist[Math.floor(layer)][j].y * p +
         ptlist[Math.ceil(layer)][j].y * (1 - p);
 
-      const nx = noi(layer + 1) * (Noise.noise(x, j * 0.5) - 0.5);
-      const ny = noi(layer + 1) * (Noise.noise(y, j * 0.5) - 0.5);
+      const nx = noi(layer + 1) * (Noise.noise(PRNG, x, j * 0.5) - 0.5);
+      const ny = noi(layer + 1) * (Noise.noise(PRNG, y, j * 0.5) - 0.5);
 
       texlist[texlist.length - 1].push(new Point(x + nx, y + ny));
     }

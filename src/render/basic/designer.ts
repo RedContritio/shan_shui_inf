@@ -41,11 +41,9 @@ export function design(
 ): IChunk[] {
   const reg: IChunk[] = [];
   const samp = 0.03;
-  const ns = (p: Point) => Math.max(Noise.noise(p.x * samp) - 0.55, 0) * 2;
-  // const nns = (x: number) => 1 - Noise.noise(x * samp);
-  // const nnns = (x: number, y: number) =>
-  //   Math.max(Noise.noise(x * samp * 2, 2) - 0.55, 0) * 2;
-  const yr = (x: number) => Noise.noise(x * 0.01, Math.PI);
+  const ns = (p: Point) =>
+    Math.max(Noise.noise(PRNG, p.x * samp) - 0.55, 0) * 2;
+  const yr = (x: number) => Noise.noise(PRNG, x * 0.01, Math.PI);
 
   const xstep = 5;
   const mwid = 200;

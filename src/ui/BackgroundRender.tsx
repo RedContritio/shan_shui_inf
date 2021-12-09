@@ -1,12 +1,13 @@
 import React from 'react';
-import { Noise } from '../render/basic/perlinNoise';
+import { PerlinNoise } from '../render/basic/perlinNoise';
+import { tPRNG } from '../render/basic/PRNG';
 
 interface IProps {}
 
 class BackgroundRender extends React.Component<IProps> {
   canvasRef = React.createRef<HTMLCanvasElement>();
 
-  generate(): string | undefined {
+  generate(prng: tPRNG, noise: PerlinNoise): string | undefined {
     const ctx = this.canvasRef.current?.getContext('2d');
     if (ctx === null || ctx === undefined) {
       return undefined;
@@ -15,8 +16,8 @@ class BackgroundRender extends React.Component<IProps> {
 
     for (let i = 0; i < resolution / 2 + 1; i++) {
       for (let j = 0; j < resolution / 2 + 1; j++) {
-        let c = 245 + Noise.noise(i * 0.1, j * 0.1) * 10;
-        c -= Math.random() * 20;
+        let c = 245 + noise.noise(prng, i * 0.1, j * 0.1) * 10;
+        c -= prng.random() * 20;
 
         const r = c.toFixed(0);
         const g = (c * 0.95).toFixed(0);
