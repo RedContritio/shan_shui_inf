@@ -127,13 +127,13 @@ function bestEar(plist: Point[], convex: boolean, optimize: boolean) {
   }
   let best = [plist, []];
   let bestRatio = 0;
-  for (let i = 0; i < cuts.length; i++) {
-    const r = sliverRatio(cuts[i][0]);
+  cuts.forEach((i) => {
+    const r = sliverRatio(i[0]);
     if (r >= bestRatio) {
-      best = cuts[i];
+      best = i;
       bestRatio = r;
     }
-  }
+  });
   return best;
 }
 
