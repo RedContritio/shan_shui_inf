@@ -121,7 +121,7 @@ class ScrollableCanvas extends React.Component<IProps> {
             <td>
               <ScrollBar
                 id="R"
-                onClick={() => xscroll(-200)}
+                onClick={() => xscroll(200)}
                 height={this.props.windy - 8}
                 icon="&#x3009;"
               />
