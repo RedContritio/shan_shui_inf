@@ -1,17 +1,15 @@
 import { Noise } from '../basic/perlinNoise';
 import { distance, Point } from '../basic/point';
-import PRNG from '../basic/PRNG';
+import { PRNG } from '../basic/PRNG';
 import { bezmh, normRand, poly } from '../basic/utils';
 import { SvgPolyline } from '../svg/types';
 import { stroke } from './brushes';
-
-const random = PRNG.random;
 
 function expand(ptlist: Point[], wfun: (v: number) => number): Point[][] {
   const vtxlist0 = [];
   const vtxlist1 = [];
   // const vtxlist = [];
-  // const n0 = random() * 10;
+  // const n0 = PRNG.random() * 10;
   for (let i = 1; i < ptlist.length - 1; i++) {
     const w = wfun(i / ptlist.length);
     const a1 = Math.atan2(
@@ -95,7 +93,7 @@ export function hat01(
   const { fli } = _args;
 
   const polylines: SvgPolyline[] = [];
-  const seed = random();
+  const seed = PRNG.random();
   const f: (pl: Point[]) => Point[] = fli ? flipper : (x) => x;
   //const plist = [[-0.5,0.5],[0.5,0.5],[0.5,1],[-0.5,2]]
   polylines.push(
@@ -120,7 +118,10 @@ export function hat01(
   const qlist1: Point[] = [];
   for (let i = 0; i < 10; i++) {
     qlist1.push(
-      new Point(-0.3 - Noise.noise(i * 0.2, seed) * i * 0.1, 0.5 - i * 0.3)
+      new Point(
+        -0.3 - Noise.noise(PRNG, i * 0.2, seed) * i * 0.1,
+        0.5 - i * 0.3
+      )
     );
   }
   polylines.push(
@@ -144,7 +145,7 @@ export function hat02(
   const { fli } = _args;
 
   const polylines: SvgPolyline[] = [];
-  // const seed = random();
+  // const seed = PRNG.random();
 
   const f: (pl: Point[]) => Point[] = fli ? flipper : (x) => x;
   // canv += poly(tranpoly(p0,p1,[
@@ -185,7 +186,7 @@ export function stick01(
   const { fli } = _args;
 
   const polylines: SvgPolyline[] = [];
-  const seed = random();
+  const seed = PRNG.random();
 
   const f: (pl: Point[]) => Point[] = fli ? flipper : (x) => x;
 
@@ -194,7 +195,10 @@ export function stick01(
   for (let i = 0; i < l; i++) {
     qlist1.push(
       new Point(
-        -Noise.noise(i * 0.1, seed) * 0.1 * Math.sin((i / l) * Math.PI) * 5,
+        -Noise.noise(PRNG, i * 0.1, seed) *
+          0.1 *
+          Math.sin((i / l) * Math.PI) *
+          5,
         0 + i * 0.3
       )
     );
@@ -310,11 +314,11 @@ class ManArgs {
     0,
     -Math.PI / 2,
     normRand(0, 0),
-    (Math.PI / 4) * random(),
-    ((Math.PI * 3) / 4) * random(),
+    (Math.PI / 4) * PRNG.random(),
+    ((Math.PI * 3) / 4) * PRNG.random(),
     (Math.PI * 3) / 4,
     -Math.PI / 4,
-    (-Math.PI * 3) / 4 - (Math.PI / 4) * random(),
+    (-Math.PI * 3) / 4 - (Math.PI / 4) * PRNG.random(),
     -Math.PI / 4,
   ];
   len = [0, 30, 20, 30, 30, 30, 30, 30, 30];

@@ -47,9 +47,10 @@ class ScrollBar extends React.Component<IBarProps, IBarState> {
 
 interface IProps {
   xscroll: (v: number) => void;
-  height: number;
+  windy: number;
   background: string | undefined;
   seed: string;
+  cursx: number;
   windx: number;
   updateflag: boolean;
 }
@@ -59,29 +60,37 @@ class ScrollableCanvas extends React.Component<IProps> {
 
   calcViewBox() {
     const zoom = 1.142;
-    return '' + MEM.cursx + ' 0 ' + MEM.windx / zoom + ' ' + MEM.windy / zoom;
+    return (
+      '' +
+      this.props.cursx +
+      ' 0 ' +
+      this.props.windx / zoom +
+      ' ' +
+      this.props.windy / zoom
+    );
   }
 
   render() {
     const xscroll = this.props.xscroll;
     const viewbox = this.calcViewBox();
     console.log('ScrollableCanvas render');
-    MEM.update();
-    const foreground =
-      "<svg id='SVG' xmlns='http://www.w3.org/2000/svg' width='" +
-      MEM.windx +
-      "' height='" +
-      MEM.windy +
-      "' style='mix-blend-mode:multiply;'" +
-      "viewBox = '" +
-      viewbox +
-      "'" +
-      "><g id='G' transform='translate(" +
-      0 +
-      ",0)'>" +
-      MEM.canv +
-      //+ "<circle cx='0' cy='0' r='50' stroke='black' fill='red' />"
-      '</g></svg>';
+    MEM.update(this.props.cursx, this.props.windx);
+    const foreground = (
+      <svg
+        id="SVG"
+        xmlns="http://www.w3.org/2000/svg"
+        width={this.props.windx}
+        height={this.props.windy}
+        style={{ mixBlendMode: 'multiply' }}
+        viewBox={viewbox}
+      >
+        <g
+          id="G"
+          transform="translate(0, 0)"
+          dangerouslySetInnerHTML={{ __html: MEM.canv }}
+        />
+      </svg>
+    );
 
     return (
       <table id={ScrollableCanvas.id}>
@@ -91,7 +100,7 @@ class ScrollableCanvas extends React.Component<IProps> {
               <ScrollBar
                 id="L"
                 onClick={() => xscroll(-200)}
-                height={this.props.height}
+                height={this.props.windy - 8}
                 icon="&#x3008;"
               />
             </td>
@@ -101,17 +110,19 @@ class ScrollableCanvas extends React.Component<IProps> {
                 style={{
                   backgroundImage: `url(${this.props.background})`,
                   width: this.props.windx,
+                  left: 0,
+                  position: 'fixed',
+                  top: 0,
                 }}
-                dangerouslySetInnerHTML={{
-                  __html: foreground,
-                }}
-              ></div>
+              >
+                {foreground}
+              </div>
             </td>
             <td>
               <ScrollBar
                 id="R"
                 onClick={() => xscroll(-200)}
-                height={this.props.height}
+                height={this.props.windy - 8}
                 icon="&#x3009;"
               />
             </td>

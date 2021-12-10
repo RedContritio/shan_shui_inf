@@ -3,9 +3,10 @@ import SettingPanel from './ui/SettingPanel';
 import ButtonSource from './ui/ButtonSource';
 import ScrollableCanvas from './ui/ScrollableCanvas';
 import BackgroundRender from './ui/BackgroundRender';
-import PRNG from './render/basic/PRNG';
+import { PRNG, tPRNG } from './render/basic/PRNG';
 import { MEM } from './render/basic/memory';
 import './App.css';
+import { PerlinNoise } from './render/basic/perlinNoise';
 
 interface AppState {
   seed: string;
@@ -14,15 +15,17 @@ interface AppState {
   background_image: string | undefined;
   foreground_image: string;
   cursx: number;
-  scrollx: number;
+  windx: number;
+  windy: number;
   updateflag: boolean;
 }
 
 class App extends React.Component<{}, AppState> {
   bgrender = React.createRef<BackgroundRender>();
   mem = MEM;
-  lastScrollX = 0;
   pFrame = 0;
+  prng = new tPRNG();
+  noise = new PerlinNoise();
 
   constructor(props: {}) {
     super(props);
@@ -37,26 +40,21 @@ class App extends React.Component<{}, AppState> {
       background_image: undefined,
       foreground_image: '',
       cursx: 0,
-      scrollx: 0,
+      windx: window.innerWidth,
+      windy: window.innerHeight,
       updateflag: false,
     };
 
     PRNG.seed(this.state.seed);
-
-    this.mem.windy = window.innerHeight;
   }
 
   componentDidMount() {
-    const url = this.bgrender.current?.generate();
+    const url = this.bgrender.current?.generate(this.prng, this.noise);
     this.setState({ background_image: url });
-
-    const updateLeft = (x: number) => this.setState({ scrollx: x });
-    window.addEventListener('scroll', (e) => updateLeft(window.scrollX));
   }
 
   xscroll(v: number) {
     this.setState({ cursx: this.state.cursx + v });
-    MEM.cursx = this.state.cursx;
     this.setState({ updateflag: !this.state.updateflag });
 
     console.log(`xscroll(${v}) => set cursx = ${this.state.cursx + v}`);
@@ -74,7 +72,14 @@ class App extends React.Component<{}, AppState> {
 
   calcViewBox() {
     const zoom = 1.142;
-    return '' + MEM.cursx + ' 0 ' + MEM.windx / zoom + ' ' + MEM.windy / zoom;
+    return (
+      '' +
+      this.state.cursx +
+      ' 0 ' +
+      this.state.windx / zoom +
+      ' ' +
+      this.state.windy / zoom
+    );
   }
 
   viewupdate() {
@@ -86,25 +91,6 @@ class App extends React.Component<{}, AppState> {
       console.log('not possible');
     }
     //setTimeout(viewupdate,100)
-  }
-
-  present() {
-    var currScrollX = window.scrollX;
-    var step = 1;
-    document.body.scrollTo(Math.max(0, this.pFrame - 10), window.scrollY);
-
-    this.pFrame += step;
-
-    //console.log([lastScrollX,currScrollX]);
-
-    if (
-      this.pFrame < 20 ||
-      Math.abs(this.lastScrollX - currScrollX) < step * 2
-    ) {
-      this.lastScrollX = currScrollX;
-      const present = this.present;
-      setTimeout(present, 1);
-    }
   }
 
   reloadWSeed() {
@@ -139,15 +125,15 @@ class App extends React.Component<{}, AppState> {
             reloadWSeed={reloadWSeed}
             xscroll={xscroll}
             toggleAutoScroll={toggleAutoScroll}
-            scrollx={this.state.scrollx}
           />
-          <ButtonSource scrollx={this.state.scrollx} />
+          <ButtonSource />
           <ScrollableCanvas
             xscroll={xscroll}
-            height={this.mem.windy}
+            windy={this.state.windy}
             background={this.state.background_image}
             seed={this.state.seed}
-            windx={this.mem.windx}
+            cursx={this.state.cursx}
+            windx={this.state.windx}
             updateflag={this.state.updateflag}
           />
         </div>

@@ -1,9 +1,7 @@
 import React from 'react';
 import './styles.css';
 
-interface IProps {
-  scrollx: number;
-}
+interface IProps {}
 
 interface IState {
   isHover: boolean;
@@ -27,7 +25,7 @@ class ButtonSource extends React.Component<IProps, IState> {
     const onClick = () => {
       window.location.href = 'https://github.com/RedContritio/shan_shui_inf';
     };
-    const left = Math.max(41, 77 - this.props.scrollx);
+    const left = 77;
 
     return (
       <div

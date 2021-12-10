@@ -11,7 +11,6 @@ interface Props {
   reloadWSeed: () => void;
   xscroll: (v: number) => void;
   toggleAutoScroll: (v: boolean) => void;
-  scrollx: number;
 }
 
 interface State {
@@ -33,7 +32,7 @@ class SettingPanel extends React.Component<Props, State> {
     const { menu_visible } = this.state;
     const toggleVisible = () => this.setState({ menu_visible: !menu_visible });
 
-    const left = Math.max(4, 40 - this.props.scrollx);
+    const left = 40;
 
     return (
       <div id={SettingPanel.id} style={{ left }}>

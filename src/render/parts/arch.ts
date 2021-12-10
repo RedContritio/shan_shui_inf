@@ -1,15 +1,13 @@
 import { Chunk } from '../basic/chunk';
 import { Noise } from '../basic/perlinNoise';
 import { Point } from '../basic/point';
-import PRNG from '../basic/PRNG';
+import { PRNG } from '../basic/PRNG';
 import { normRand, poly, randChoice, wtrand } from '../basic/utils';
 import { midPt } from '../PolyTools';
 import { ISvgElement } from '../svg';
 import { SvgPolyline, SvgText } from '../svg/types';
 import { div, stroke, texture } from './brushes';
 import { hat02, man, stick01 } from './man';
-
-const random = PRNG.random;
 
 function flip(ptlist: Point[], axis: number = 0): Point[] {
   ptlist.forEach((i) => {
@@ -38,7 +36,7 @@ function hut(
 
   for (let i = 0; i < reso[0]; i++) {
     ptlist.push([]);
-    const heir = hei + hei * 0.2 * random();
+    const heir = hei + hei * 0.2 * PRNG.random();
     for (let j = 0; j < reso[1]; j++) {
       const nx =
         strokeWidth *
@@ -85,7 +83,7 @@ function hut(
     strokeWidth: 1,
     len: 0.25,
     col: function (x) {
-      return 'rgba(120,120,120,' + (0.3 + random() * 0.3).toFixed(3) + ')';
+      return 'rgba(120,120,120,' + (0.3 + PRNG.random() * 0.3).toFixed(3) + ')';
     },
     dis: function () {
       return wtrand((a) => a * a);
@@ -351,7 +349,7 @@ function rail(
     );
   }
   if (tra) {
-    const open = Math.floor(random() * ptlist.length);
+    const open = Math.floor(PRNG.random() * ptlist.length);
     ptlist[open] = ptlist[open].slice(0, -1);
     ptlist[(open + ptlist.length) % ptlist.length] = ptlist[
       (open + ptlist.length) % ptlist.length
@@ -363,10 +361,10 @@ function rail(
   for (let i = 0; i < ptlist.length / 2; i++) {
     for (let j = 0; j < ptlist[i].length; j++) {
       //ptlist.push(div([ptlist[i][j],ptlist[4+i][j]],2))
-      ptlist[i][j].y += (Noise.noise(i, j * 0.5, seed) - 0.5) * hei;
+      ptlist[i][j].y += (Noise.noise(PRNG, i, j * 0.5, seed) - 0.5) * hei;
       ptlist[(ptlist.length / 2 + i) % ptlist.length][
         j % ptlist[(ptlist.length / 2 + i) % ptlist.length].length
-      ].y += (Noise.noise(i + 0.5, j * 0.5, seed) - 0.5) * hei;
+      ].y += (Noise.noise(PRNG, i + 0.5, j * 0.5, seed) - 0.5) * hei;
       const ln = div(
         [
           ptlist[i][j],
@@ -376,7 +374,7 @@ function rail(
         ],
         2
       );
-      ln[0].x += (random() - 0.5) * hei * 0.5;
+      ln[0].x += (PRNG.random() - 0.5) * hei * 0.5;
       polylines.push(
         poly(ln, {
           xof: xoff,
@@ -648,7 +646,7 @@ export function arch01(
 
   const { hei, strokeWidth, per } = _args;
 
-  const p = 0.4 + random() * 0.2;
+  const p = 0.4 + PRNG.random() * 0.2;
   const h0 = hei * p;
   const h1 = hei * (1 - p);
 
@@ -672,7 +670,7 @@ export function arch01(
       hei: 10,
       strokeWidth: strokeWidth,
       per: per * 2,
-      seg: (3 + random() * 3) | 0,
+      seg: (3 + PRNG.random() * 3) | 0,
     })
   );
 
@@ -705,7 +703,7 @@ export function arch01(
       hei: 10,
       strokeWidth: strokeWidth,
       per: per * 2,
-      seg: (3 + random() * 3) | 0,
+      seg: (3 + PRNG.random() * 3) | 0,
     })
   );
 
@@ -770,7 +768,7 @@ export function arch02(
     );
 
     elementlists.push(
-      sto === 1 && random() < 1 / 3
+      sto === 1 && PRNG.random() < 1 / 3
         ? roof(xoff, yoff - hoff - hei, {
             hei: hei,
             strokeWidth: strokeWidth * Math.pow(0.9, i),
