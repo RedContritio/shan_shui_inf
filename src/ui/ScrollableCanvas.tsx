@@ -72,18 +72,7 @@ class ScrollableCanvas extends React.Component<IProps, IState> {
   chunks: Chunk[] = [];
   mountain_cover: number[] = [];
   canv: string = '';
-
-  calcViewBox() {
-    const zoom = 1.142;
-    return (
-      '' +
-      this.props.cursx +
-      ' 0 ' +
-      this.props.windx / zoom +
-      ' ' +
-      this.props.windy / zoom
-    );
-  }
+  zoom: number = 1.142;
 
   update(_or: Range, prng: PRNG, nr: Range, cwid: number) {
     const or = new Range(_or.l, _or.r);
@@ -153,7 +142,7 @@ class ScrollableCanvas extends React.Component<IProps, IState> {
 
   render() {
     const xscroll = this.props.xscroll;
-    const viewbox = this.calcViewBox();
+    const viewbox = `${this.props.cursx} 0 ${this.props.windx / this.zoom} ${this.props.windy / this.zoom}`;
     const nr = new Range(this.props.cursx, this.props.windx);
     this.oldrange = this.update(this.oldrange, this.props.prng, nr, this.cwid);
 
