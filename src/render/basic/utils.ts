@@ -25,26 +25,26 @@ export function loopNoise(nslist: number[]): number[] {
   return nslist.map((v) => mapval(v, irange, orange));
 }
 
-export function randChoice<T>(arr: T[]): T {
-  const p = arr.length * PRNG.random();
+export function randChoice<T>(prng: PRNG, arr: T[]): T {
+  const p = arr.length * prng.random();
   const ip = Math.floor(p);
   return arr[ip];
 }
 
-export function normRand(m: number, M: number): number {
+export function normRand(prng: PRNG, m: number, M: number): number {
   const irange = new Range(0, 1);
   const orange = new Range(m, M);
-  return mapval(PRNG.random(), irange, orange);
+  return mapval(prng.random(), irange, orange);
 }
 
-export function wtrand(func: (v: number) => number): number {
-  const x = PRNG.random();
-  const y = PRNG.random();
-  return y < func(x) ? x : wtrand(func);
+export function wtrand(prng: PRNG, func: (v: number) => number): number {
+  const x = prng.random();
+  const y = prng.random();
+  return y < func(x) ? x : wtrand(prng, func);
 }
 
-export function randGaussian(): number {
-  const v1 = wtrand((x) => Math.exp(-24 * Math.pow(x - 0.5, 2)));
+export function randGaussian(prng: PRNG): number {
+  const v1 = wtrand(prng, (x) => Math.exp(-24 * Math.pow(x - 0.5, 2)));
   return v1 * 2 - 1;
 }
 

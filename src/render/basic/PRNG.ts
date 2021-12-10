@@ -1,4 +1,4 @@
-export class tPRNG {
+export class PRNG {
   s: number = 1234;
   p: number = 999979;
   q: number = 999983;
@@ -42,7 +42,3 @@ export class tPRNG {
     return this.next();
   }
 }
-
-const PRNG = new tPRNG();
-
-export { PRNG };

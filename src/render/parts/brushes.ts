@@ -16,6 +16,7 @@ class StrokeArgs implements Partial<ISvgStyles> {
 }
 
 export function stroke(
+  prng: PRNG,
   ptlist: Point[],
   args: Partial<StrokeArgs> | undefined = undefined
 ): SvgPolyline {
@@ -29,10 +30,10 @@ export function stroke(
   const vtxlist0 = [];
   const vtxlist1 = [];
   let vtxlist = [];
-  const n0 = PRNG.random() * 10;
+  const n0 = prng.random() * 10;
   for (let i = 1; i < ptlist.length - 1; i++) {
     let w = strokeWidth * fun(i / ptlist.length);
-    w = w * (1 - noi) + w * noi * Noise.noise(PRNG, i * 0.5, n0);
+    w = w * (1 - noi) + w * noi * Noise.noise(prng, i * 0.5, n0);
     const a1 = Math.atan2(
       ptlist[i].y - ptlist[i - 1].y,
       ptlist[i].x - ptlist[i - 1].x
@@ -75,6 +76,7 @@ class BlobArgs implements Partial<ISvgStyles> {
 }
 
 export function blob(
+  prng: PRNG,
   x: number,
   y: number,
   args: Partial<BlobArgs> | undefined = undefined
@@ -84,11 +86,12 @@ export function blob(
 
   const { col } = _args;
 
-  const plist = blob_points(x, y, args);
+  const plist = blob_points(prng, x, y, args);
   return poly(plist, { fill: col, stroke: col, strokeWidth: 0 });
 }
 
 export function blob_points(
+  prng: PRNG,
   x: number,
   y: number,
   args: Partial<BlobArgs> | undefined = undefined
@@ -109,9 +112,9 @@ export function blob_points(
     lalist.push([l, a]);
   }
   let nslist = [];
-  const n0 = PRNG.random() * 10;
+  const n0 = prng.random() * 10;
   for (let i = 0; i < reso + 1; i++) {
-    nslist.push(Noise.noise(PRNG, i * 0.05, n0));
+    nslist.push(Noise.noise(prng, i * 0.05, n0));
   }
 
   nslist = loopNoise(nslist);
@@ -149,6 +152,14 @@ export function div(plist: Point[], reso: number): Point[] {
 }
 
 class TextureArgs implements Partial<ISvgStyles> {
+  constructor(prng: PRNG) {
+    this.col = (x) => `rgba(100,100,100,${(prng.random() * 0.3).toFixed(3)})`;
+    this.dis = () =>
+      prng.random() > 0.5
+        ? (1 / 3) * prng.random()
+        : (1 * 2) / 3 + (1 / 3) * prng.random();
+  }
+
   xof: number = 0;
   yof: number = 0;
   tex: number = 400;
@@ -156,19 +167,16 @@ class TextureArgs implements Partial<ISvgStyles> {
   len: number = 0.2;
   sha: number = 0;
   noi: (x: number) => number = (x) => 30 / x;
-  col: (x: number) => string = (x) =>
-    `rgba(100,100,100,${(PRNG.random() * 0.3).toFixed(3)})`;
-  dis: () => number = () =>
-    PRNG.random() > 0.5
-      ? (1 / 3) * PRNG.random()
-      : (1 * 2) / 3 + (1 / 3) * PRNG.random();
+  col: (x: number) => string;
+  dis: () => number;
 }
 
 export function texture(
+  prng: PRNG,
   ptlist: Point[][],
   args: Partial<TextureArgs> | undefined = undefined
 ): SvgPolyline[] {
-  const _args = new TextureArgs();
+  const _args = new TextureArgs(prng);
   Object.assign(_args, args);
 
   const { xof, yof, tex, strokeWidth, len, sha, noi, col, dis } = _args;
@@ -179,9 +187,9 @@ export function texture(
 
   for (let i = 0; i < tex; i++) {
     const mid = (dis() * reso[1]) | 0;
-    //mid = (reso[1]/3+reso[1]/3*PRNG.random())|0
+    //mid = (reso[1]/3+reso[1]/3*prng.random())|0
 
-    const hlen = Math.floor(PRNG.random() * (reso[1] * len));
+    const hlen = Math.floor(prng.random() * (reso[1] * len));
 
     let start = mid - hlen;
     let end = mid + hlen;
@@ -202,8 +210,8 @@ export function texture(
         ptlist[Math.floor(layer)][j].y * p +
         ptlist[Math.ceil(layer)][j].y * (1 - p);
 
-      const nx = noi(layer + 1) * (Noise.noise(PRNG, x, j * 0.5) - 0.5);
-      const ny = noi(layer + 1) * (Noise.noise(PRNG, y, j * 0.5) - 0.5);
+      const nx = noi(layer + 1) * (Noise.noise(prng, x, j * 0.5) - 0.5);
+      const ny = noi(layer + 1) * (Noise.noise(prng, y, j * 0.5) - 0.5);
 
       texlist[texlist.length - 1].push(new Point(x + nx, y + ny));
     }
@@ -218,6 +226,7 @@ export function texture(
       if (texlist[j].length > 0) {
         polylines.push(
           stroke(
+            prng,
             texlist[j].map((p) => p.move(offset)),
             {
               fill: 'rgba(100,100,100,0.1)',
@@ -234,6 +243,7 @@ export function texture(
     if (texlist[j].length > 0) {
       polylines.push(
         stroke(
+          prng,
           texlist[j].map((p) => p.move(offset)),
           {
             fill: col(j / texlist.length),

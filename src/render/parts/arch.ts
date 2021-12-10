@@ -22,6 +22,7 @@ class HutArgs {
   tex: number = 300;
 }
 function hut(
+  prng: PRNG,
   xoff: number,
   yoff: number,
   args: Partial<HutArgs> | undefined = undefined
@@ -36,7 +37,7 @@ function hut(
 
   for (let i = 0; i < reso[0]; i++) {
     ptlist.push([]);
-    const heir = hei + hei * 0.2 * PRNG.random();
+    const heir = hei + hei * 0.2 * prng.random();
     for (let j = 0; j < reso[1]; j++) {
       const nx =
         strokeWidth *
@@ -76,17 +77,17 @@ function hut(
     })
   );
 
-  const texures = texture(ptlist, {
+  const texures = texture(prng, ptlist, {
     xof: xoff,
     yof: yoff,
     tex: tex,
     strokeWidth: 1,
     len: 0.25,
     col: function (x) {
-      return 'rgba(120,120,120,' + (0.3 + PRNG.random() * 0.3).toFixed(3) + ')';
+      return 'rgba(120,120,120,' + (0.3 + prng.random() * 0.3).toFixed(3) + ')';
     },
     dis: function () {
-      return wtrand((a) => a * a);
+      return wtrand(prng, (a) => a * a);
     },
     noi: function (x) {
       return 5;
@@ -112,6 +113,7 @@ class BoxArgs {
 }
 
 function box(
+  prng: PRNG,
   xoff: number,
   yoff: number,
   args: Partial<BoxArgs> | undefined = undefined
@@ -190,6 +192,7 @@ function box(
   for (let i = 0; i < ptlist.length; i++) {
     polylines.push(
       stroke(
+        prng,
         ptlist[i].map(function (p) {
           return new Point(p.x + xoff, p.y + yoff);
         }),
@@ -293,6 +296,7 @@ class RailArgs {
 }
 
 function rail(
+  prng: PRNG,
   xoff: number,
   yoff: number,
   seed: number = 0,
@@ -349,7 +353,7 @@ function rail(
     );
   }
   if (tra) {
-    const open = Math.floor(PRNG.random() * ptlist.length);
+    const open = Math.floor(prng.random() * ptlist.length);
     ptlist[open] = ptlist[open].slice(0, -1);
     ptlist[(open + ptlist.length) % ptlist.length] = ptlist[
       (open + ptlist.length) % ptlist.length
@@ -361,10 +365,10 @@ function rail(
   for (let i = 0; i < ptlist.length / 2; i++) {
     for (let j = 0; j < ptlist[i].length; j++) {
       //ptlist.push(div([ptlist[i][j],ptlist[4+i][j]],2))
-      ptlist[i][j].y += (Noise.noise(PRNG, i, j * 0.5, seed) - 0.5) * hei;
+      ptlist[i][j].y += (Noise.noise(prng, i, j * 0.5, seed) - 0.5) * hei;
       ptlist[(ptlist.length / 2 + i) % ptlist.length][
         j % ptlist[(ptlist.length / 2 + i) % ptlist.length].length
-      ].y += (Noise.noise(PRNG, i + 0.5, j * 0.5, seed) - 0.5) * hei;
+      ].y += (Noise.noise(prng, i + 0.5, j * 0.5, seed) - 0.5) * hei;
       const ln = div(
         [
           ptlist[i][j],
@@ -374,7 +378,7 @@ function rail(
         ],
         2
       );
-      ln[0].x += (PRNG.random() - 0.5) * hei * 0.5;
+      ln[0].x += (prng.random() - 0.5) * hei * 0.5;
       polylines.push(
         poly(ln, {
           xof: xoff,
@@ -390,6 +394,7 @@ function rail(
   for (let i = 0; i < ptlist.length; i++) {
     polylines.push(
       stroke(
+        prng,
         ptlist[i].map(function (p) {
           return new Point(p.x + xoff, p.y + yoff);
         }),
@@ -419,6 +424,7 @@ class RoofArgs {
 }
 
 function roof(
+  prng: PRNG,
   xoff: number,
   yoff: number,
   args: Partial<RoofArgs> | undefined = undefined
@@ -517,6 +523,7 @@ function roof(
   for (let i = 0; i < ptlist.length; i++) {
     polylines.push(
       stroke(
+        prng,
         ptlist[i].map(function (p) {
           return new Point(p.x + xoff, p.y + yoff);
         }),
@@ -570,6 +577,7 @@ class PagRoofArgs {
 }
 
 function pagroof(
+  prng: PRNG,
   xoff: number,
   yoff: number,
   args: Partial<PagRoofArgs> | undefined = undefined
@@ -610,6 +618,7 @@ function pagroof(
   for (let i = 0; i < ptlist.length; i++) {
     polylines.push(
       stroke(
+        prng,
         div(ptlist[i], 5).map(function (p) {
           return new Point(p.x + xoff, p.y + yoff);
         }),
@@ -636,6 +645,7 @@ class Arch01Args {
 }
 
 export function arch01(
+  prng: PRNG,
   xoff: number,
   yoff: number,
   seed: number = 0,
@@ -646,16 +656,16 @@ export function arch01(
 
   const { hei, strokeWidth, per } = _args;
 
-  const p = 0.4 + PRNG.random() * 0.2;
+  const p = 0.4 + prng.random() * 0.2;
   const h0 = hei * p;
   const h1 = hei * (1 - p);
 
   const polylinelists: SvgPolyline[][] = [];
   polylinelists.push(
-    hut(xoff, yoff - hei, { hei: h0, strokeWidth: strokeWidth })
+    hut(prng, xoff, yoff - hei, { hei: h0, strokeWidth: strokeWidth })
   );
   polylinelists.push(
-    box(xoff, yoff, {
+    box(prng, xoff, yoff, {
       hei: h1,
       strokeWidth: (strokeWidth * 2) / 3,
       per: per,
@@ -664,46 +674,56 @@ export function arch01(
   );
 
   polylinelists.push(
-    rail(xoff, yoff, seed, {
+    rail(prng, xoff, yoff, seed, {
       tra: true,
       fro: false,
       hei: 10,
       strokeWidth: strokeWidth,
       per: per * 2,
-      seg: (3 + PRNG.random() * 3) | 0,
+      seg: (3 + prng.random() * 3) | 0,
     })
   );
 
-  const mcnt = randChoice([0, 1, 1, 2]);
+  const mcnt = randChoice(prng, [0, 1, 1, 2]);
   if (mcnt === 1) {
     polylinelists.push(
-      man(xoff + normRand(-strokeWidth / 3, strokeWidth / 3), yoff, {
-        fli: randChoice([true, false]),
-        sca: 0.42,
-      })
+      man(
+        prng,
+        xoff + normRand(prng, -strokeWidth / 3, strokeWidth / 3),
+        yoff,
+        {
+          fli: randChoice(prng, [true, false]),
+          sca: 0.42,
+        }
+      )
     );
   } else if (mcnt === 2) {
     polylinelists.push(
-      man(xoff + normRand(-strokeWidth / 4, -strokeWidth / 5), yoff, {
-        fli: false,
-        sca: 0.42,
-      })
+      man(
+        prng,
+        xoff + normRand(prng, -strokeWidth / 4, -strokeWidth / 5),
+        yoff,
+        {
+          fli: false,
+          sca: 0.42,
+        }
+      )
     );
     polylinelists.push(
-      man(xoff + normRand(strokeWidth / 5, strokeWidth / 4), yoff, {
+      man(prng, xoff + normRand(prng, strokeWidth / 5, strokeWidth / 4), yoff, {
         fli: true,
         sca: 0.42,
       })
     );
   }
   polylinelists.push(
-    rail(xoff, yoff, seed, {
+    rail(prng, xoff, yoff, seed, {
       tra: false,
       fro: true,
       hei: 10,
       strokeWidth: strokeWidth,
       per: per * 2,
-      seg: (3 + PRNG.random() * 3) | 0,
+      seg: (3 + prng.random() * 3) | 0,
     })
   );
 
@@ -721,6 +741,7 @@ class Arch02Args {
 }
 
 export function arch02(
+  prng: PRNG,
   xoff: number,
   yoff: number,
   seed: number = 0,
@@ -736,7 +757,7 @@ export function arch02(
   let hoff = 0;
   for (let i = 0; i < sto; i++) {
     elementlists.push(
-      box(xoff, yoff - hoff, {
+      box(prng, xoff, yoff - hoff, {
         tra: false,
         hei: hei,
         strokeWidth: strokeWidth * Math.pow(0.85, i),
@@ -756,7 +777,7 @@ export function arch02(
     );
     elementlists.push(
       rai
-        ? rail(xoff, yoff - hoff, i * 0.2, {
+        ? rail(prng, xoff, yoff - hoff, i * 0.2, {
             strokeWidth: strokeWidth * Math.pow(0.85, i) * 1.1,
             hei: hei / 2,
             per: per,
@@ -768,8 +789,8 @@ export function arch02(
     );
 
     elementlists.push(
-      sto === 1 && PRNG.random() < 1 / 3
-        ? roof(xoff, yoff - hoff - hei, {
+      sto === 1 && prng.random() < 1 / 3
+        ? roof(prng, xoff, yoff - hoff - hei, {
             hei: hei,
             strokeWidth: strokeWidth * Math.pow(0.9, i),
             rot: rot,
@@ -777,7 +798,7 @@ export function arch02(
             per: per,
             pla: [1, 'Pizza Hut'],
           })
-        : roof(xoff, yoff - hoff - hei, {
+        : roof(prng, xoff, yoff - hoff - hei, {
             hei: hei,
             strokeWidth: strokeWidth * Math.pow(0.9, i),
             rot: rot,
@@ -800,6 +821,7 @@ class Arch03Args {
 }
 
 export function arch03(
+  prng: PRNG,
   xoff: number,
   yoff: number,
   seed: number = 0,
@@ -815,7 +837,7 @@ export function arch03(
   let hoff = 0;
   for (let i = 0; i < sto; i++) {
     polylinelists.push(
-      box(xoff, yoff - hoff, {
+      box(prng, xoff, yoff - hoff, {
         tra: false,
         hei: hei,
         strokeWidth: strokeWidth * Math.pow(0.85, i),
@@ -828,7 +850,7 @@ export function arch03(
       })
     );
     polylinelists.push(
-      rail(xoff, yoff - hoff, i * 0.2, {
+      rail(prng, xoff, yoff - hoff, i * 0.2, {
         seg: 5,
         strokeWidth: strokeWidth * Math.pow(0.85, i) * 1.1,
         hei: hei / 2,
@@ -839,7 +861,7 @@ export function arch03(
       })
     );
     polylinelists.push(
-      pagroof(xoff, yoff - hoff - hei, {
+      pagroof(prng, xoff, yoff - hoff - hei, {
         hei: hei * 1.5,
         strokeWidth: strokeWidth * Math.pow(0.9, i),
         wei: 1.5,
@@ -860,6 +882,7 @@ class Arch04Args {
 }
 
 export function arch04(
+  prng: PRNG,
   xoff: number,
   yoff: number,
   seed: number = 0,
@@ -875,7 +898,7 @@ export function arch04(
   let hoff = 0;
   for (let i = 0; i < sto; i++) {
     polylinelists.push(
-      box(xoff, yoff - hoff, {
+      box(prng, xoff, yoff - hoff, {
         tra: true,
         hei: hei,
         strokeWidth: strokeWidth * Math.pow(0.85, i),
@@ -888,7 +911,7 @@ export function arch04(
       })
     );
     polylinelists.push(
-      rail(xoff, yoff - hoff, i * 0.2, {
+      rail(prng, xoff, yoff - hoff, i * 0.2, {
         seg: 3,
         strokeWidth: strokeWidth * Math.pow(0.85, i) * 1.2,
         hei: hei / 3,
@@ -899,7 +922,7 @@ export function arch04(
       })
     );
     polylinelists.push(
-      pagroof(xoff, yoff - hoff - hei, {
+      pagroof(prng, xoff, yoff - hoff - hei, {
         hei: hei * 1,
         strokeWidth: strokeWidth * Math.pow(0.9, i),
         wei: 1.5,
@@ -918,6 +941,7 @@ class Boat01Args {
 }
 
 export function boat01(
+  prng: PRNG,
   xoff: number,
   yoff: number,
   seed: number = 0,
@@ -931,7 +955,7 @@ export function boat01(
 
   const dir = fli ? -1 : 1;
   polylinelists.push(
-    man(xoff + 20 * sca * dir, yoff, {
+    man(prng, xoff + 20 * sca * dir, yoff, {
       ite: stick01,
       hat: hat02,
       sca: 0.5 * sca,
@@ -953,6 +977,7 @@ export function boat01(
   polylinelists.push([poly(plist, { xof: xoff, yof: yoff, fill: 'white' })]);
   polylinelists.push([
     stroke(
+      prng,
       plist.map((v) => new Point(xoff + v.x, yoff + v.y)),
       {
         strokeWidth: 1,
@@ -975,6 +1000,7 @@ class TransmissionTower01Args {
 }
 
 export function transmissionTower01(
+  prng: PRNG,
   xoff: number,
   yoff: number,
   seed: number = 0,
@@ -990,7 +1016,7 @@ export function transmissionTower01(
   const toGlobal = (v: Point) => new Point(v.x + xoff, v.y + yoff);
 
   const quickstroke = function (pl: Point[]) {
-    return stroke(div(pl, 5).map(toGlobal), {
+    return stroke(prng, div(pl, 5).map(toGlobal), {
       strokeWidth: 1,
       fun: (x) => 0.5,
       fill: 'rgba(100,100,100,0.4)',

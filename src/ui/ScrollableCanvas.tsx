@@ -1,5 +1,12 @@
 import React from 'react';
-import { MEM } from '../render/basic/memory';
+import { Chunk, IChunk } from '../render/basic/chunk';
+import { design } from '../render/basic/designer';
+import { PRNG } from '../render/basic/PRNG';
+import { Range } from '../render/basic/range';
+import { randChoice } from '../render/basic/utils';
+import { boat01 } from '../render/parts/arch';
+import { distMount, flatMount, mountain } from '../render/parts/mountain';
+import { water } from '../render/parts/water';
 import './styles.css';
 
 interface IBarProps {
@@ -53,10 +60,18 @@ interface IProps {
   cursx: number;
   windx: number;
   updateflag: boolean;
+  prng: PRNG;
 }
 
-class ScrollableCanvas extends React.Component<IProps> {
+interface IState {}
+
+class ScrollableCanvas extends React.Component<IProps, IState> {
   static id = 'SCROLLABLE_CANVAS';
+  cwid: number = 512;
+  oldrange: Range = new Range();
+  chunks: Chunk[] = [];
+  mountain_cover: number[] = [];
+  canv: string = '';
 
   calcViewBox() {
     const zoom = 1.142;
@@ -70,11 +85,80 @@ class ScrollableCanvas extends React.Component<IProps> {
     );
   }
 
+  update(_or: Range, prng: PRNG, nr: Range, cwid: number) {
+    const or = new Range(_or.l, _or.r);
+    if (nr.r > or.r - cwid || nr.l < or.l + cwid) {
+      while (nr.r > or.r - cwid || nr.l < or.l + cwid) {
+        console.log(`generating new chunk... ${nr.l}, ${nr.r}`);
+
+        let plan: IChunk[] = [];
+        if (nr.r > or.r - cwid) {
+          plan = design(prng, this.mountain_cover, or.r, or.r + cwid);
+          or.r = or.r + cwid;
+        } else {
+          plan = design(prng, this.mountain_cover, or.l - cwid, or.l);
+          or.l = or.l - cwid;
+        }
+
+        for (let i = 0; i < plan.length; i++) {
+          if (plan[i].tag === 'mount') {
+            this.chunks.push(
+              mountain(prng, plan[i].x, plan[i].y, i * 2 * prng.random())
+            );
+            this.chunks.push(water(prng, plan[i].x, plan[i].y, i * 2));
+          } else if (plan[i].tag === 'flatmount') {
+            this.chunks.push(
+              flatMount(
+                prng,
+                plan[i].x,
+                plan[i].y,
+                2 * prng.random() * Math.PI,
+                {
+                  strokeWidth: 600 + prng.random() * 400,
+                  hei: 100,
+                  cho: 0.5 + prng.random() * 0.2,
+                }
+              )
+            );
+          } else if (plan[i].tag === 'distmount') {
+            this.chunks.push(
+              distMount(prng, plan[i].x, plan[i].y, prng.random() * 100, {
+                hei: 150,
+                len: randChoice(prng, [500, 1000, 1500]),
+              })
+            );
+          } else if (plan[i].tag === 'boat') {
+            this.chunks.push(
+              boat01(prng, plan[i].x, plan[i].y, prng.random(), {
+                sca: plan[i].y / 800,
+                fli: randChoice(prng, [true, false]),
+              })
+            );
+          }
+        }
+      }
+      this.chunks.sort((a, b) => a.y - b.y);
+
+      const left = nr.l - cwid;
+      const right = nr.r + cwid;
+
+      this.canv = this.chunks
+        .filter((c) => c.x >= left && c.x < right)
+        .map((c) => c.render())
+        .join('\n');
+    }
+
+    return or;
+  }
+
   render() {
     const xscroll = this.props.xscroll;
     const viewbox = this.calcViewBox();
-    console.log('ScrollableCanvas render');
-    MEM.update(this.props.cursx, this.props.windx);
+    const nr = new Range(this.props.cursx, this.props.windx);
+    this.oldrange = this.update(this.oldrange, this.props.prng, nr, this.cwid);
+
+    const canv = this.canv;
+
     const foreground = (
       <svg
         id="SVG"
@@ -87,7 +171,7 @@ class ScrollableCanvas extends React.Component<IProps> {
         <g
           id="G"
           transform="translate(0, 0)"
-          dangerouslySetInnerHTML={{ __html: MEM.canv }}
+          dangerouslySetInnerHTML={{ __html: canv }}
         />
       </svg>
     );

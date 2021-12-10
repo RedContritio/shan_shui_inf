@@ -3,8 +3,7 @@ import SettingPanel from './ui/SettingPanel';
 import ButtonSource from './ui/ButtonSource';
 import ScrollableCanvas from './ui/ScrollableCanvas';
 import BackgroundRender from './ui/BackgroundRender';
-import { PRNG, tPRNG } from './render/basic/PRNG';
-import { MEM } from './render/basic/memory';
+import { PRNG } from './render/basic/PRNG';
 import './App.css';
 import { PerlinNoise } from './render/basic/perlinNoise';
 
@@ -22,9 +21,8 @@ interface AppState {
 
 class App extends React.Component<{}, AppState> {
   bgrender = React.createRef<BackgroundRender>();
-  mem = MEM;
   pFrame = 0;
-  prng = new tPRNG();
+  prng = new PRNG();
   noise = new PerlinNoise();
 
   constructor(props: {}) {
@@ -45,7 +43,7 @@ class App extends React.Component<{}, AppState> {
       updateflag: false,
     };
 
-    PRNG.seed(this.state.seed);
+    this.prng.seed(this.state.seed);
   }
 
   componentDidMount() {
@@ -135,6 +133,7 @@ class App extends React.Component<{}, AppState> {
             cursx={this.state.cursx}
             windx={this.state.windx}
             updateflag={this.state.updateflag}
+            prng={this.prng}
           />
         </div>
         <BackgroundRender ref={this.bgrender} />

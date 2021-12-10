@@ -1,5 +1,5 @@
 // Modified from https://raw.githubusercontent.com/processing/p5.js/master/src/math/noise.js
-import { tPRNG } from './PRNG';
+import { PRNG } from './PRNG';
 
 const PERLIN_YWRAPB = 4;
 const PERLIN_YWRAP = 1 << PERLIN_YWRAPB;
@@ -19,7 +19,7 @@ const lcg = {
   c: 1013904223,
   seed: -1,
   z: -1,
-  setSeed(prng: tPRNG, val: number): void {
+  setSeed(prng: PRNG, val: number): void {
     // make seed unsigned
     this.z = this.seed = (val == null ? prng.random() * this.m : val) >>> 0;
   },
@@ -35,7 +35,7 @@ const lcg = {
 export class PerlinNoise {
   perlin: number[] | undefined;
 
-  noise(prng: tPRNG, x: number, y: number = 0, z: number = 0): number {
+  noise(prng: PRNG, x: number, y: number = 0, z: number = 0): number {
     if (this.perlin === undefined) {
       this.perlin = new Array(PERLIN_SIZE + 1);
       for (let i = 0; i < PERLIN_SIZE + 1; i++) {
@@ -95,7 +95,7 @@ export class PerlinNoise {
     return r;
   }
 
-  seed(prng: tPRNG, seed: number): void {
+  seed(prng: PRNG, seed: number): void {
     lcg.setSeed(prng, seed);
     this.perlin = new Array(PERLIN_SIZE + 1);
     for (let i = 0; i < PERLIN_SIZE + 1; i++) {

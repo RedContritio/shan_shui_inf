@@ -35,6 +35,7 @@ function needAdd(reg: IChunk[], c: IChunk, r: number = 10): boolean {
 }
 
 export function design(
+  prng: PRNG,
   mountain_cover: number[],
   xmin: number,
   xmax: number
@@ -42,8 +43,8 @@ export function design(
   const reg: IChunk[] = [];
   const samp = 0.03;
   const ns = (p: Point) =>
-    Math.max(Noise.noise(PRNG, p.x * samp) - 0.55, 0) * 2;
-  const yr = (x: number) => Noise.noise(PRNG, x * 0.01, Math.PI);
+    Math.max(Noise.noise(prng, p.x * samp) - 0.55, 0) * 2;
+  const yr = (x: number) => Noise.noise(prng, x * 0.01, Math.PI);
 
   const xstep = 5;
   const mwid = 200;
@@ -60,7 +61,7 @@ export function design(
     const x = i * xstep + ioff;
     for (let j = 0; j < yr(x) * 480; j += 30) {
       if (ns(new Point(x, j)) > 0.3 && locmax(new Point(x, j), ns, 2)) {
-        const xof = x + 2 * (PRNG.random() - 0.5) * 500;
+        const xof = x + 2 * (prng.random() - 0.5) * 500;
         const yof = j + 300;
         const r = new DesignChunk('mount', xof, yof, ns(new Point(x, j)));
         if (needAdd(reg, r)) {
@@ -82,7 +83,7 @@ export function design(
       const r = new DesignChunk(
         'distmount',
         x,
-        280 - PRNG.random() * 50,
+        280 - prng.random() * 50,
         ns(new Point(x, yr(x) * 480))
       );
       if (needAdd(reg, r)) reg.push(r);
@@ -92,11 +93,11 @@ export function design(
   for (let i = imin; i < imax; i++) {
     const x = i * xstep + ioff;
     if (mountain_cover[i] === 0) {
-      if (PRNG.random() < 0.01) {
-        for (let j = 0; j < 4 * PRNG.random(); j++) {
+      if (prng.random() < 0.01) {
+        for (let j = 0; j < 4 * prng.random(); j++) {
           const r = new DesignChunk(
             'flatmount',
-            x + 2 * (PRNG.random() - 0.5) * 700,
+            x + 2 * (prng.random() - 0.5) * 700,
             700 - j * 50,
             ns(new Point(x, j))
           );
@@ -107,9 +108,9 @@ export function design(
   }
 
   for (let i = imin; i < imax; i++) {
-    if (PRNG.random() < 0.2) {
+    if (prng.random() < 0.2) {
       const x = i * xstep + ioff;
-      const r = new DesignChunk('boat', x, 300 + PRNG.random() * 390);
+      const r = new DesignChunk('boat', x, 300 + prng.random() * 390);
       if (needAdd(reg, r, 400)) reg.push(r);
     }
   }

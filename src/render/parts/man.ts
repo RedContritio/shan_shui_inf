@@ -9,7 +9,7 @@ function expand(ptlist: Point[], wfun: (v: number) => number): Point[][] {
   const vtxlist0 = [];
   const vtxlist1 = [];
   // const vtxlist = [];
-  // const n0 = PRNG.random() * 10;
+  // const n0 = prng.random() * 10;
   for (let i = 1; i < ptlist.length - 1; i++) {
     const w = wfun(i / ptlist.length);
     const a1 = Math.atan2(
@@ -83,6 +83,7 @@ class GeneralFlipArgs {
 }
 
 export function hat01(
+  prng: PRNG,
   p0: Point,
   p1: Point,
   args: Partial<GeneralFlipArgs> | undefined = undefined
@@ -93,7 +94,7 @@ export function hat01(
   const { fli } = _args;
 
   const polylines: SvgPolyline[] = [];
-  const seed = PRNG.random();
+  const seed = prng.random();
   const f: (pl: Point[]) => Point[] = fli ? flipper : (x) => x;
   //const plist = [[-0.5,0.5],[0.5,0.5],[0.5,1],[-0.5,2]]
   polylines.push(
@@ -119,7 +120,7 @@ export function hat01(
   for (let i = 0; i < 10; i++) {
     qlist1.push(
       new Point(
-        -0.3 - Noise.noise(PRNG, i * 0.2, seed) * i * 0.1,
+        -0.3 - Noise.noise(prng, i * 0.2, seed) * i * 0.1,
         0.5 - i * 0.3
       )
     );
@@ -135,6 +136,7 @@ export function hat01(
 }
 
 export function hat02(
+  prng: PRNG,
   p0: Point,
   p1: Point,
   args: Partial<GeneralFlipArgs> | undefined = undefined
@@ -145,7 +147,7 @@ export function hat02(
   const { fli } = _args;
 
   const polylines: SvgPolyline[] = [];
-  // const seed = PRNG.random();
+  // const seed = prng.random();
 
   const f: (pl: Point[]) => Point[] = fli ? flipper : (x) => x;
   // canv += poly(tranpoly(p0,p1,[
@@ -176,6 +178,7 @@ export function hat02(
 }
 
 export function stick01(
+  prng: PRNG,
   p0: Point,
   p1: Point,
   args: Partial<GeneralFlipArgs> | undefined = undefined
@@ -186,7 +189,7 @@ export function stick01(
   const { fli } = _args;
 
   const polylines: SvgPolyline[] = [];
-  const seed = PRNG.random();
+  const seed = prng.random();
 
   const f: (pl: Point[]) => Point[] = fli ? flipper : (x) => x;
 
@@ -195,7 +198,7 @@ export function stick01(
   for (let i = 0; i < l; i++) {
     qlist1.push(
       new Point(
-        -Noise.noise(PRNG, i * 0.1, seed) *
+        -Noise.noise(prng, i * 0.1, seed) *
           0.1 *
           Math.sin((i / l) * Math.PI) *
           5,
@@ -254,6 +257,7 @@ function gpos(ang: number[], len: number[], sct: any, ind: any): Point {
 }
 
 function cloth(
+  prng: PRNG,
   toGlobal: (p: Point) => Point,
   plist: Point[],
   fun: (v: number) => number
@@ -267,14 +271,14 @@ function cloth(
     })
   );
   polylines.push(
-    stroke(tlist1.map(toGlobal), {
+    stroke(prng, tlist1.map(toGlobal), {
       strokeWidth: 1,
       fill: 'rgba(100,100,100,0.5)',
       stroke: 'rgba(100,100,100,0.5)',
     })
   );
   polylines.push(
-    stroke(tlist2.map(toGlobal), {
+    stroke(prng, tlist2.map(toGlobal), {
       strokeWidth: 1,
       fill: 'rgba(100,100,100,0.6)',
       stroke: 'rgba(100,100,100,0.6)',
@@ -305,22 +309,34 @@ function fhead(sca: number, x: number) {
 }
 
 class ManArgs {
+  constructor(prng: PRNG) {
+    this.ang = [
+      0,
+      -Math.PI / 2,
+      normRand(prng, 0, 0),
+      (Math.PI / 4) * prng.random(),
+      ((Math.PI * 3) / 4) * prng.random(),
+      (Math.PI * 3) / 4,
+      -Math.PI / 4,
+      (-Math.PI * 3) / 4 - (Math.PI / 4) * prng.random(),
+      -Math.PI / 4,
+    ];
+  }
   sca = 0.5;
   hat = hat01;
-  ite: (p1: Point, p2: Point, a: GeneralFlipArgs | undefined) => SvgPolyline[] =
-    (p1: Point, p2: Point, a: GeneralFlipArgs | undefined) => [];
+  ite: (
+    prng: PRNG,
+    p1: Point,
+    p2: Point,
+    a: GeneralFlipArgs | undefined
+  ) => SvgPolyline[] = (
+    prng: PRNG,
+    p1: Point,
+    p2: Point,
+    a: GeneralFlipArgs | undefined
+  ) => [];
   fli = true;
-  ang = [
-    0,
-    -Math.PI / 2,
-    normRand(0, 0),
-    (Math.PI / 4) * PRNG.random(),
-    ((Math.PI * 3) / 4) * PRNG.random(),
-    (Math.PI * 3) / 4,
-    -Math.PI / 4,
-    (-Math.PI * 3) / 4 - (Math.PI / 4) * PRNG.random(),
-    -Math.PI / 4,
-  ];
+  ang: number[];
   len = [0, 30, 20, 30, 30, 30, 30, 30, 30];
 }
 
@@ -332,11 +348,12 @@ class ManArgs {
 //     4
 
 export function man(
+  prng: PRNG,
   xoff: number,
   yoff: number,
   args: Partial<ManArgs> | undefined = undefined
 ): SvgPolyline[] {
-  const _args = new ManArgs();
+  const _args = new ManArgs(prng);
   Object.assign(_args, args);
 
   const { sca, hat, ite, fli, ang, len: _len } = _args;
@@ -372,12 +389,16 @@ export function man(
   const _fbody = (v: number) => fbody(sca, v);
   const _fhead = (v: number) => fhead(sca, v);
 
-  polylinelists.push(ite(toGlobal(pts[8]), toGlobal(pts[6]), { fli: fli }));
+  polylinelists.push(
+    ite(prng, toGlobal(pts[8]), toGlobal(pts[6]), { fli: fli })
+  );
 
-  polylinelists.push(cloth(toGlobal, [pts[1], pts[7], pts[8]], _fsleeve));
-  polylinelists.push(cloth(toGlobal, [pts[1], pts[0], pts[3], pts[4]], _fbody));
-  polylinelists.push(cloth(toGlobal, [pts[1], pts[5], pts[6]], _fsleeve));
-  polylinelists.push(cloth(toGlobal, [pts[1], pts[2]], _fhead));
+  polylinelists.push(cloth(prng, toGlobal, [pts[1], pts[7], pts[8]], _fsleeve));
+  polylinelists.push(
+    cloth(prng, toGlobal, [pts[1], pts[0], pts[3], pts[4]], _fbody)
+  );
+  polylinelists.push(cloth(prng, toGlobal, [pts[1], pts[5], pts[6]], _fsleeve));
+  polylinelists.push(cloth(prng, toGlobal, [pts[1], pts[2]], _fhead));
 
   const hlist = bezmh([pts[1], pts[2]], 2);
   const [hlist1, hlist2] = expand(hlist, _fhead);
@@ -389,7 +410,9 @@ export function man(
     }),
   ]);
 
-  polylinelists.push(hat(toGlobal(pts[1]), toGlobal(pts[2]), { fli: fli }));
+  polylinelists.push(
+    hat(prng, toGlobal(pts[1]), toGlobal(pts[2]), { fli: fli })
+  );
 
   return polylinelists.flat();
 }

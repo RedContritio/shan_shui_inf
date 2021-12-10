@@ -12,6 +12,7 @@ class WaterArgs {
 }
 
 export function water(
+  prng: PRNG,
   xoff: number,
   yoff: number,
   seed: number,
@@ -27,15 +28,15 @@ export function water(
   let yk = 0;
   for (let i = 0; i < clu; i++) {
     ptlist.push([]);
-    const xk = (PRNG.random() - 0.5) * (len / 8);
-    yk += PRNG.random() * 5;
-    const lk = len / 4 + PRNG.random() * (len / 4);
+    const xk = (prng.random() - 0.5) * (len / 8);
+    yk += prng.random() * 5;
+    const lk = len / 4 + prng.random() * (len / 4);
     const reso = 5;
     for (let j = -lk; j < lk; j += reso) {
       ptlist[ptlist.length - 1].push(
         new Point(
           j + xk,
-          Math.sin(j * 0.2) * hei * Noise.noise(PRNG, j * 0.1) - 20 + yk
+          Math.sin(j * 0.2) * hei * Noise.noise(prng, j * 0.1) - 20 + yk
         )
       );
     }
@@ -43,9 +44,10 @@ export function water(
 
   for (let j = 1; j < ptlist.length; j += 1) {
     const color =
-      'rgba(100,100,100,' + (0.3 + PRNG.random() * 0.3).toFixed(3) + ')';
+      'rgba(100,100,100,' + (0.3 + prng.random() * 0.3).toFixed(3) + ')';
     polylines.push(
       stroke(
+        prng,
         ptlist[j].map(function (p) {
           return new Point(p.x + xoff, p.y + yoff);
         }),
