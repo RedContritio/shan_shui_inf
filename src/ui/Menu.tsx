@@ -45,12 +45,16 @@ class Menu extends React.Component<IProps, IState> {
     const toggleAutoScroll = (event: ChangeEvent<HTMLInputElement>) =>
       this.props.toggleAutoScroll(event.target.checked, this.state.step);
     const downloadSvg = () => {
-      this.props.chunkCache.download(
-        this.props.prng,
-        this.props.seed,
-        this.state.saveRange,
-        this.props.windy
-      );
+      if(this.state.saveRange.length() > 0) {
+        this.props.chunkCache.download(
+          this.props.prng,
+          this.props.seed,
+          this.state.saveRange,
+          this.props.windy
+        );
+      } else {
+        alert('range length muse be above zero');
+      }
     };
     const loadCurrentRange = () => {
       this.setState({
@@ -88,16 +92,21 @@ class Menu extends React.Component<IProps, IState> {
               <td>
                 <input
                   id="INP_SEED"
+                  className="ROWITEM"
                   title="random seed"
                   value={this.props.seed}
                   onChange={changeSeed}
+                  style={{width: 120}}
                 />
                 <button onClick={this.props.reloadWSeed}>Generate</button>
               </td>
             </tr>
             <tr>
               <td>
-                <pre>VIEW [{this.props.cursx}, {this.props.cursx + this.props.windx}]</pre>
+                <pre>
+                  VIEW [{this.props.cursx},{' '}
+                  {this.props.cursx + this.props.windx}]
+                </pre>
               </td>
             </tr>
             <tr>
@@ -139,17 +148,21 @@ class Menu extends React.Component<IProps, IState> {
             </tr>
             <tr>
               <td>
-                <pre>from</pre>
+                <pre className="ROWITEM">from</pre>
                 <input
+                  className="ROWITEM"
                   type="number"
                   value={this.state.saveRange.l}
                   onChange={onChangeSaveRangeL}
+                  style={{width: 60}}
                 />
-                <pre>to</pre>
+                <pre className="ROWITEM">to</pre>
                 <input
+                  className="ROWITEM"
                   type="number"
                   value={this.state.saveRange.r}
                   onChange={onChangeSaveRangeR}
+                  style={{width: 60}}
                 />
               </td>
             </tr>

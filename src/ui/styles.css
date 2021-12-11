@@ -68,6 +68,10 @@ table#SCROLLABLE_CANVAS {
   user-select: none;
 }
 
+.ROWITEM {
+  display: inline;
+}
+
 #SCROLLABLE_CANVAS div#L {
   left: 3px;
 }
