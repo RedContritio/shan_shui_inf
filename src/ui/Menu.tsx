@@ -48,7 +48,10 @@ class Menu extends React.Component<IProps, IState> {
       this.props.toggleAutoScroll(event.target.checked, this.state.step);
     const toggleAutoLoad = (event: ChangeEvent<HTMLInputElement>) => {
       if (event.target.checked) this.setState({ autoLoad: true });
-      else this.setState({ autoLoad: false });
+      else {
+        loadCurrentRange();
+        this.setState({ autoLoad: false });
+      }
     };
     const downloadSvg = () => {
       if (this.state.saveRange.length() > 0) {
