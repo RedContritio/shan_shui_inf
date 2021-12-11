@@ -3,7 +3,7 @@ import ButtonSet from './ButtonSet';
 import Menu from './Menu';
 import './styles.css';
 
-interface Props {
+interface IProps {
   seed: string;
   changeSeed: (seed: string) => void;
   step: number;
@@ -17,10 +17,10 @@ interface State {
   menu_visible: boolean;
 }
 
-class SettingPanel extends React.Component<Props, State> {
+class SettingPanel extends React.Component<IProps, State> {
   static id = 'SETTING';
 
-  constructor(props: any) {
+  constructor(props: IProps) {
     super(props);
 
     this.state = {

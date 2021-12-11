@@ -109,7 +109,7 @@ class BoxArgs {
   tra: boolean = true;
   bot: boolean = true;
   wei: number = 3;
-  dec: (a: any) => Point[][] = (_) => [];
+  dec: (a: Partial<DecoArgs>) => Point[][] = (_) => [];
 }
 
 function box(

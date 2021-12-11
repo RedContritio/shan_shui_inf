@@ -10,7 +10,7 @@ interface IState {
 class ButtonSource extends React.Component<IProps, IState> {
   static id = 'SOURCE_BTN';
 
-  constructor(props: any) {
+  constructor(props: IProps) {
     super(props);
     this.state = {
       isHover: false,

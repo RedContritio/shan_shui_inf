@@ -14,7 +14,7 @@ interface IState {
 class ButtonSet extends React.Component<IProps, IState> {
   static id: string = 'SET_BTN';
 
-  constructor(props: any) {
+  constructor(props: IProps) {
     super(props);
     this.state = {
       isHover: false,
