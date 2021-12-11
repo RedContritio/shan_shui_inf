@@ -31,7 +31,7 @@ class Menu extends React.Component<IProps, IState> {
     super(props);
 
     this.state = {
-      saveRange: new Range(),
+      saveRange: new Range(0, this.props.windx),
       step: 200,
       autoLoad: false,
     };
