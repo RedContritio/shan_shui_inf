@@ -127,6 +127,7 @@ class App extends React.Component<{}, AppState> {
             reloadWSeed={reloadWSeed}
             xscroll={xscroll}
             toggleAutoScroll={toggleAutoScroll}
+            cursx={this.state.cursx}
           />
           <ButtonSource />
           <ScrollableCanvas

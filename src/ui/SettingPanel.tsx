@@ -11,6 +11,7 @@ interface IProps {
   reloadWSeed: () => void;
   xscroll: (v: number) => void;
   toggleAutoScroll: (v: boolean) => void;
+  cursx: number;
 }
 
 interface State {
@@ -51,6 +52,7 @@ class SettingPanel extends React.Component<IProps, State> {
           reloadWSeed={this.props.reloadWSeed}
           xscroll={this.props.xscroll}
           toggleAutoScroll={this.props.toggleAutoScroll}
+          cursx={this.props.cursx}
         />
       </div>
     );
