@@ -8,7 +8,7 @@ import {
   randChoice,
   randGaussian,
 } from '../basic/utils';
-import { midPt, triangulate } from '../PolyTools';
+import { midPt, triangulate } from '../basic/polytools';
 import { SvgPolyline } from '../svg/types';
 import { blob_points, blob, div, stroke } from './brushes';
 

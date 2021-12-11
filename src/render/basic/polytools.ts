@@ -1,4 +1,4 @@
-import { distance, Point } from './basic/point';
+import { distance, Point } from './point';
 
 export function midPt(ps: Point[]): Point {
   let sx = 0;

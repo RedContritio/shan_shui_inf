@@ -13,7 +13,7 @@ import {
   tree08,
 } from './tree';
 import { arch01, arch02, arch03, arch04, transmissionTower01 } from './arch';
-import { midPt, triangulate } from '../PolyTools';
+import { midPt, triangulate } from '../basic/polytools';
 import { Bound } from '../basic/range';
 import { PRNG } from '../basic/PRNG';
 import { ISvgElement, SvgPolyline } from '../svg';

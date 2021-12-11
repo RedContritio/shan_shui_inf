@@ -1,48 +1,79 @@
 import React, { ChangeEvent } from 'react';
+import { PRNG } from '../render/basic/PRNG';
+import { Range } from '../render/basic/range';
+import { ChunkCache } from '../render/chunkCache';
 import './styles.css';
 
-interface MenuProps {
+interface IProps {
   display: string;
   seed: string;
   changeSeed: (seed: string) => void;
-  step: number;
-  changeStep: (step: number) => void;
   reloadWSeed: () => void;
   xscroll: (v: number) => void;
-  toggleAutoScroll: (v: boolean) => void;
+  toggleAutoScroll: (s: boolean, v: number) => void;
   cursx: number;
+  windx: number;
+  windy: number;
+  chunkCache: ChunkCache;
+  prng: PRNG;
 }
 
-class Menu extends React.Component<MenuProps> {
+interface IState {
+  saveRange: Range;
+  step: number;
+}
+
+class Menu extends React.Component<IProps, IState> {
   static id: string = 'MENU';
 
-  download(filename: string, content: string) {
-    const element = document.createElement('a');
-    element.setAttribute(
-      'href',
-      'data:text/plain;charset=utf-8,' + encodeURIComponent(content)
-    );
-    element.setAttribute('download', filename);
-    element.style.display = 'none';
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
+  constructor(props: IProps) {
+    super(props);
+
+    this.state = {
+      saveRange: new Range(),
+      step: 200,
+    };
   }
 
   render() {
     const changeSeed = (event: ChangeEvent<HTMLInputElement>) =>
       this.props.changeSeed(event.target.value);
     const changeStep = (event: ChangeEvent<HTMLInputElement>) =>
-      this.props.changeStep(event.target.valueAsNumber);
-    const xscrollLeft = () => this.props.xscroll(-1 * this.props.step);
-    const xscrollRight = () => this.props.xscroll(this.props.step);
+      this.setState({ step: event.target.valueAsNumber });
+    const xscrollLeft = () => this.props.xscroll(-1 * this.state.step);
+    const xscrollRight = () => this.props.xscroll(this.state.step);
     const toggleAutoScroll = (event: ChangeEvent<HTMLInputElement>) =>
-      this.props.toggleAutoScroll(event.target.checked);
+      this.props.toggleAutoScroll(event.target.checked, this.state.step);
     const downloadSvg = () => {
-      const e = document.getElementById('BG');
-      if (e) this.download(`${this.props.seed.toString()}.svg`, e.innerHTML);
-      else alert('not loaded');
+      this.props.chunkCache.download(
+        this.props.prng,
+        this.props.seed,
+        this.state.saveRange,
+        this.props.windy
+      );
     };
+    const loadCurrentRange = () => {
+      this.setState({
+        saveRange: new Range(
+          this.props.cursx,
+          this.props.cursx + this.props.windx
+        ),
+      });
+    };
+    const onChangeSaveRangeL = (event: ChangeEvent<HTMLInputElement>) =>
+      this.setState({
+        saveRange: new Range(
+          event.target.valueAsNumber,
+          this.state.saveRange.r
+        ),
+      });
+    const onChangeSaveRangeR = (event: ChangeEvent<HTMLInputElement>) =>
+      this.setState({
+        saveRange: new Range(
+          this.state.saveRange.l,
+          event.target.valueAsNumber
+        ),
+      });
 
     return (
       <div id={Menu.id} style={{ display: this.props.display }}>
@@ -78,7 +109,7 @@ class Menu extends React.Component<MenuProps> {
                   id="INC_STEP"
                   title="increment step"
                   type="number"
-                  value={this.props.step}
+                  value={this.state.step}
                   min={0}
                   max={10000}
                   step={20}
@@ -109,9 +140,30 @@ class Menu extends React.Component<MenuProps> {
             <tr>
               <td>
                 <pre>from</pre>
-                <input />
+                <input
+                  type="number"
+                  value={this.state.saveRange.l}
+                  onChange={onChangeSaveRangeL}
+                />
                 <pre>to</pre>
-                <input />
+                <input
+                  type="number"
+                  value={this.state.saveRange.r}
+                  onChange={onChangeSaveRangeR}
+                />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <button
+                  title="load current range"
+                  type="button"
+                  id="loadrange-btn"
+                  value="Load Range"
+                  onClick={loadCurrentRange}
+                >
+                  Load Current Range
+                </button>
               </td>
             </tr>
             <tr>

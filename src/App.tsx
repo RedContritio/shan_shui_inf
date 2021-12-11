@@ -6,10 +6,10 @@ import BackgroundRender from './ui/BackgroundRender';
 import { PRNG } from './render/basic/PRNG';
 import './App.css';
 import { PerlinNoise } from './render/basic/perlinNoise';
+import { ChunkCache } from './render/chunkCache';
 
 interface AppState {
   seed: string;
-  inc_step: number;
   auto_scroll: boolean;
   background_image: string | undefined;
   foreground_image: string;
@@ -24,6 +24,7 @@ class App extends React.Component<{}, AppState> {
   pFrame = 0;
   prng = new PRNG();
   noise = new PerlinNoise();
+  chunkCache = new ChunkCache();
 
   constructor(props: {}) {
     super(props);
@@ -33,7 +34,6 @@ class App extends React.Component<{}, AppState> {
 
     this.state = {
       seed: qseed == null ? new Date().getTime().toString() : qseed,
-      inc_step: 200,
       auto_scroll: false,
       background_image: undefined,
       foreground_image: '',
@@ -105,29 +105,25 @@ class App extends React.Component<{}, AppState> {
     const xscroll = (v: number) => this.xscroll(v);
     const reloadWSeed = () => this.reloadWSeed();
     const changeSeed = (seed: string) => this.setState({ seed });
-    const changeStep = (inc_step: number) => this.setState({ inc_step });
-    const toggleAutoScroll = (autoscroll: boolean) => {
+    const toggleAutoScroll = (autoscroll: boolean, step: number) => {
       this.setState({ auto_scroll: autoscroll });
-      this.autoxcroll(this.state.inc_step);
+      this.autoxcroll(step);
     };
 
     return (
       <>
-        <div
-          className="App"
-          style={{
-            backgroundImage: `url(${this.state.background_image})`,
-          }}
-        >
+        <div className="App">
           <SettingPanel
             seed={this.state.seed}
             changeSeed={changeSeed}
-            step={this.state.inc_step}
-            changeStep={changeStep}
             reloadWSeed={reloadWSeed}
             xscroll={xscroll}
             toggleAutoScroll={toggleAutoScroll}
             cursx={this.state.cursx}
+            chunkCache={this.chunkCache}
+            windx={this.state.windx}
+            windy={this.state.windy}
+            prng={this.prng}
           />
           <ButtonSource />
           <ScrollableCanvas
@@ -139,6 +135,7 @@ class App extends React.Component<{}, AppState> {
             windx={this.state.windx}
             updateflag={this.state.updateflag}
             prng={this.prng}
+            chunkCache={this.chunkCache}
           />
         </div>
         <BackgroundRender ref={this.bgrender} />

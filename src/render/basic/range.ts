@@ -13,6 +13,9 @@ export class Range {
   length(): number {
     return this.r - this.l;
   }
+  copy(): Range {
+    return new Range(this.l, this.r);
+  }
   contains(v: number): boolean {
     return v >= this.l && v <= this.r;
   }

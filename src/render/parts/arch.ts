@@ -3,7 +3,7 @@ import { Noise } from '../basic/perlinNoise';
 import { Point } from '../basic/point';
 import { PRNG } from '../basic/PRNG';
 import { normRand, poly, randChoice, wtrand } from '../basic/utils';
-import { midPt } from '../PolyTools';
+import { midPt } from '../basic/polytools';
 import { ISvgElement } from '../svg';
 import { SvgPolyline, SvgText } from '../svg/types';
 import { div, stroke, texture } from './brushes';

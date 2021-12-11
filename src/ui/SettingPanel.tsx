@@ -1,4 +1,6 @@
 import React from 'react';
+import { PRNG } from '../render/basic/PRNG';
+import { ChunkCache } from '../render/chunkCache';
 import ButtonSet from './ButtonSet';
 import Menu from './Menu';
 import './styles.css';
@@ -6,12 +8,14 @@ import './styles.css';
 interface IProps {
   seed: string;
   changeSeed: (seed: string) => void;
-  step: number;
-  changeStep: (step: number) => void;
   reloadWSeed: () => void;
   xscroll: (v: number) => void;
-  toggleAutoScroll: (v: boolean) => void;
+  toggleAutoScroll: (s: boolean, v: number) => void;
   cursx: number;
+  chunkCache: ChunkCache;
+  windx: number;
+  windy: number;
+  prng: PRNG;
 }
 
 interface State {
@@ -47,12 +51,14 @@ class SettingPanel extends React.Component<IProps, State> {
           display={menu_visible ? 'block' : 'none'}
           seed={this.props.seed}
           changeSeed={this.props.changeSeed}
-          step={this.props.step}
-          changeStep={this.props.changeStep}
           reloadWSeed={this.props.reloadWSeed}
           xscroll={this.props.xscroll}
           toggleAutoScroll={this.props.toggleAutoScroll}
           cursx={this.props.cursx}
+          chunkCache={this.props.chunkCache}
+          windx={this.props.windx}
+          windy={this.props.windy}
+          prng={this.props.prng}
         />
       </div>
     );

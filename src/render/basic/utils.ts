@@ -1,4 +1,4 @@
-import { midPt } from '../PolyTools';
+import { midPt } from './polytools';
 import { Point, Vector } from './point';
 import { PRNG } from './PRNG';
 import { Range } from './range';
