@@ -97,7 +97,7 @@ class Menu extends React.Component<IProps, IState> {
             </tr>
             <tr>
               <td>
-                <pre>VIEW @ {this.props.cursx}</pre>
+                <pre>VIEW [{this.props.cursx}, {this.props.cursx + this.props.windx}]</pre>
               </td>
             </tr>
             <tr>
