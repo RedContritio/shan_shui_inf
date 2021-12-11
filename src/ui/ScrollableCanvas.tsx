@@ -137,7 +137,7 @@ class ScrollableCanvas extends React.Component<IProps, IState> {
     const viewbox = `${this.props.cursx} 0 ${this.props.windx / this.zoom} ${
       this.props.windy / this.zoom
     }`;
-    const nr = new Range(this.props.cursx, this.props.windx);
+    const nr = new Range(this.props.cursx, this.props.cursx + this.props.windx);
     this.oldrange = this.update(this.oldrange, this.props.prng, nr, this.cwid);
 
     const left = nr.l - this.cwid;
