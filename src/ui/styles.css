@@ -13,6 +13,7 @@ div#SET_BTN {
   text-align: center;
   display: table;
   cursor: pointer;
+  user-select: none;
 }
 
 div#SET_BTN > div,
@@ -30,6 +31,7 @@ div#MENU {
 div#MENU td > * {
   margin-top: 0;
   margin-bottom: 0;
+  user-select: none;
 }
 
 div#SOURCE_BTN {
@@ -45,6 +47,7 @@ div#SOURCE_BTN {
   cursor: pointer;
   vertical-align: middle;
   font-size: 18px;
+  user-select: none;
 }
 
 table#SCROLLABLE_CANVAS {
