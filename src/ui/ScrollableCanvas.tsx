@@ -127,14 +127,6 @@ class ScrollableCanvas extends React.Component<IProps, IState> {
         }
       }
       this.chunks.sort((a, b) => a.y - b.y);
-
-      const left = nr.l - cwid;
-      const right = nr.r + cwid;
-
-      this.canv = this.chunks
-        .filter((c) => c.x >= left && c.x < right)
-        .map((c) => c.render())
-        .join('\n');
     }
 
     return or;
@@ -142,28 +134,14 @@ class ScrollableCanvas extends React.Component<IProps, IState> {
 
   render() {
     const xscroll = this.props.xscroll;
-    const viewbox = `${this.props.cursx} 0 ${this.props.windx / this.zoom} ${this.props.windy / this.zoom}`;
+    const viewbox = `${this.props.cursx} 0 ${this.props.windx / this.zoom} ${
+      this.props.windy / this.zoom
+    }`;
     const nr = new Range(this.props.cursx, this.props.windx);
     this.oldrange = this.update(this.oldrange, this.props.prng, nr, this.cwid);
 
-    const canv = this.canv;
-
-    const foreground = (
-      <svg
-        id="SVG"
-        xmlns="http://www.w3.org/2000/svg"
-        width={this.props.windx}
-        height={this.props.windy}
-        style={{ mixBlendMode: 'multiply' }}
-        viewBox={viewbox}
-      >
-        <g
-          id="G"
-          transform="translate(0, 0)"
-          dangerouslySetInnerHTML={{ __html: canv }}
-        />
-      </svg>
-    );
+    const left = nr.l - this.cwid;
+    const right = nr.r + this.cwid;
 
     return (
       <table id={ScrollableCanvas.id}>
@@ -189,7 +167,24 @@ class ScrollableCanvas extends React.Component<IProps, IState> {
                   top: 0,
                 }}
               >
-                {foreground}
+                <svg
+                  id="SVG"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width={this.props.windx}
+                  height={this.props.windy}
+                  style={{ mixBlendMode: 'multiply' }}
+                  viewBox={viewbox}
+                >
+                  {this.chunks
+                    .filter((c) => c.x >= left && c.x < right)
+                    .map((c) => (
+                      <g
+                        key={`${c.tag} ${c.x} ${c.y}`}
+                        transform="translate(0, 0)"
+                        dangerouslySetInnerHTML={{ __html: c.render() }}
+                      ></g>
+                    ))}
+                </svg>
               </div>
             </td>
             <td>
