@@ -62,6 +62,7 @@ table#SCROLLABLE_CANVAS {
   display: table;
   cursor: pointer;
   border: 1px solid rgba(0, 0, 0, 0.4);
+  user-select: none;
 }
 
 #SCROLLABLE_CANVAS div#L {
