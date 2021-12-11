@@ -21,6 +21,7 @@ interface IProps {
 interface IState {
   saveRange: Range;
   step: number;
+  autoLoad: boolean;
 }
 
 class Menu extends React.Component<IProps, IState> {
@@ -32,6 +33,7 @@ class Menu extends React.Component<IProps, IState> {
     this.state = {
       saveRange: new Range(),
       step: 200,
+      autoLoad: false,
     };
   }
 
@@ -44,8 +46,12 @@ class Menu extends React.Component<IProps, IState> {
     const xscrollRight = () => this.props.xscroll(this.state.step);
     const toggleAutoScroll = (event: ChangeEvent<HTMLInputElement>) =>
       this.props.toggleAutoScroll(event.target.checked, this.state.step);
+    const toggleAutoLoad = (event: ChangeEvent<HTMLInputElement>) => {
+      if (event.target.checked) this.setState({ autoLoad: true });
+      else this.setState({ autoLoad: false });
+    };
     const downloadSvg = () => {
-      if(this.state.saveRange.length() > 0) {
+      if (this.state.saveRange.length() > 0) {
         this.props.chunkCache.download(
           this.props.prng,
           this.props.seed,
@@ -96,7 +102,7 @@ class Menu extends React.Component<IProps, IState> {
                   title="random seed"
                   value={this.props.seed}
                   onChange={changeSeed}
-                  style={{width: 120}}
+                  style={{ width: 120 }}
                 />
                 <button onClick={this.props.reloadWSeed}>Generate</button>
               </td>
@@ -152,18 +158,38 @@ class Menu extends React.Component<IProps, IState> {
                 <input
                   className="ROWITEM"
                   type="number"
-                  value={this.state.saveRange.l}
+                  value={
+                    this.state.autoLoad
+                      ? this.props.cursx
+                      : this.state.saveRange.l
+                  }
                   onChange={onChangeSaveRangeL}
-                  style={{width: 60}}
+                  style={{ width: 60 }}
                 />
                 <pre className="ROWITEM">to</pre>
                 <input
                   className="ROWITEM"
                   type="number"
-                  value={this.state.saveRange.r}
+                  value={
+                    this.state.autoLoad
+                      ? this.props.cursx + this.props.windx
+                      : this.state.saveRange.r
+                  }
                   onChange={onChangeSaveRangeR}
-                  style={{width: 60}}
+                  style={{ width: 60 }}
                 />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <pre>
+                  <input
+                    id="AUTO_LOAD"
+                    type="checkbox"
+                    onChange={toggleAutoLoad}
+                  />
+                  Auto-load
+                </pre>
               </td>
             </tr>
             <tr>
