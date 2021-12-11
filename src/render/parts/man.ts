@@ -1,5 +1,5 @@
 import { Noise } from '../basic/perlinNoise';
-import { distance, Point } from '../basic/point';
+import { distance, IPoint, Point, Vector } from '../basic/point';
 import { PRNG } from '../basic/PRNG';
 import { bezmh, normRand, poly } from '../basic/utils';
 import { SvgPolyline } from '../svg/types';
@@ -216,46 +216,6 @@ export function stick01(
   return polylines;
 }
 
-function gpar(sct: any, ind: any): number[] | false {
-  const keys = Object.keys(sct);
-  for (let i = 0; i < keys.length; i++) {
-    if (keys[i].localeCompare(ind) === 0) {
-      return [ind];
-    } else {
-      const r = gpar(sct[keys[i]], ind);
-      if (r !== false) {
-        return [parseFloat(keys[i])].concat(r);
-      }
-    }
-  }
-  return false;
-}
-
-function grot(ang: number[], sct: any, ind: any): number {
-  const par = gpar(sct, ind);
-  let rot = 0;
-
-  if (Array.isArray(par)) {
-    for (let i = 0; i < par.length; i++) {
-      rot += ang[par[i]];
-    }
-  }
-  return rot;
-}
-
-function gpos(ang: number[], len: number[], sct: any, ind: any): Point {
-  const par = gpar(sct, ind);
-  const pos = new Point(0, 0);
-  if (Array.isArray(par)) {
-    for (let i = 0; i < par.length; i++) {
-      const a = grot(ang, sct, par[i]);
-      pos.x += len[par[i]] * Math.cos(a);
-      pos.y += len[par[i]] * Math.sin(a);
-    }
-  }
-  return pos;
-}
-
 function cloth(
   prng: PRNG,
   toGlobal: (p: Point) => Point,
@@ -363,44 +323,96 @@ export function man(
   });
 
   const polylinelists: SvgPolyline[][] = [];
-  const sct = {
-    0: { 1: { 2: {}, 5: { 6: {} }, 7: { 8: {} } }, 3: { 4: {} } },
-  };
-  const toGlobal = function (v: Point) {
+  // const sct = {
+  //   0: {
+  //     1: {
+  //       2: {},
+  //       5: {
+  //         6: {},
+  //       },
+  //       7: {
+  //         8: {},
+  //       },
+  //     },
+  //     3: {
+  //       4: {},
+  //     },
+  //   },
+  // };
+  const struct = [
+    [0],
+    [0, 1],
+    [0, 1, 2],
+    [0, 3],
+    [0, 3, 4],
+    [0, 1, 5],
+    [0, 1, 5, 6],
+    [0, 1, 7],
+    [0, 1, 7, 8],
+  ];
+
+  const toGlobal = function (v: IPoint) {
     return new Point((fli ? -1 : 1) * v.x + xoff, v.y + yoff);
   };
 
-  const pts: Point[] = [];
+  const vecs: Vector[] = [];
   for (let i = 0; i < ang.length; i++) {
-    pts.push(gpos(ang, len, sct, i));
+    vecs.push(
+      struct[i].reduce<Vector>((pos: Vector, par: number) => {
+        // rotate angle of part[i]
+        const rot = struct[par].reduce((s, j) => s + ang[j], 0);
+        return pos.move(Vector.unit(rot).scale(len[par]));
+      }, new Vector(0, 0))
+    );
   }
-  yoff -= pts[4].y;
-
-  for (let i = 1; i < pts.length; i++) {
-    const par = gpar(sct, i);
-    if (Array.isArray(par)) {
-      // const p0 = gpos(ang, len, sct, par[par.length - 2]);
-      // const s = div([p0, pts[i]], 10);
-      //canv += stroke(s.map(toGlobal))
-    }
-  }
+  yoff -= vecs[4].y;
+  console.log(vecs);
 
   const _fsleeve = (v: number) => fsleeve(sca, v);
   const _fbody = (v: number) => fbody(sca, v);
   const _fhead = (v: number) => fhead(sca, v);
 
   polylinelists.push(
-    ite(prng, toGlobal(pts[8]), toGlobal(pts[6]), { fli: fli })
+    ite(prng, toGlobal(vecs[8]), toGlobal(vecs[6]), { fli: fli })
   );
 
-  polylinelists.push(cloth(prng, toGlobal, [pts[1], pts[7], pts[8]], _fsleeve));
   polylinelists.push(
-    cloth(prng, toGlobal, [pts[1], pts[0], pts[3], pts[4]], _fbody)
+    cloth(
+      prng,
+      toGlobal,
+      [vecs[1], vecs[7], vecs[8]].map((v) => v.movefrom(Point.O)),
+      _fsleeve
+    )
   );
-  polylinelists.push(cloth(prng, toGlobal, [pts[1], pts[5], pts[6]], _fsleeve));
-  polylinelists.push(cloth(prng, toGlobal, [pts[1], pts[2]], _fhead));
+  polylinelists.push(
+    cloth(
+      prng,
+      toGlobal,
+      [vecs[1], vecs[0], vecs[3], vecs[4]].map((v) => v.movefrom(Point.O)),
+      _fbody
+    )
+  );
+  polylinelists.push(
+    cloth(
+      prng,
+      toGlobal,
+      [vecs[1], vecs[5], vecs[6]].map((v) => v.movefrom(Point.O)),
+      _fsleeve
+    )
+  );
+  polylinelists.push(
+    cloth(
+      prng,
+      toGlobal,
+      [vecs[1], vecs[2]].map((v) => v.movefrom(Point.O)),
+      _fhead
+    )
+  );
 
-  const hlist = bezmh([pts[1], pts[2]], 2);
+  const hlist = bezmh(
+    [vecs[1], vecs[2]].map((v) => v.movefrom(Point.O)),
+    2
+  );
   const [hlist1, hlist2] = expand(hlist, _fhead);
   hlist1.splice(0, Math.floor(hlist1.length * 0.1));
   hlist2.splice(0, Math.floor(hlist2.length * 0.95));
@@ -411,7 +423,7 @@ export function man(
   ]);
 
   polylinelists.push(
-    hat(prng, toGlobal(pts[1]), toGlobal(pts[2]), { fli: fli })
+    hat(prng, toGlobal(vecs[1]), toGlobal(vecs[2]), { fli: fli })
   );
 
   return polylinelists.flat();

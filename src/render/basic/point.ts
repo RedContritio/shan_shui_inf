@@ -53,8 +53,17 @@ export class Vector implements IPoint {
   movefrom(src: Point) {
     return src.move(this);
   }
-  static fromArray(a: number[]): Point {
-    return new Point(a[0], a[1]);
+  move(v: Vector): Vector {
+    return new Vector(this.x + v.x, this.y + v.y);
+  }
+  scale(ratio: number): Vector {
+    return new Vector(this.x * ratio, this.y * ratio);
+  }
+  static unit(angle: number = 0): Vector {
+    return new Vector(Math.cos(angle), Math.sin(angle));
+  }
+  static fromArray(a: number[]): Vector {
+    return new Vector(a[0], a[1]);
   }
 }
 
