@@ -10,6 +10,7 @@ interface MenuProps {
   reloadWSeed: () => void;
   xscroll: (v: number) => void;
   toggleAutoScroll: (v: boolean) => void;
+  cursx: number;
 }
 
 class Menu extends React.Component<MenuProps> {
@@ -65,7 +66,7 @@ class Menu extends React.Component<MenuProps> {
             </tr>
             <tr>
               <td>
-                <pre>VIEW</pre>
+                <pre>VIEW @ {this.props.cursx}</pre>
               </td>
             </tr>
             <tr>
@@ -103,6 +104,14 @@ class Menu extends React.Component<MenuProps> {
             <tr>
               <td>
                 <pre>SAVE</pre>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <pre>from</pre>
+                <input />
+                <pre>to</pre>
+                <input />
               </td>
             </tr>
             <tr>
