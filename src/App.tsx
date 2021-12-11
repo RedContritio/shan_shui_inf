@@ -49,6 +49,10 @@ class App extends React.Component<{}, AppState> {
   componentDidMount() {
     const url = this.bgrender.current?.generate(this.prng, this.noise);
     this.setState({ background_image: url });
+
+    const resizeCallback = () =>
+      this.setState({ windx: window.innerWidth, windy: window.innerHeight });
+    window.addEventListener('resize', resizeCallback);
   }
 
   xscroll(v: number) {
