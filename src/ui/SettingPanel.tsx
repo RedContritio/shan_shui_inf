@@ -1,5 +1,6 @@
 import React from 'react';
 import { PRNG } from '../render/basic/PRNG';
+import { Range } from '../render/basic/range';
 import { ChunkCache } from '../render/chunkCache';
 import ButtonSet from './ButtonSet';
 import Menu from './Menu';
@@ -16,6 +17,9 @@ interface IProps {
   windx: number;
   windy: number;
   prng: PRNG;
+  saveRange: Range;
+  onChangeSaveRange: (r: Range) => void;
+  toggleAutoLoad: (s: boolean) => void;
 }
 
 interface State {
@@ -59,6 +63,9 @@ class SettingPanel extends React.Component<IProps, State> {
           windx={this.props.windx}
           windy={this.props.windy}
           prng={this.props.prng}
+          saveRange={this.props.saveRange}
+          onChangeSaveRange={this.props.onChangeSaveRange}
+          toggleAutoLoad={this.props.toggleAutoLoad}
         />
       </div>
     );
