@@ -16,12 +16,13 @@ interface IProps {
   windy: number;
   chunkCache: ChunkCache;
   prng: PRNG;
+  saveRange: Range;
+  onChangeSaveRange: (r: Range) => void;
+  toggleAutoLoad: (s: boolean) => void;
 }
 
 interface IState {
-  saveRange: Range;
   step: number;
-  autoLoad: boolean;
 }
 
 class Menu extends React.Component<IProps, IState> {
@@ -31,9 +32,7 @@ class Menu extends React.Component<IProps, IState> {
     super(props);
 
     this.state = {
-      saveRange: new Range(0, this.props.windx),
       step: 200,
-      autoLoad: false,
     };
   }
 
@@ -46,16 +45,14 @@ class Menu extends React.Component<IProps, IState> {
     const xscrollRight = () => this.props.xscroll(this.state.step);
     const toggleAutoScroll = (event: ChangeEvent<HTMLInputElement>) =>
       this.props.toggleAutoScroll(event.target.checked, this.state.step);
-    const toggleAutoLoad = (event: ChangeEvent<HTMLInputElement>) => {
-      if (event.target.checked) this.setState({ autoLoad: true });
-      else this.setState({ autoLoad: false });
-    };
+    const toggleAutoLoad = (event: ChangeEvent<HTMLInputElement>) =>
+      this.props.toggleAutoLoad(event.target.checked);
     const downloadSvg = () => {
-      if (this.state.saveRange.length() > 0) {
+      if (this.props.saveRange.length() > 0) {
         this.props.chunkCache.download(
           this.props.prng,
           this.props.seed,
-          this.state.saveRange,
+          this.props.saveRange,
           this.props.windy
         );
       } else {
@@ -63,27 +60,18 @@ class Menu extends React.Component<IProps, IState> {
       }
     };
     const loadCurrentRange = () => {
-      this.setState({
-        saveRange: new Range(
-          this.props.cursx,
-          this.props.cursx + this.props.windx
-        ),
-      });
+      this.props.onChangeSaveRange(
+        new Range(this.props.cursx, this.props.cursx + this.props.windx)
+      );
     };
     const onChangeSaveRangeL = (event: ChangeEvent<HTMLInputElement>) =>
-      this.setState({
-        saveRange: new Range(
-          event.target.valueAsNumber,
-          this.state.saveRange.r
-        ),
-      });
+      this.props.onChangeSaveRange(
+        new Range(event.target.valueAsNumber, this.props.saveRange.r)
+      );
     const onChangeSaveRangeR = (event: ChangeEvent<HTMLInputElement>) =>
-      this.setState({
-        saveRange: new Range(
-          this.state.saveRange.l,
-          event.target.valueAsNumber
-        ),
-      });
+      this.props.onChangeSaveRange(
+        new Range(this.props.saveRange.l, event.target.valueAsNumber)
+      );
 
     return (
       <div id={Menu.id} style={{ display: this.props.display }}>
@@ -158,11 +146,7 @@ class Menu extends React.Component<IProps, IState> {
                 <input
                   className="ROWITEM"
                   type="number"
-                  value={
-                    this.state.autoLoad
-                      ? this.props.cursx
-                      : this.state.saveRange.l
-                  }
+                  value={this.props.saveRange.l}
                   onChange={onChangeSaveRangeL}
                   style={{ width: 60 }}
                 />
@@ -170,11 +154,7 @@ class Menu extends React.Component<IProps, IState> {
                 <input
                   className="ROWITEM"
                   type="number"
-                  value={
-                    this.state.autoLoad
-                      ? this.props.cursx + this.props.windx
-                      : this.state.saveRange.r
-                  }
+                  value={this.props.saveRange.r}
                   onChange={onChangeSaveRangeR}
                   style={{ width: 60 }}
                 />

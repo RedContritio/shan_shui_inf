@@ -4,6 +4,7 @@ import ButtonSource from './ui/ButtonSource';
 import ScrollableCanvas from './ui/ScrollableCanvas';
 import BackgroundRender from './ui/BackgroundRender';
 import { PRNG } from './render/basic/PRNG';
+import { Range } from './render/basic/range';
 import './App.css';
 import { PerlinNoise } from './render/basic/perlinNoise';
 import { ChunkCache } from './render/chunkCache';
@@ -17,6 +18,8 @@ interface AppState {
   windx: number;
   windy: number;
   updateflag: boolean;
+  saveRange: Range;
+  autoLoad: boolean;
 }
 
 class App extends React.Component<{}, AppState> {
@@ -41,6 +44,8 @@ class App extends React.Component<{}, AppState> {
       windx: window.innerWidth,
       windy: window.innerHeight,
       updateflag: false,
+      saveRange: new Range(0, window.innerWidth),
+      autoLoad: false,
     };
 
     this.prng.seed(this.state.seed);
@@ -59,7 +64,16 @@ class App extends React.Component<{}, AppState> {
     this.setState({ cursx: this.state.cursx + v });
     this.setState({ updateflag: !this.state.updateflag });
 
+    if (this.state.autoLoad)
+      this.setState({
+        saveRange: new Range(
+          this.state.cursx + v,
+          this.state.cursx + v + this.state.windx
+        ),
+      });
+
     console.log(`xscroll(${v}) => set cursx = ${this.state.cursx + v}`);
+    console.log(`cursx = ${this.state.cursx}`);
   }
 
   autoxcroll(v: number) {
@@ -105,9 +119,20 @@ class App extends React.Component<{}, AppState> {
     const xscroll = (v: number) => this.xscroll(v);
     const reloadWSeed = () => this.reloadWSeed();
     const changeSeed = (seed: string) => this.setState({ seed });
+    const onChangeSaveRange = (saveRange: Range) =>
+      this.setState({ saveRange });
     const toggleAutoScroll = (autoscroll: boolean, step: number) => {
       this.setState({ auto_scroll: autoscroll });
       this.autoxcroll(step);
+    };
+    const toggleAutoLoad = (autoLoad: boolean) => {
+      this.setState({
+        autoLoad,
+        saveRange: new Range(
+          this.state.cursx,
+          this.state.cursx + this.state.windx
+        ),
+      });
     };
 
     return (
@@ -124,6 +149,9 @@ class App extends React.Component<{}, AppState> {
             windx={this.state.windx}
             windy={this.state.windy}
             prng={this.prng}
+            saveRange={this.state.saveRange}
+            onChangeSaveRange={onChangeSaveRange}
+            toggleAutoLoad={toggleAutoLoad}
           />
           <ButtonSource />
           <ScrollableCanvas
