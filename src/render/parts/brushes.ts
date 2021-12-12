@@ -2,7 +2,7 @@ import { Noise } from '../basic/perlinNoise';
 import { Point, Vector } from '../basic/point';
 import { PRNG } from '../basic/PRNG';
 import { loopNoise, poly } from '../basic/utils';
-import { ISvgStyles, SvgPolyline } from '../svg';
+import { SvgPolyline } from '../svg';
 
 export function stroke(
   prng: PRNG,
@@ -52,30 +52,21 @@ export function stroke(
   return poly(vtxlist, 0, 0, fill, stroke, out);
 }
 
-class BlobArgs implements Partial<ISvgStyles> {
-  len: number = 20;
-  strokeWidth: number = 5;
-  ang: number = 0;
-  col: string = 'rgba(200,200,200,0.9)';
-  noi: number = 0.5;
-  fun: (x: number) => number = (x: number) =>
-    x <= 1
-      ? Math.pow(Math.sin(x * Math.PI), 0.5)
-      : -Math.pow(Math.sin((x + 1) * Math.PI), 0.5);
-}
-
 export function blob(
   prng: PRNG,
   x: number,
   y: number,
-  args: Partial<BlobArgs> | undefined = undefined
+  ang: number = 0,
+  col: string = 'rgba(200,200,200,0.9)',
+  len: number = 20,
+  strokeWidth: number = 5,
+  noi: number = 0.5,
+  fun: (x: number) => number = (x: number) =>
+    x <= 1
+      ? Math.pow(Math.sin(x * Math.PI), 0.5)
+      : -Math.pow(Math.sin((x + 1) * Math.PI), 0.5)
 ): SvgPolyline {
-  const _args = new BlobArgs();
-  Object.assign(_args, args);
-
-  const { col } = _args;
-
-  const plist = blob_points(prng, x, y, args);
+  const plist = blob_points(prng, x, y, ang, col, len, strokeWidth, noi, fun);
   return poly(plist, 0, 0, col, col);
 }
 
@@ -83,13 +74,16 @@ export function blob_points(
   prng: PRNG,
   x: number,
   y: number,
-  args: Partial<BlobArgs> | undefined = undefined
+  ang: number = 0,
+  col: string = 'rgba(200,200,200,0.9)',
+  len: number = 20,
+  strokeWidth: number = 5,
+  noi: number = 0.5,
+  fun: (x: number) => number = (x: number) =>
+    x <= 1
+      ? Math.pow(Math.sin(x * Math.PI), 0.5)
+      : -Math.pow(Math.sin((x + 1) * Math.PI), 0.5)
 ): Point[] {
-  const _args = new BlobArgs();
-  Object.assign(_args, args);
-
-  const { len, strokeWidth, ang, noi, fun } = _args;
-
   const reso = 20.0;
   const lalist = [];
   for (let i = 0; i < reso + 1; i++) {
@@ -140,36 +134,23 @@ export function div(plist: Point[], reso: number): Point[] {
   return rlist;
 }
 
-class TextureArgs implements Partial<ISvgStyles> {
-  constructor(prng: PRNG) {
-    this.col = (x) => `rgba(100,100,100,${(prng.random() * 0.3).toFixed(3)})`;
-    this.dis = () =>
-      prng.random() > 0.5
-        ? (1 / 3) * prng.random()
-        : (1 * 2) / 3 + (1 / 3) * prng.random();
-  }
-
-  xof: number = 0;
-  yof: number = 0;
-  tex: number = 400;
-  strokeWidth: number = 1.5;
-  len: number = 0.2;
-  sha: number = 0;
-  noi: (x: number) => number = (x) => 30 / x;
-  col: (x: number) => string;
-  dis: () => number;
-}
-
 export function texture(
   prng: PRNG,
   ptlist: Point[][],
-  args: Partial<TextureArgs> | undefined = undefined
+  xof: number = 0,
+  yof: number = 0,
+  tex: number = 400,
+  strokeWidth: number = 1.5,
+  sha: number = 0,
+  col: (x: number) => string = (x) =>
+    `rgba(100,100,100,${(prng.random() * 0.3).toFixed(3)})`,
+  dis: () => number = () =>
+    prng.random() > 0.5
+      ? (1 / 3) * prng.random()
+      : (1 * 2) / 3 + (1 / 3) * prng.random(),
+  noi: (x: number) => number = (x) => 30 / x,
+  len: number = 0.2
 ): SvgPolyline[] {
-  const _args = new TextureArgs(prng);
-  Object.assign(_args, args);
-
-  const { xof, yof, tex, strokeWidth, len, sha, noi, col, dis } = _args;
-
   const offset = new Vector(xof, yof);
   const reso = [ptlist.length, ptlist[0].length];
   const texlist: Point[][] = [];

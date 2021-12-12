@@ -229,12 +229,15 @@ export function mountain(
   elementlists.push(foot(prng, ptlist, { xof: xoff, yof: yoff }));
 
   elementlists.push(
-    texture(prng, ptlist, {
-      xof: xoff,
-      yof: yoff,
-      tex: tex,
-      sha: randChoice(prng, [0, 0, 0, 0, 5]),
-    })
+    texture(
+      prng,
+      ptlist,
+      xoff,
+      yoff,
+      tex,
+      1.5,
+      randChoice(prng, [0, 0, 0, 0, 5])
+    )
   );
   //   canv += col === undefined ? texture(ptlist, {
   //     xof: xoff,
@@ -562,19 +565,20 @@ export function flatMount(
 
   //canv += foot(ptlist,{xof:xoff,yof:yoff})
   polylinelists.push(
-    texture(prng, ptlist, {
-      xof: xoff,
-      yof: yoff,
-      tex: tex,
-      strokeWidth: 2,
-      dis: function () {
-        if (prng.random() > 0.5) {
-          return 0.1 + 0.4 * prng.random();
-        } else {
-          return 0.9 - 0.4 * prng.random();
-        }
-      },
-    })
+    texture(
+      prng,
+      ptlist,
+      xoff,
+      yoff,
+      tex,
+      2,
+      0,
+      (x) => `rgba(100,100,100,${(prng.random() * 0.3).toFixed(3)})`,
+      () =>
+        prng.random() > 0.5
+          ? 0.1 + 0.4 * prng.random()
+          : 0.9 - 0.4 * prng.random()
+    )
   );
   const _grlist1: Point[] = [];
   const _grlist2: Point[] = [];
@@ -953,25 +957,20 @@ export function rock(
     ),
   ]);
   polylinelists.push(
-    texture(prng, ptlist, {
-      xof: xoff,
-      yof: yoff,
-      tex: tex,
-      strokeWidth: 3,
-      sha: sha,
-      col: function (x) {
-        return (
-          'rgba(180,180,180,' + (0.3 + prng.random() * 0.3).toFixed(3) + ')'
-        );
-      },
-      dis: function () {
-        if (prng.random() > 0.5) {
-          return 0.15 + 0.15 * prng.random();
-        } else {
-          return 0.85 - 0.15 * prng.random();
-        }
-      },
-    })
+    texture(
+      prng,
+      ptlist,
+      xoff,
+      yoff,
+      tex,
+      3,
+      sha,
+      (x) => 'rgba(180,180,180,' + (0.3 + prng.random() * 0.3).toFixed(3) + ')',
+      () =>
+        prng.random() > 0.5
+          ? 0.15 + 0.15 * prng.random()
+          : 0.85 - 0.15 * prng.random()
+    )
   );
 
   // for (let i = 0; i < reso[0]; i++) {

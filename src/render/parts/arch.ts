@@ -67,22 +67,19 @@ function hut(
     )
   );
 
-  const texures = texture(prng, ptlist, {
-    xof: xoff,
-    yof: yoff,
-    tex: tex,
-    strokeWidth: 1,
-    len: 0.25,
-    col: function (x) {
-      return 'rgba(120,120,120,' + (0.3 + prng.random() * 0.3).toFixed(3) + ')';
-    },
-    dis: function () {
-      return wtrand(prng, (a) => a * a);
-    },
-    noi: function (x) {
-      return 5;
-    },
-  });
+  const texures = texture(
+    prng,
+    ptlist,
+    xoff,
+    yoff,
+    tex,
+    1,
+    0,
+    (x) => 'rgba(120,120,120,' + (0.3 + prng.random() * 0.3).toFixed(3) + ')',
+    () => wtrand(prng, (a) => a * a),
+    (_) => 5,
+    0.25
+  );
 
   // for (let i = 0; i < reso[0]; i++) {
   //   //canv += poly(ptlist[i],{xof:xoff,yof:yoff,fill:"none",stroke:"red",strokeWidth:2})
