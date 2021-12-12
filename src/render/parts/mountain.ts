@@ -86,14 +86,7 @@ export function foot(
   const polylines: SvgPolyline[] = [];
 
   for (let i = 0; i < ftlist.length; i++) {
-    polylines.push(
-      poly(ftlist[i], {
-        xof: xof,
-        yof: yof,
-        fill: 'white',
-        stroke: 'none',
-      })
-    );
+    polylines.push(poly(ftlist[i], xof, yof, 'white', 'none'));
   }
   for (let j = 0; j < ftlist.length; j++) {
     const color =
@@ -213,12 +206,13 @@ export function mountain(
 
   //WHITE BG
   elementlists.push([
-    poly(ptlist[0].concat([new Point(0, reso[0] * 4)]), {
-      xof: xoff,
-      yof: yoff,
-      fill: 'white',
-      stroke: 'none',
-    }),
+    poly(
+      ptlist[0].concat([new Point(0, reso[0] * 4)]),
+      xoff,
+      yoff,
+      'white',
+      'none'
+    ),
   ]);
   //OUTLINE
   elementlists.push([
@@ -548,12 +542,13 @@ export function flatMount(
 
   //WHITE BG
   polylinelists.push([
-    poly(ptlist[0].concat([new Point(0, reso[0] * 4)]), {
-      xof: xoff,
-      yof: yoff,
-      fill: 'white',
-      stroke: 'none',
-    }),
+    poly(
+      ptlist[0].concat([new Point(0, reso[0] * 4)]),
+      xoff,
+      yoff,
+      'white',
+      'none'
+    ),
   ]);
   //OUTLINE
   polylinelists.push([
@@ -630,15 +625,7 @@ export function flatMount(
               canv += poly(ptlist[i],{xof:xoff,yof:yoff,stroke:"red",fill:"none",strokeWidth:2})
             }
        */
-  polylinelists.push([
-    poly(grlist, {
-      xof: xoff,
-      yof: yoff,
-      stroke: 'none',
-      fill: 'white',
-      strokeWidth: 2,
-    }),
-  ]);
+  polylinelists.push([poly(grlist, xoff, yoff, 'white', 'none', 2)]);
   polylinelists.push([
     stroke(
       prng,
@@ -881,23 +868,13 @@ export function distMount(
       return 'rgb(' + c + ',' + c + ',' + c + ')';
     };
     const pe = ptlist[i][ptlist[i].length - 1];
-    polylines.push(
-      poly(ptlist[i], {
-        fill: getCol(pe.x, pe.y),
-        stroke: 'none',
-        strokeWidth: 1,
-      })
-    );
+    polylines.push(poly(ptlist[i], 0, 0, getCol(pe.x, pe.y), 'none', 1));
 
-    const T = triangulate(ptlist[i], {
-      area: 100,
-      convex: true,
-      optimize: false,
-    });
+    const T = triangulate(ptlist[i], 100, true, false);
     for (let k = 0; k < T.length; k++) {
       const m = midPt(T[k]);
       const co = getCol(m.x, m.y);
-      polylines.push(poly(T[k], { fill: co, stroke: co, strokeWidth: 1 }));
+      polylines.push(poly(T[k], 0, 0, co, co, 1));
     }
   }
 
@@ -968,12 +945,7 @@ export function rock(
 
   //WHITE BG
   polylinelists.push([
-    poly(ptlist[0].concat([new Point(0, 0)]), {
-      xof: xoff,
-      yof: yoff,
-      fill: 'white',
-      stroke: 'none',
-    }),
+    poly(ptlist[0].concat([new Point(0, 0)]), xoff, yoff, 'white', 'none'),
   ]);
   //OUTLINE
   polylinelists.push([

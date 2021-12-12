@@ -112,7 +112,9 @@ export function hat01(
           new Point(-0.65, 0.5),
         ])
       ),
-      { fill: 'rgba(100,100,100,0.8)' }
+      0,
+      0,
+      'rgba(100,100,100,0.8)'
     )
   );
 
@@ -126,10 +128,14 @@ export function hat01(
     );
   }
   polylines.push(
-    poly(tranpoly(p0, p1, f(qlist1)), {
-      stroke: 'rgba(100,100,100,0.8)',
-      strokeWidth: 1,
-    })
+    poly(
+      tranpoly(p0, p1, f(qlist1)),
+      0,
+      0,
+      'rgba(0, 0, 0, 0)',
+      'rgba(100,100,100,0.8)',
+      1
+    )
   );
 
   return polylines;
@@ -171,7 +177,9 @@ export function hat02(
           new Point(0.3, 0.5),
         ])
       ),
-      { fill: 'rgba(100,100,100,0.8)' }
+      0,
+      0,
+      'rgba(100,100,100,0.8)'
     )
   );
   return polylines;
@@ -207,10 +215,14 @@ export function stick01(
     );
   }
   polylines.push(
-    poly(tranpoly(p0, p1, f(qlist1)), {
-      stroke: 'rgba(100,100,100,0.5)',
-      strokeWidth: 1,
-    })
+    poly(
+      tranpoly(p0, p1, f(qlist1)),
+      0,
+      0,
+      'rgba(0,0,0,0)',
+      'rgba(100,100,100,0.5)',
+      1
+    )
   );
 
   return polylines;
@@ -226,9 +238,7 @@ function cloth(
   const tlist = bezmh(plist, 2);
   const [tlist1, tlist2] = expand(tlist, fun);
   polylines.push(
-    poly(tlist1.concat(tlist2.reverse()).map(toGlobal), {
-      fill: 'white',
-    })
+    poly(tlist1.concat(tlist2.reverse()).map(toGlobal), 0, 0, 'white')
   );
   polylines.push(
     stroke(prng, tlist1.map(toGlobal), {
@@ -417,9 +427,12 @@ export function man(
   hlist1.splice(0, Math.floor(hlist1.length * 0.1));
   hlist2.splice(0, Math.floor(hlist2.length * 0.95));
   polylinelists.push([
-    poly(hlist1.concat(hlist2.reverse()).map(toGlobal), {
-      fill: 'rgba(100,100,100,0.6)',
-    }),
+    poly(
+      hlist1.concat(hlist2.reverse()).map(toGlobal),
+      0,
+      0,
+      'rgba(100,100,100,0.6)'
+    ),
   ]);
 
   polylinelists.push(

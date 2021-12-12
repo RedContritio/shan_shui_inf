@@ -1,4 +1,4 @@
-import { ISvgAttributes, ISvgElement } from '../svg';
+import { ISvgElement } from '../svg';
 import { IPoint } from './point';
 
 type ChunkTag = 'mount' | 'flatmount' | 'distmount' | 'boat' | 'water' | '?';
@@ -9,7 +9,7 @@ export interface IChunk extends IPoint {
   y: number;
 }
 
-export class Chunk implements ISvgElement {
+export class Chunk {
   constructor(tag: ChunkTag, x: number, y: number, elements: ISvgElement[]) {
     this.tag = tag;
     this.x = x;
@@ -23,11 +23,6 @@ export class Chunk implements ISvgElement {
   y: number = 0;
   elements: ISvgElement[] = [];
   canv: string;
-
-  /**
-   * @deprecated never used
-   */
-  attr: Partial<ISvgAttributes> = {};
 
   render(): string {
     return this.canv;

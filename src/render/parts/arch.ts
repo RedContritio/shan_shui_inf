@@ -16,22 +16,14 @@ function flip(ptlist: Point[], axis: number = 0): Point[] {
   return ptlist;
 }
 
-class HutArgs {
-  hei: number = 40;
-  strokeWidth: number = 180;
-  tex: number = 300;
-}
 function hut(
   prng: PRNG,
   xoff: number,
   yoff: number,
-  args: Partial<HutArgs> | undefined = undefined
+  hei: number = 40,
+  strokeWidth: number = 180,
+  tex: number = 300
 ): SvgPolyline[] {
-  const _args = new HutArgs();
-  Object.assign(_args, args);
-
-  const { hei, strokeWidth, tex } = _args;
-
   const reso = [10, 10];
   const ptlist: Point[][] = [];
 
@@ -55,26 +47,24 @@ function hut(
       ptlist[0]
         .slice(0, -1)
         .concat(ptlist[ptlist.length - 1].slice(0, -1).reverse()),
-      { xof: xoff, yof: yoff, fill: 'white', stroke: 'none' }
+      xoff,
+      yoff,
+      'white',
+      'none'
     )
   );
   polylines.push(
-    poly(ptlist[0], {
-      xof: xoff,
-      yof: yoff,
-      fill: 'none',
-      stroke: 'rgba(100,100,100,0.3)',
-      strokeWidth: 2,
-    })
+    poly(ptlist[0], xoff, yoff, 'none', 'rgba(100,100,100,0.3)', 2)
   );
   polylines.push(
-    poly(ptlist[ptlist.length - 1], {
-      xof: xoff,
-      yof: yoff,
-      fill: 'none',
-      stroke: 'rgba(100,100,100,0.3)',
-      strokeWidth: 2,
-    })
+    poly(
+      ptlist[ptlist.length - 1],
+      xoff,
+      yoff,
+      'none',
+      'rgba(100,100,100,0.3)',
+      2
+    )
   );
 
   const texures = texture(prng, ptlist, {
@@ -179,14 +169,7 @@ function box(
 
   const polylines: SvgPolyline[] = [];
   if (!tra) {
-    polylines.push(
-      poly(polist, {
-        xof: xoff,
-        yof: yoff,
-        stroke: 'none',
-        fill: 'white',
-      })
-    );
+    polylines.push(poly(polist, xoff, yoff, 'white', 'none'));
   }
 
   for (let i = 0; i < ptlist.length; i++) {
@@ -379,15 +362,7 @@ function rail(
         2
       );
       ln[0].x += (prng.random() - 0.5) * hei * 0.5;
-      polylines.push(
-        poly(ln, {
-          xof: xoff,
-          yof: yoff,
-          fill: 'none',
-          stroke: 'rgba(100,100,100,0.5)',
-          strokeWidth: 2,
-        })
-      );
+      polylines.push(poly(ln, xoff, yoff, 'none', 'rgba(100,100,100,0.5)', 2));
     }
   }
 
@@ -511,14 +486,7 @@ function roof(
     new Point(strokeWidth * 0.5, 0),
     new Point(mid, per),
   ]);
-  polylines.push(
-    poly(polist, {
-      xof: xoff,
-      yof: yoff,
-      stroke: 'none',
-      fill: 'white',
-    })
-  );
+  polylines.push(poly(polist, xoff, yoff, 'white', 'none'));
 
   for (let i = 0; i < ptlist.length; i++) {
     polylines.push(
@@ -606,14 +574,7 @@ function pagroof(
     polist.push(new Point(fxx, fy));
   }
 
-  polylines.push(
-    poly(polist, {
-      xof: xoff,
-      yof: yoff,
-      stroke: 'none',
-      fill: 'white',
-    })
-  );
+  polylines.push(poly(polist, xoff, yoff, 'white', 'none'));
 
   for (let i = 0; i < ptlist.length; i++) {
     polylines.push(
@@ -661,9 +622,7 @@ export function arch01(
   const h1 = hei * (1 - p);
 
   const polylinelists: SvgPolyline[][] = [];
-  polylinelists.push(
-    hut(prng, xoff, yoff - hei, { hei: h0, strokeWidth: strokeWidth })
-  );
+  polylinelists.push(hut(prng, xoff, yoff - hei, h0, strokeWidth));
   polylinelists.push(
     box(prng, xoff, yoff, {
       hei: h1,
@@ -974,7 +933,7 @@ export function boat01(
     plist2.push(new Point(i * dir, fun2(i / len)));
   }
   const plist: Point[] = plist1.concat(plist2.reverse());
-  polylinelists.push([poly(plist, { xof: xoff, yof: yoff, fill: 'white' })]);
+  polylinelists.push([poly(plist, xoff, yoff, 'white')]);
   polylinelists.push([
     stroke(
       prng,

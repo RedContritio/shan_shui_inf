@@ -171,15 +171,6 @@ function shatter(plist: Point[], a: number): Point[][] {
   }
 }
 
-class TriangulateOptions {
-  /**
-   * 三角形面积上限
-   */
-  area: number = 100;
-  convex: boolean = false;
-  optimize: boolean = false;
-}
-
 /**
  * 将多边形拆分成三角形列表
  * @param plist 多边形顶点列表
@@ -188,17 +179,16 @@ class TriangulateOptions {
  */
 export function triangulate(
   plist: Point[],
-  args: Partial<TriangulateOptions> | undefined = undefined
+  area: number = 100,
+  convex: boolean = false,
+  optimize: boolean = false
 ): Point[][] {
-  //return []
-  const _args = new TriangulateOptions();
-  Object.assign(_args, args);
-  const { area, convex, optimize } = _args;
-
   if (plist.length <= 3) {
     return shatter(plist, area);
   } else {
     const cut = bestEar(plist, convex, optimize);
-    return shatter(cut[0], area).concat(triangulate(cut[1], args));
+    return shatter(cut[0], area).concat(
+      triangulate(cut[1], area, convex, optimize)
+    );
   }
 }

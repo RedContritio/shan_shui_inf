@@ -60,7 +60,7 @@ export function stroke(
     )
     .concat([ptlist[0]]);
 
-  return poly(vtxlist, { xof, yof, fill, stroke, strokeWidth: out });
+  return poly(vtxlist, xof, yof, fill, stroke, out);
 }
 
 class BlobArgs implements Partial<ISvgStyles> {
@@ -87,7 +87,7 @@ export function blob(
   const { col } = _args;
 
   const plist = blob_points(prng, x, y, args);
-  return poly(plist, { fill: col, stroke: col, strokeWidth: 0 });
+  return poly(plist, 0, 0, col, col);
 }
 
 export function blob_points(

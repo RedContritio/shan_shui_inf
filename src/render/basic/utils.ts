@@ -2,7 +2,7 @@ import { midPt } from './polytools';
 import { Point, Vector } from './point';
 import { PRNG } from './PRNG';
 import { Range } from './range';
-import { ISvgStyles, SvgPoint, SvgPolyline } from '../svg';
+import { SvgPoint, SvgPolyline } from '../svg';
 
 export function unNan(plist: Point[]): Point[] {
   return plist.map((p: Point) => (p && p.isFinite() ? p : new Point()));
@@ -74,22 +74,15 @@ export function bezmh(P: Point[], w: number = 1): Point[] {
   return plist;
 }
 
-class PolyArgs implements Partial<ISvgStyles> {
-  xof: number = 0;
-  yof: number = 0;
-  fill: string = 'rgba(0,0,0,0)';
-  stroke: string = 'rgba(0,0,0,0)';
-  strokeWidth: number = 0;
-}
-
 export function poly(
   plist: Point[],
-  args: Partial<PolyArgs> | undefined = undefined
+  xoff: number = 0,
+  yoff: number = 0,
+  fill: string = 'rgba(0,0,0,0)',
+  stroke: string = 'rgba(0,0,0,0)',
+  strokeWidth: number = 0
 ): SvgPolyline {
-  const _args = new PolyArgs();
-  Object.assign(_args, args);
-  const { xof, yof, fill, stroke, strokeWidth } = _args;
-  const off = new Vector(xof, yof);
+  const off = new Vector(xoff, yoff);
 
   const polyline = new SvgPolyline(
     plist.map((p: Point) => SvgPoint.from(p.move(off))),

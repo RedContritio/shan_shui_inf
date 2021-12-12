@@ -83,8 +83,8 @@ export function tree01(
     );
   }
 
-  polylines.push(poly(line1, { fill: 'none', stroke: col, strokeWidth: 1.5 }));
-  polylines.push(poly(line2, { fill: 'none', stroke: col, strokeWidth: 1.5 }));
+  polylines.push(poly(line1, 0, 0, 'none', col, 1.5));
+  polylines.push(poly(line2, 0, 0, 'none', col, 1.5));
   return polylines;
 }
 
@@ -218,7 +218,7 @@ export function tree03(
     );
   }
   const lc = line1.concat(line2.reverse());
-  polylines.push(poly(lc, { fill: 'white', stroke: col, strokeWidth: 1.5 }));
+  polylines.push(poly(lc, 0, 0, 'white', col, 1.5));
 
   return polylines.concat(blobs);
 }
@@ -631,15 +631,7 @@ export function tree04(
       trmlist.push(trlist[i]);
     }
   }
-  polylinelists.push([
-    poly(trmlist, {
-      xof: x,
-      yof: y,
-      fill: 'white',
-      stroke: col,
-      strokeWidth: 0,
-    }),
-  ]);
+  polylinelists.push([poly(trmlist, x, y, 'white', col)]);
 
   trmlist.splice(0, 1);
   trmlist.splice(trmlist.length - 1, 1);
@@ -767,15 +759,7 @@ export function tree05(
     }
   }
 
-  polylinelists.push([
-    poly(trmlist, {
-      xof: x,
-      yof: y,
-      fill: 'white',
-      stroke: col,
-      strokeWidth: 0,
-    }),
-  ]);
+  polylinelists.push([poly(trmlist, x, y, 'white', col)]);
 
   trmlist.splice(0, 1);
   trmlist.splice(trmlist.length - 1, 1);
@@ -930,15 +914,7 @@ export function tree06(
     ben: 0,
   });
 
-  polylinelists.push([
-    poly(trmlist, {
-      xof: x,
-      yof: y,
-      fill: 'white',
-      stroke: col,
-      strokeWidth: 0,
-    }),
-  ]);
+  polylinelists.push([poly(trmlist, x, y, 'white', col, 0)]);
 
   trmlist.splice(0, 1);
   trmlist.splice(trmlist.length - 1, 1);
@@ -1035,13 +1011,7 @@ export function tree07(
         );
 
         //canv+=poly(bpl,{fill:col,strokeWidth:0})
-        T = T.concat(
-          triangulate(bpl as Point[], {
-            area: 50,
-            convex: true,
-            optimize: false,
-          })
-        );
+        T = T.concat(triangulate(bpl as Point[], 50, true, false));
       }
     }
     line1.push(
@@ -1053,17 +1023,13 @@ export function tree07(
   }
 
   //canv += poly(line1.concat(line2.reverse()),{fill:col,strokeWidth:0})
-  T = triangulate(line1.concat(line2.reverse()), {
-    area: 50,
-    convex: true,
-    optimize: true,
-  }).concat(T);
+  T = triangulate(line1.concat(line2.reverse()), 50, true, true).concat(T);
 
   for (let k = 0; k < T.length; k++) {
     const m = midPt(T[k]);
     const c = (Noise.noise(prng, m.x * 0.02, m.y * 0.02) * 200 + 50) | 0;
     const co = 'rgba(' + c + ',' + c + ',' + c + ',0.8)';
-    polylines.push(poly(T[k], { fill: co, stroke: co, strokeWidth: 0 }));
+    polylines.push(poly(T[k], 0, 0, co, co));
   }
   return polylines;
 }
@@ -1222,15 +1188,7 @@ export function tree08(
     }
   }
 
-  polylinelists.push([
-    poly(trlist, {
-      xof: x,
-      yof: y,
-      fill: 'white',
-      stroke: col,
-      strokeWidth: 0,
-    }),
-  ]);
+  polylinelists.push([poly(trlist, x, y, 'white', col)]);
 
   const color =
     'rgba(100,100,100,' + (0.6 + prng.random() * 0.1).toFixed(3) + ')';
