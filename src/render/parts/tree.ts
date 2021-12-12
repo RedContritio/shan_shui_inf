@@ -380,14 +380,16 @@ export function twig(
     }
   }
   polylinelists.push([
-    stroke(prng, twlist, {
-      strokeWidth: 1,
-      fun: function (x) {
-        return Math.cos((x * Math.PI) / 2);
-      },
-      fill: 'rgba(100,100,100,0.5)',
-      stroke: 'rgba(100,100,100,0.5)',
-    }),
+    stroke(
+      prng,
+      twlist,
+      'rgba(100,100,100,0.5)',
+      'rgba(100,100,100,0.5)',
+      1,
+      0.5,
+      1,
+      (x) => Math.cos((x * Math.PI) / 2)
+    ),
   ]);
 
   return polylinelists.flat();
@@ -436,16 +438,16 @@ function bark(
 
   const fr = prng.random();
   polylines.push(
-    stroke(prng, brklist, {
-      strokeWidth: 0.8,
-      noi: 0,
-      fill: 'rgba(100,100,100,0.4)',
-      stroke: 'rgba(100,100,100,0.4)',
-      out: 0,
-      fun: function (x) {
-        return Math.sin((x + fr) * Math.PI * 3);
-      },
-    })
+    stroke(
+      prng,
+      brklist,
+      'rgba(100,100,100,0.4)',
+      'rgba(100,100,100,0.4)',
+      0.8,
+      0,
+      0,
+      (x) => Math.sin((x + fr) * Math.PI * 3)
+    )
   );
 
   return polylines;
@@ -537,12 +539,11 @@ export function barkify(
           rglist[i].map(function (p: Point) {
             return new Point(p.x + x, p.y + y);
           }),
-          {
-            strokeWidth: 1.5,
-            fill: 'rgba(100,100,100,0.7)',
-            stroke: 'rgba(100,100,100,0.7)',
-            out: 0,
-          }
+          'rgba(100,100,100,0.7)',
+          'rgba(100,100,100,0.7)',
+          1.5,
+          0.5,
+          0
         ),
       ]);
     }
@@ -644,16 +645,12 @@ export function tree04(
       trmlist.map(function (p: Point) {
         return new Point(p.x + x, p.y + y);
       }),
-      {
-        fill: color,
-        stroke: color,
-        strokeWidth: 2.5,
-        fun: function (x) {
-          return Math.sin(1);
-        },
-        noi: 0.9,
-        out: 0,
-      }
+      color,
+      color,
+      2.5,
+      0.9,
+      0,
+      (x) => Math.sin(1)
     ),
   ]);
 
@@ -773,16 +770,12 @@ export function tree05(
       trmlist.map(function (p: Point) {
         return new Point(p.x + x, p.y + y);
       }),
-      {
-        fill: color,
-        stroke: color,
-        strokeWidth: 2.5,
-        fun: function (x) {
-          return Math.sin(1);
-        },
-        noi: 0.9,
-        out: 0,
-      }
+      color,
+      color,
+      2.5,
+      0.9,
+      0,
+      (x) => Math.sin(1)
     ),
   ]);
 
@@ -926,16 +919,12 @@ export function tree06(
       trmlist.map(function (v) {
         return new Point(v.x + x, v.y + y);
       }),
-      {
-        fill: color,
-        stroke: color,
-        strokeWidth: 2.5,
-        fun: function (x) {
-          return Math.sin(1);
-        },
-        noi: 0.9,
-        out: 0,
-      }
+      color,
+      color,
+      2.5,
+      0.9,
+      0,
+      (x) => Math.sin(1)
     ),
   ]);
 
@@ -1078,12 +1067,16 @@ function fracTree08(
 
   const polylinelists: SvgPolyline[][] = [];
   polylinelists.push([
-    stroke(prng, trmlist, {
-      fun: fun,
-      strokeWidth: 0.8,
-      fill: 'rgba(100,100,100,0.5)',
-      stroke: 'rgba(100,100,100,0.5)',
-    }),
+    stroke(
+      prng,
+      trmlist,
+      'rgba(100,100,100,0.5)',
+      'rgba(100,100,100,0.5)',
+      0.8,
+      0.5,
+      1,
+      fun
+    ),
   ]);
 
   if (dep !== 0) {
@@ -1198,16 +1191,12 @@ export function tree08(
       trlist.map(function (v) {
         return new Point(v.x + x, v.y + y);
       }),
-      {
-        fill: color,
-        stroke: color,
-        strokeWidth: 2.5,
-        fun: function (x) {
-          return Math.sin(1);
-        },
-        noi: 0.9,
-        out: 0,
-      }
+      color,
+      color,
+      2.5,
+      0.9,
+      0,
+      (x) => Math.sin(1)
     ),
   ]);
 

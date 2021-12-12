@@ -91,28 +91,24 @@ function hut(
   return polylines.concat(texures);
 }
 
-class BoxArgs {
-  hei: number = 20;
-  strokeWidth: number = 120;
-  rot: number = 0.7;
-  per: number = 4;
-  tra: boolean = true;
-  bot: boolean = true;
-  wei: number = 3;
-  dec: (a: Partial<DecoArgs>) => Point[][] = (_) => [];
-}
-
 function box(
   prng: PRNG,
   xoff: number,
   yoff: number,
-  args: Partial<BoxArgs> | undefined = undefined
+  hei: number = 20,
+  strokeWidth: number = 120,
+  rot: number = 0.7,
+  per: number = 4,
+  tra: boolean = true,
+  bot: boolean = true,
+  wei: number = 3,
+  dec: (pul: Point, pur: Point, pdl: Point, pdr: Point) => Point[][] = (
+    _1,
+    _2,
+    _3,
+    _4
+  ) => []
 ): SvgPolyline[] {
-  const _args = new BoxArgs();
-  Object.assign(_args, args);
-
-  const { hei, strokeWidth, rot, per, tra, bot, wei, dec } = _args;
-
   const mid = -strokeWidth * 0.5 + strokeWidth * rot;
   const bmid = -strokeWidth * 0.5 + strokeWidth * (1 - rot);
   const _ptlist: Point[][] = [];
@@ -151,12 +147,12 @@ function box(
 
   const surf = (rot < 0.5 ? 1 : 0) * 2 - 1;
   const ptlist = _ptlist.concat(
-    dec({
-      pul: new Point(surf * strokeWidth * 0.5, -hei),
-      pur: new Point(mid, -hei + per),
-      pdl: new Point(surf * strokeWidth * 0.5, 0),
-      pdr: new Point(mid, per),
-    })
+    dec(
+      new Point(surf * strokeWidth * 0.5, -hei),
+      new Point(mid, -hei + per),
+      new Point(surf * strokeWidth * 0.5, 0),
+      new Point(mid, per)
+    )
   );
 
   const polist = [
@@ -179,39 +175,27 @@ function box(
         ptlist[i].map(function (p) {
           return new Point(p.x + xoff, p.y + yoff);
         }),
-        {
-          fill: 'rgba(100,100,100,0.4)',
-          stroke: 'rgba(100,100,100,0.4)',
-          noi: 1,
-          strokeWidth: wei,
-          fun: function (x) {
-            return 1;
-          },
-        }
+        'rgba(100,100,100,0.4)',
+        'rgba(100,100,100,0.4)',
+        wei,
+        1,
+        1,
+        (x) => 1
       )
     );
   }
   return polylines;
 }
 
-class DecoArgs {
-  pul: Point = Point.O;
-  pur: Point = new Point(0, 100);
-  pdl: Point = new Point(100, 0);
-  pdr: Point = new Point(100, 100);
-  hsp: number[] = [1, 3];
-  vsp: number[] = [1, 2];
-}
-
 function deco(
   style: number,
-  args: Partial<DecoArgs> | undefined = undefined
+  pul: Point = Point.O,
+  pur: Point = new Point(0, 100),
+  pdl: Point = new Point(100, 0),
+  pdr: Point = new Point(100, 100),
+  hsp: number[] = [1, 3],
+  vsp: number[] = [1, 2]
 ): Point[][] {
-  const _args = new DecoArgs();
-  Object.assign(_args, args);
-
-  const { pul, pur, pdl, pdr, hsp, vsp } = _args;
-
   const plist = [];
   const dl = div([pul, pdl], vsp[1]);
   const dr = div([pur, pdr], vsp[1]);
@@ -373,15 +357,12 @@ function rail(
         ptlist[i].map(function (p) {
           return new Point(p.x + xoff, p.y + yoff);
         }),
-        {
-          fill: 'rgba(100,100,100,0.5)',
-          stroke: 'rgba(100,100,100,0.5)',
-          noi: 0.5,
-          strokeWidth: wei,
-          fun: function (x) {
-            return 1;
-          },
-        }
+        'rgba(100,100,100,0.5)',
+        'rgba(100,100,100,0.5)',
+        wei,
+        0.5,
+        1,
+        (_) => 1
       )
     );
   }
@@ -495,15 +476,12 @@ function roof(
         ptlist[i].map(function (p) {
           return new Point(p.x + xoff, p.y + yoff);
         }),
-        {
-          fill: 'rgba(100,100,100,0.4)',
-          stroke: 'rgba(100,100,100,0.4)',
-          noi: 1,
-          strokeWidth: wei,
-          fun: function (x) {
-            return 1;
-          },
-        }
+        'rgba(100,100,100,0.4)',
+        'rgba(100,100,100,0.4)',
+        wei,
+        1,
+        1,
+        (_) => 1
       )
     );
   }
@@ -583,15 +561,12 @@ function pagroof(
         div(ptlist[i], 5).map(function (p) {
           return new Point(p.x + xoff, p.y + yoff);
         }),
-        {
-          fill: 'rgba(100,100,100,0.4)',
-          stroke: 'rgba(100,100,100,0.4)',
-          noi: 1,
-          strokeWidth: wei,
-          fun: function (x) {
-            return 1;
-          },
-        }
+        'rgba(100,100,100,0.4)',
+        'rgba(100,100,100,0.4)',
+        wei,
+        1,
+        1,
+        (_) => 1
       )
     );
   }
@@ -624,12 +599,7 @@ export function arch01(
   const polylinelists: SvgPolyline[][] = [];
   polylinelists.push(hut(prng, xoff, yoff - hei, h0, strokeWidth));
   polylinelists.push(
-    box(prng, xoff, yoff, {
-      hei: h1,
-      strokeWidth: (strokeWidth * 2) / 3,
-      per: per,
-      bot: false,
-    })
+    box(prng, xoff, yoff, h1, (strokeWidth * 2) / 3, 0.7, per, true, false)
   );
 
   polylinelists.push(
@@ -714,25 +684,31 @@ export function arch02(
   const elementlists: ISvgElement[][] = [];
 
   let hoff = 0;
+  const dec = (pul: Point, pur: Point, pdl: Point, pdr: Point) =>
+    deco(
+      sty,
+      pul,
+      pur,
+      pdl,
+      pdr,
+      [[], [1, 5], [1, 5], [1, 4]][sty],
+      [[], [1, 2], [1, 2], [1, 3]][sty]
+    );
   for (let i = 0; i < sto; i++) {
     elementlists.push(
-      box(prng, xoff, yoff - hoff, {
-        tra: false,
-        hei: hei,
-        strokeWidth: strokeWidth * Math.pow(0.85, i),
-        rot: rot,
-        wei: 1.5,
-        per: per,
-        dec: function (a) {
-          return deco(
-            sty,
-            Object.assign({}, a, {
-              hsp: [[], [1, 5], [1, 5], [1, 4]][sty],
-              vsp: [[], [1, 2], [1, 2], [1, 3]][sty],
-            })
-          );
-        },
-      })
+      box(
+        prng,
+        xoff,
+        yoff - hoff,
+        hei,
+        strokeWidth * Math.pow(0.85, i),
+        rot,
+        per,
+        false,
+        true,
+        1.5,
+        dec
+      )
     );
     elementlists.push(
       rai
@@ -794,19 +770,23 @@ export function arch03(
   const polylinelists: SvgPolyline[][] = [];
 
   let hoff = 0;
+  const dec = (pul: Point, pur: Point, pdl: Point, pdr: Point) =>
+    deco(1, pul, pur, pdl, pdr, [1, 4], [1, 2]);
   for (let i = 0; i < sto; i++) {
     polylinelists.push(
-      box(prng, xoff, yoff - hoff, {
-        tra: false,
-        hei: hei,
-        strokeWidth: strokeWidth * Math.pow(0.85, i),
-        rot: rot,
-        wei: 1.5,
-        per: per / 2,
-        dec: function (a) {
-          return deco(1, Object.assign({}, a, { hsp: [1, 4], vsp: [1, 2] }));
-        },
-      })
+      box(
+        prng,
+        xoff,
+        yoff - hoff,
+        hei,
+        strokeWidth * Math.pow(0.85, i),
+        rot,
+        per / 2,
+        false,
+        true,
+        1.5,
+        dec
+      )
     );
     polylinelists.push(
       rail(prng, xoff, yoff - hoff, i * 0.2, {
@@ -855,19 +835,22 @@ export function arch04(
   const polylinelists: SvgPolyline[][] = [];
 
   let hoff = 0;
+  const dec = (_1: Point, _2: Point, _3: Point, _4: Point) => [];
   for (let i = 0; i < sto; i++) {
     polylinelists.push(
-      box(prng, xoff, yoff - hoff, {
-        tra: true,
-        hei: hei,
-        strokeWidth: strokeWidth * Math.pow(0.85, i),
-        rot: rot,
-        wei: 1.5,
-        per: per / 2,
-        dec: function (a) {
-          return [];
-        },
-      })
+      box(
+        prng,
+        xoff,
+        yoff - hoff,
+        hei,
+        strokeWidth * Math.pow(0.85, i),
+        rot,
+        per / 2,
+        true,
+        true,
+        1.5,
+        dec
+      )
     );
     polylinelists.push(
       rail(prng, xoff, yoff - hoff, i * 0.2, {
@@ -938,14 +921,12 @@ export function boat01(
     stroke(
       prng,
       plist.map((v) => new Point(xoff + v.x, yoff + v.y)),
-      {
-        strokeWidth: 1,
-        fun: function (x) {
-          return Math.sin(x * Math.PI * 2);
-        },
-        fill: 'rgba(100,100,100,0.4)',
-        stroke: 'rgba(100,100,100,0.4)',
-      }
+      'rgba(100,100,100,0.4)',
+      'rgba(100,100,100,0.4)',
+      1,
+      0.5,
+      1,
+      (x) => Math.sin(x * Math.PI * 2)
     ),
   ]);
 
@@ -975,12 +956,16 @@ export function transmissionTower01(
   const toGlobal = (v: Point) => new Point(v.x + xoff, v.y + yoff);
 
   const quickstroke = function (pl: Point[]) {
-    return stroke(prng, div(pl, 5).map(toGlobal), {
-      strokeWidth: 1,
-      fun: (x) => 0.5,
-      fill: 'rgba(100,100,100,0.4)',
-      stroke: 'rgba(100,100,100,0.4)',
-    });
+    return stroke(
+      prng,
+      div(pl, 5).map(toGlobal),
+      'rgba(100,100,100,0.4)',
+      'rgba(100,100,100,0.4)',
+      1,
+      0.5,
+      1,
+      (_) => 0.5
+    );
   };
 
   const p00 = new Point(-strokeWidth * 0.05, -hei);

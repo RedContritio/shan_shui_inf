@@ -241,18 +241,22 @@ function cloth(
     poly(tlist1.concat(tlist2.reverse()).map(toGlobal), 0, 0, 'white')
   );
   polylines.push(
-    stroke(prng, tlist1.map(toGlobal), {
-      strokeWidth: 1,
-      fill: 'rgba(100,100,100,0.5)',
-      stroke: 'rgba(100,100,100,0.5)',
-    })
+    stroke(
+      prng,
+      tlist1.map(toGlobal),
+      'rgba(100,100,100,0.5)',
+      'rgba(100,100,100,0.5)',
+      1
+    )
   );
   polylines.push(
-    stroke(prng, tlist2.map(toGlobal), {
-      strokeWidth: 1,
-      fill: 'rgba(100,100,100,0.6)',
-      stroke: 'rgba(100,100,100,0.6)',
-    })
+    stroke(
+      prng,
+      tlist2.map(toGlobal),
+      'rgba(100,100,100,0.6)',
+      'rgba(100,100,100,0.6)',
+      1
+    )
   );
 
   return polylines;

@@ -97,11 +97,9 @@ export function foot(
         ftlist[j].map(function (p) {
           return new Point(p.x + xof, p.y + yof);
         }),
-        {
-          fill: color,
-          stroke: color,
-          strokeWidth: 1,
-        }
+        color,
+        color,
+        1
       )
     );
   }
@@ -221,12 +219,10 @@ export function mountain(
       ptlist[0].map(function (p) {
         return new Point(p.x + xoff, p.y + yoff);
       }),
-      {
-        fill: 'rgba(100,100,100,0.3)',
-        stroke: 'rgba(100,100,100,0.3)',
-        noi: 1,
-        strokeWidth: 3,
-      }
+      'rgba(100,100,100,0.3)',
+      'rgba(100,100,100,0.3)',
+      3,
+      1
     ),
   ]);
 
@@ -557,12 +553,10 @@ export function flatMount(
       ptlist[0].map(function (p: Point) {
         return new Point(p.x + xoff, p.y + yoff);
       }),
-      {
-        fill: 'rgba(100,100,100,0.3)',
-        stroke: 'rgba(100,100,100,0.3)',
-        noi: 1,
-        strokeWidth: 3,
-      }
+      'rgba(100,100,100,0.3)',
+      'rgba(100,100,100,0.3)',
+      3,
+      1
     ),
   ]);
 
@@ -630,11 +624,9 @@ export function flatMount(
     stroke(
       prng,
       grlist.map((p: Point) => new Point(p.x + xoff, p.y + yoff)),
-      {
-        strokeWidth: 3,
-        fill: 'rgba(100,100,100,0.2)',
-        stroke: 'rgba(100,100,100,0.2)',
-      }
+      'rgba(100,100,100,0.2)',
+      'rgba(100,100,100,0.2)',
+      3
     ),
   ]);
 
@@ -954,12 +946,10 @@ export function rock(
       ptlist[0].map(function (p) {
         return new Point(p.x + xoff, p.y + yoff);
       }),
-      {
-        fill: 'rgba(100,100,100,0.3)',
-        stroke: 'rgba(100,100,100,0.3)',
-        noi: 1,
-        strokeWidth: 3,
-      }
+      'rgba(100,100,100,0.3)',
+      'rgba(100,100,100,0.3)',
+      3,
+      1
     ),
   ]);
   polylinelists.push(

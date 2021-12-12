@@ -4,27 +4,16 @@ import { PRNG } from '../basic/PRNG';
 import { loopNoise, poly } from '../basic/utils';
 import { ISvgStyles, SvgPolyline } from '../svg';
 
-class StrokeArgs implements Partial<ISvgStyles> {
-  xof: number = 0;
-  yof: number = 0;
-  strokeWidth: number = 2;
-  fill: string = 'rgba(200,200,200,0.9)';
-  stroke: string = 'rgba(200,200,200,0.9)';
-  noi: number = 0.5;
-  out: number = 1;
-  fun: (x: number) => number = (x: number) => Math.sin(x * Math.PI);
-}
-
 export function stroke(
   prng: PRNG,
   ptlist: Point[],
-  args: Partial<StrokeArgs> | undefined = undefined
+  fill: string = 'rgba(200,200,200,0.9)',
+  stroke: string = 'rgba(200,200,200,0.9)',
+  strokeWidth: number = 2,
+  noi: number = 0.5,
+  out: number = 1,
+  fun: (x: number) => number = (x: number) => Math.sin(x * Math.PI)
 ): SvgPolyline {
-  const _args = new StrokeArgs();
-  Object.assign(_args, args);
-
-  const { xof, yof, strokeWidth, fill, stroke, noi, out, fun } = _args;
-
   console.assert(ptlist.length > 0);
 
   const vtxlist0 = [];
@@ -60,7 +49,7 @@ export function stroke(
     )
     .concat([ptlist[0]]);
 
-  return poly(vtxlist, xof, yof, fill, stroke, out);
+  return poly(vtxlist, 0, 0, fill, stroke, out);
 }
 
 class BlobArgs implements Partial<ISvgStyles> {
@@ -228,11 +217,9 @@ export function texture(
           stroke(
             prng,
             texlist[j].map((p) => p.move(offset)),
-            {
-              fill: 'rgba(100,100,100,0.1)',
-              stroke: 'rgba(100,100,100,0.1)',
-              strokeWidth: sha,
-            }
+            'rgba(100,100,100,0.1)',
+            'rgba(100,100,100,0.1)',
+            sha
           )
         );
       }
@@ -245,11 +232,9 @@ export function texture(
         stroke(
           prng,
           texlist[j].map((p) => p.move(offset)),
-          {
-            fill: col(j / texlist.length),
-            stroke: col(j / texlist.length),
-            strokeWidth: strokeWidth,
-          }
+          col(j / texlist.length),
+          col(j / texlist.length),
+          strokeWidth
         )
       );
     }

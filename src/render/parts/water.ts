@@ -51,11 +51,8 @@ export function water(
         ptlist[j].map(function (p) {
           return new Point(p.x + xoff, p.y + yoff);
         }),
-        {
-          fill: color,
-          stroke: color,
-          out: 1,
-        }
+        color,
+        color
       )
     );
   }
