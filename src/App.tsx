@@ -61,18 +61,17 @@ class App extends React.Component<{}, AppState> {
   }
 
   xscroll(v: number) {
-    this.setState({ cursx: this.state.cursx + v });
+    const nextx = this.state.cursx + v;
+
+    this.setState({ cursx: nextx });
     this.setState({ updateflag: !this.state.updateflag });
 
     if (this.state.autoLoad)
       this.setState({
-        saveRange: new Range(
-          this.state.cursx + v,
-          this.state.cursx + v + this.state.windx
-        ),
+        saveRange: new Range(nextx, nextx + this.state.windx),
       });
 
-    console.log(`xscroll(${v}) => set cursx = ${this.state.cursx + v}`);
+    console.log(`xscroll(${v}) => set cursx = ${nextx}`);
     console.log(`cursx = ${this.state.cursx}`);
   }
 
