@@ -8,9 +8,9 @@ This project is based on `react` framework, and use `typescript` to code.
 
 Support downloading `svg` image of any range (without background).
 
-The algorithm is based on page of [{Shan, Shui}/*](https://github.com/LingDong-/shan-shui-inf/blob/master/README.md#shan-shui) coded by [Lingdong Huang](https://github.com/LingDong-)
+The algorithm is based on page of [{Shan, Shui}\*](https://github.com/LingDong-/shan-shui-inf/blob/master/README.md#shan-shui) coded by [Lingdong Huang](https://github.com/LingDong-)
 
-[!TOC]
+[TOC]
 
 ## Install
 
