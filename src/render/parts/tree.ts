@@ -1016,14 +1016,12 @@ function fracTree08(
   return polylinelists.flat();
 }
 
-
 export function tree08(
   prng: PRNG,
   x: number,
   y: number,
   hei: number = 80
 ): SvgPolyline[] {
-  
   const strokeWidth: number = 1;
   const col: string = 'rgba(100,100,100,0.5)';
 
