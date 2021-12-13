@@ -1,5 +1,7 @@
 # {Shan, Shui}\*
 
+[English](..\README.md) | 中文
+
 该项目使用程序方式生成矢量格式的中国山水画，并支持卷轴的无限展开。
 
 该项目使用 `react` 框架，使用语言为 `typescript`。
