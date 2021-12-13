@@ -19,21 +19,12 @@ import { PRNG } from '../basic/PRNG';
 import { ISvgElement, SvgPolyline } from '../svg';
 import { Chunk } from '../basic/chunk';
 
-class FootArgs {
-  xof: number = 0;
-  yof: number = 0;
-}
-
 export function foot(
   prng: PRNG,
   ptlist: Point[][],
-  args: Partial<FootArgs> | undefined = undefined
+  xoff: number = 0,
+  yoff: number = 0
 ): SvgPolyline[] {
-  const _args: FootArgs = new FootArgs();
-  Object.assign(_args, args);
-
-  const { xof, yof } = _args;
-
   const ftlist: Point[][] = [];
   const span = 10;
   let ni = 0;
@@ -74,8 +65,8 @@ export function foot(
           ptlist[ni][ptlist[i].length - 1].y * p;
 
         const vib = -1.7 * (p - 1) * Math.pow(p, 1 / 5);
-        y1 += vib * 5 + Noise.noise(prng, xof * 0.05, i) * 5;
-        y2 += vib * 5 + Noise.noise(prng, xof * 0.05, i) * 5;
+        y1 += vib * 5 + Noise.noise(prng, xoff * 0.05, i) * 5;
+        y2 += vib * 5 + Noise.noise(prng, xoff * 0.05, i) * 5;
 
         ftlist[ftlist.length - 2].push(new Point(x1, y1));
         ftlist[ftlist.length - 1].push(new Point(x2, y2));
@@ -86,7 +77,7 @@ export function foot(
   const polylines: SvgPolyline[] = [];
 
   for (let i = 0; i < ftlist.length; i++) {
-    polylines.push(poly(ftlist[i], xof, yof, 'white', 'none'));
+    polylines.push(poly(ftlist[i], xoff, yoff, 'white', 'none'));
   }
   for (let j = 0; j < ftlist.length; j++) {
     const color =
@@ -95,7 +86,7 @@ export function foot(
       stroke(
         prng,
         ftlist[j].map(function (p) {
-          return new Point(p.x + xof, p.y + yof);
+          return new Point(p.x + xoff, p.y + yoff);
         }),
         color,
         color,
@@ -129,30 +120,16 @@ function vegetate(
   return elementlists.flat();
 }
 
-class MountainArgs {
-  constructor(prng: PRNG) {
-    this.hei = 100 + prng.random() * 400;
-    this.strokeWidth = 400 + prng.random() * 200;
-  }
-
-  hei: number;
-  strokeWidth: number;
-  tex: number = 200;
-  veg: boolean = true;
-  col: string | undefined = undefined;
-}
-
 export function mountain(
   prng: PRNG,
   xoff: number,
   yoff: number,
-  seed: number = 0,
-  args: Partial<MountainArgs> | undefined = undefined
+  seed: number = 0
 ): Chunk {
-  const _args = new MountainArgs(prng);
-  Object.assign(_args, args);
-
-  const { hei, strokeWidth, tex, veg } = _args;
+  const hei: number = 100 + prng.random() * 400;
+  const strokeWidth: number = 400 + prng.random() * 200;
+  const tex: number = 200;
+  const veg: boolean = true;
 
   const elementlists: ISvgElement[][] = [];
 
@@ -180,15 +157,17 @@ export function mountain(
     vegetate(
       ptlist,
       function (x, y) {
-        return tree02(prng, x + xoff, y + yoff - 5, {
-          col:
-            'rgba(100,100,100,' +
+        return tree02(
+          prng,
+          x + xoff,
+          y + yoff - 5,
+          'rgba(100,100,100,' +
             (Noise.noise(prng, 0.01 * x, 0.01 * y) * 0.5 * 0.3 + 0.5).toFixed(
               3
             ) +
             ')',
-          clu: 2,
-        });
+          2
+        );
       },
       function (i, j) {
         const ns = Noise.noise(prng, j * 0.1, seed);
@@ -226,7 +205,7 @@ export function mountain(
     ),
   ]);
 
-  elementlists.push(foot(prng, ptlist, { xof: xoff, yof: yoff }));
+  elementlists.push(foot(prng, ptlist, xoff, yoff));
 
   elementlists.push(
     texture(
@@ -257,14 +236,16 @@ export function mountain(
     vegetate(
       ptlist,
       function (x, y) {
-        return tree02(prng, x + xoff, y + yoff, {
-          col:
-            'rgba(100,100,100,' +
+        return tree02(
+          prng,
+          x + xoff,
+          y + yoff,
+          'rgba(100,100,100,' +
             (Noise.noise(prng, 0.01 * x, 0.01 * y) * 0.5 * 0.3 + 0.5).toFixed(
               3
             ) +
-            ')',
-        });
+            ')'
+        );
       },
       function (i, j) {
         const ns = Noise.noise(prng, i * 0.1, j * 0.1, seed + 2);
@@ -284,16 +265,18 @@ export function mountain(
         function (x, y) {
           let ht = ((h + y) / h) * 70;
           ht = ht * 0.3 + prng.random() * ht * 0.7;
-          return tree01(prng, x + xoff, y + yoff, {
-            hei: ht,
-            strokeWidth: prng.random() * 3 + 1,
-            col:
-              'rgba(100,100,100,' +
+          return tree01(
+            prng,
+            x + xoff,
+            y + yoff,
+            ht,
+            prng.random() * 3 + 1,
+            'rgba(100,100,100,' +
               (Noise.noise(prng, 0.01 * x, 0.01 * y) * 0.5 * 0.3 + 0.3).toFixed(
                 3
               ) +
-              ')',
-          });
+              ')'
+          );
         },
         function (i, j): boolean {
           const ns = Noise.noise(prng, i * 0.2, j * 0.05, seed);
@@ -332,18 +315,18 @@ export function mountain(
           ht = ht * 0.5 + prng.random() * ht * 0.5;
           const bc = prng.random() * 0.1;
           const bp = 1;
-          return tree03(prng, x + xoff, y + yoff, {
-            hei: ht,
-            ben: function (x) {
-              return Math.pow(x * bc, bp);
-            },
-            col:
-              'rgba(100,100,100,' +
+          return tree03(
+            prng,
+            x + xoff,
+            y + yoff,
+            ht,
+            'rgba(100,100,100,' +
               (Noise.noise(prng, 0.01 * x, 0.01 * y) * 0.5 * 0.3 + 0.3).toFixed(
                 3
               ) +
               ')',
-          });
+            (x) => Math.pow(x * bc, bp)
+          );
         },
         function (i, j) {
           const ns = Noise.noise(prng, i * 0.2, j * 0.05, seed);
@@ -365,16 +348,24 @@ export function mountain(
       function (x, y): ISvgElement[] {
         const tt = randChoice(prng, [0, 0, 1, 1, 1, 2]);
         if (tt === 1) {
-          return arch02(prng, x + xoff, y + yoff, seed, {
-            strokeWidth: normRand(prng, 40, 70),
-            sto: randChoice(prng, [1, 2, 2, 3]),
-            rot: prng.random(),
-            sty: randChoice(prng, [1, 2, 3]),
-          });
+          return arch02(
+            prng,
+            x + xoff,
+            y + yoff,
+            seed,
+            normRand(prng, 40, 70),
+            randChoice(prng, [1, 2, 2, 3]),
+            prng.random(),
+            randChoice(prng, [1, 2, 3])
+          );
         } else if (tt === 2) {
-          return arch04(prng, x + xoff, y + yoff, seed, {
-            sto: randChoice(prng, [1, 1, 1, 2, 2]),
-          });
+          return arch04(
+            prng,
+            x + xoff,
+            y + yoff,
+            seed,
+            randChoice(prng, [1, 1, 1, 2, 2])
+          );
         } else {
           return [];
         }
@@ -397,10 +388,14 @@ export function mountain(
     vegetate(
       ptlist,
       function (x, y) {
-        return arch03(prng, x + xoff, y + yoff, seed, {
-          sto: randChoice(prng, [5, 7]),
-          strokeWidth: 40 + prng.random() * 20,
-        });
+        return arch03(
+          prng,
+          x + xoff,
+          y + yoff,
+          seed,
+          40 + prng.random() * 20,
+          randChoice(prng, [5, 7])
+        );
       },
       function (i, j) {
         return (
@@ -441,11 +436,15 @@ export function mountain(
     vegetate(
       ptlist,
       function (x, y) {
-        return rock(prng, x + xoff, y + yoff, seed, {
-          strokeWidth: 20 + prng.random() * 20,
-          hei: 20 + prng.random() * 20,
-          sha: 2,
-        });
+        return rock(
+          prng,
+          x + xoff,
+          y + yoff,
+          seed,
+          20 + prng.random() * 20,
+          2,
+          20 + prng.random() * 20
+        );
       },
       function (i, j) {
         return (j === 0 || j === ptlist[i].length - 1) && prng.random() < 0.1;
@@ -482,28 +481,16 @@ function bound(plist: Point[]): Bound {
   return new Bound(xmin, xmax, ymin, ymax);
 }
 
-class FlatMountArgs {
-  constructor(prng: PRNG) {
-    this.hei = 40 + prng.random() * 400;
-    this.strokeWidth = 400 + prng.random() * 200;
-  }
-  hei: number;
-  strokeWidth: number;
-  tex: number = 80;
-  cho: number = 0.5;
-}
-
 export function flatMount(
   prng: PRNG,
   xoff: number,
   yoff: number,
   seed: number = 0,
-  args: Partial<FlatMountArgs> | undefined = undefined
+  hei: number = 40 + prng.random() * 400,
+  cho: number = 0.5,
+  strokeWidth: number = 400 + prng.random() * 200
 ): Chunk {
-  const _args = new FlatMountArgs(prng);
-  Object.assign(_args, args);
-
-  const { hei, strokeWidth, tex, cho } = _args;
+  const tex: number = 80;
 
   const polylinelists: SvgPolyline[][] = [];
   const ptlist: Point[][] = [];
@@ -657,11 +644,9 @@ export function flatDec(
         xoff + normRand(prng, grbd.xmin, grbd.xmax),
         yoff + (grbd.ymin + grbd.ymax) / 2 + normRand(prng, -10, 10) + 10,
         prng.random() * 100,
-        {
-          strokeWidth: 10 + prng.random() * 20,
-          hei: 10 + prng.random() * 20,
-          sha: 2,
-        }
+        10 + prng.random() * 20,
+        2,
+        10 + prng.random() * 20
       )
     );
   }
@@ -675,7 +660,7 @@ export function flatDec(
           xr +
             Math.min(Math.max(normRand(prng, -30, 30), grbd.xmin), grbd.xmax),
           yr,
-          { hei: 60 + prng.random() * 40 }
+          60 + prng.random() * 40
         )
       );
     }
@@ -689,11 +674,9 @@ export function flatDec(
           xoff + normRand(prng, grbd.xmin, grbd.xmax),
           yoff + (grbd.ymin + grbd.ymax) / 2 + normRand(prng, -5, 5) + 20,
           prng.random() * 100,
-          {
-            strokeWidth: 50 + prng.random() * 20,
-            hei: 40 + prng.random() * 20,
-            sha: 5,
-          }
+          40 + prng.random() * 20,
+          5,
+          50 + prng.random() * 20
         )
       );
     }
@@ -709,7 +692,7 @@ export function flatDec(
           prng,
           xoff + i + 20 * normRand(prng, -1, 1),
           yoff + (grbd.ymin + grbd.ymax) / 2 + 20,
-          { hei: 100 + prng.random() * 200 }
+          100 + prng.random() * 200
         )
       );
     }
@@ -720,11 +703,9 @@ export function flatDec(
           xoff + normRand(prng, grbd.xmin, grbd.xmax),
           yoff + (grbd.ymin + grbd.ymax) / 2 + normRand(prng, -5, 5) + 20,
           prng.random() * 100,
-          {
-            strokeWidth: 50 + prng.random() * 20,
-            hei: 40 + prng.random() * 20,
-            sha: 5,
-          }
+          40 + prng.random() * 20,
+          5,
+          50 + prng.random() * 20
         )
       );
     }
@@ -732,7 +713,7 @@ export function flatDec(
     for (let i = 0; i < randChoice(prng, [1, 1, 1, 1, 2, 2, 3]); i++) {
       const xr = normRand(prng, grbd.xmin, grbd.xmax);
       const yr = (grbd.ymin + grbd.ymax) / 2;
-      polylinelists.push(tree04(prng, xoff + xr, yoff + yr + 20, {}));
+      polylinelists.push(tree04(prng, xoff + xr, yoff + yr + 20));
       for (let j = 0; j < prng.random() * 2; j++) {
         polylinelists.push(
           rock(
@@ -744,11 +725,9 @@ export function flatDec(
               ),
             yoff + yr + normRand(prng, -5, 5) + 20,
             j * i * prng.random() * 100,
-            {
-              strokeWidth: 50 + prng.random() * 20,
-              hei: 40 + prng.random() * 20,
-              sha: 5,
-            }
+            40 + prng.random() * 20,
+            5,
+            50 + prng.random() * 20
           )
         );
       }
@@ -760,7 +739,7 @@ export function flatDec(
           prng,
           xoff + normRand(prng, grbd.xmin, grbd.xmax),
           yoff + (grbd.ymin + grbd.ymax) / 2,
-          { hei: 60 + prng.random() * 60 }
+          60 + prng.random() * 60
         )
       );
     }
@@ -775,7 +754,7 @@ export function flatDec(
           prng,
           xoff + i + 20 * normRand(prng, -1, 1),
           yoff + (grbd.ymin + grbd.ymax) / 2 + normRand(prng, -1, 1) + 0,
-          { hei: normRand(prng, 40, 80) }
+          normRand(prng, 40, 80)
         )
       );
     }
@@ -799,11 +778,9 @@ export function flatDec(
         xoff + normRand(prng, grbd.xmin, grbd.xmax),
         yoff + (grbd.ymin + grbd.ymax) / 2 + 20,
         prng.random(),
-        {
-          strokeWidth: normRand(prng, 160, 200),
-          hei: normRand(prng, 80, 100),
-          per: prng.random(),
-        }
+        normRand(prng, 80, 100),
+        normRand(prng, 160, 200),
+        prng.random()
       )
     );
   }
@@ -811,23 +788,15 @@ export function flatDec(
   return polylinelists.flat();
 }
 
-class DistMountArgs {
-  hei = 300;
-  len = 2000;
-  seg = 5;
-}
-
 export function distMount(
   prng: PRNG,
   xoff: number,
   yoff: number,
   seed: number = 0,
-  args: Partial<DistMountArgs> | undefined = undefined
+  hei: number = 300,
+  len: number = 2000
 ): Chunk {
-  const _args = new DistMountArgs();
-  Object.assign(_args, args);
-
-  const { hei, len, seg } = _args;
+  const seg = 5;
   const polylines: SvgPolyline[] = [];
   const span = 10;
 
@@ -878,24 +847,16 @@ export function distMount(
   return chunk;
 }
 
-class RockArgs {
-  hei = 80;
-  strokeWidth = 100;
-  tex = 40;
-  sha = 10;
-}
-
 export function rock(
   prng: PRNG,
   xoff: number,
   yoff: number,
   seed: number = 0,
-  args: Partial<RockArgs> | undefined = undefined
+  hei: number = 80,
+  sha: number = 10,
+  strokeWidth: number = 100
 ): SvgPolyline[] {
-  const _args = new RockArgs();
-  Object.assign(_args, args);
-
-  const { hei, strokeWidth, tex, sha } = _args;
+  const tex = 40;
 
   const polylinelists: SvgPolyline[][] = [];
 

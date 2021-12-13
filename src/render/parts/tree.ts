@@ -12,24 +12,14 @@ import { midPt, triangulate } from '../basic/polytools';
 import { SvgPolyline } from '../svg/types';
 import { blob_points, blob, div, stroke } from './brushes';
 
-class Tree01Args {
-  hei: number = 50;
-  strokeWidth: number = 3;
-  col: string = 'rgba(100,100,100,0.5)';
-  noi: number = 0.5;
-}
-
 export function tree01(
   prng: PRNG,
   x: number,
   y: number,
-  args: Partial<Tree01Args> | undefined = undefined
+  hei: number = 50,
+  strokeWidth: number = 3,
+  col: string = 'rgba(100,100,100,0.5)'
 ): SvgPolyline[] {
-  const _args = new Tree01Args();
-  Object.assign(_args, args);
-
-  const { hei, strokeWidth, col } = _args;
-
   const reso = 10;
   const nslist = [];
   for (let i = 0; i < reso; i++) {
@@ -81,24 +71,15 @@ export function tree01(
   return polylines;
 }
 
-class Tree02Args {
-  hei: number = 16;
-  strokeWidth: number = 8;
-  clu: number = 5;
-  col: string = 'rgba(100,100,100,0.5)';
-  noi: number = 0.5;
-}
-
 export function tree02(
   prng: PRNG,
   x: number,
   y: number,
-  args: Partial<Tree02Args> | undefined = undefined
+  col: string = 'rgba(100,100,100,0.5)',
+  clu: number = 5
 ): SvgPolyline[] {
-  const _args = new Tree02Args();
-  Object.assign(_args, args);
-
-  const { hei, strokeWidth, clu, col } = _args;
+  const hei: number = 16,
+    strokeWidth: number = 8;
 
   const polylines: SvgPolyline[] = [];
   const bfunc = (x: number) =>
@@ -123,24 +104,15 @@ export function tree02(
   return polylines;
 }
 
-class Tree03Args {
-  hei: number = 16;
-  strokeWidth: number = 5;
-  ben: (x: number) => number = (_) => 0;
-  col: string = 'rgba(100,100,100,0.5)';
-  noi: number = 0.5;
-}
-
 export function tree03(
   prng: PRNG,
   x: number,
   y: number,
-  args: Partial<Tree03Args> | undefined = undefined
+  hei: number = 16,
+  col: string = 'rgba(100,100,100,0.5)',
+  ben: (x: number) => number = (_) => 0
 ): SvgPolyline[] {
-  const _args = new Tree03Args();
-  Object.assign(_args, args);
-
-  const { hei, strokeWidth, ben, col } = _args;
+  const strokeWidth: number = 5;
 
   const reso = 10;
   const nslist = [];
@@ -213,23 +185,14 @@ export function tree03(
   return polylines.concat(blobs);
 }
 
-class BranchArgs {
-  hei: number = 360;
-  strokeWidth: number = 6;
-  ang: number = 0;
-  det: number = 10;
-  ben: number = 0.2 * Math.PI;
-}
-
 export function branch(
   prng: PRNG,
-  args: Partial<BranchArgs> | undefined = undefined
+  hei: number = 360,
+  strokeWidth: number = 6,
+  ang: number = 0,
+  ben: number = 0.2 * Math.PI,
+  det: number = 10
 ): Point[][] {
-  const _args = new BranchArgs();
-  Object.assign(_args, args);
-
-  const { hei, strokeWidth, ang, det, ben } = _args;
-
   let nx = 0;
   let ny = 0;
   const tlist = [[nx, ny]];
@@ -292,26 +255,17 @@ export function branch(
   return [trlist1, trlist2];
 }
 
-class TwigArgs {
-  dir: number = 1;
-  sca: number = 1;
-  strokeWidth: number = 1;
-  ang: number = 0;
-  lea: [boolean, number] = [true, 12];
-}
-
 export function twig(
   prng: PRNG,
   tx: number,
   ty: number,
   dep: number,
-  args: Partial<TwigArgs> | undefined = undefined
+  ang: number = 0,
+  sca: number = 1,
+  dir: number = 1,
+  strokeWidth: number = 1,
+  lea: [boolean, number] = [true, 12]
 ): SvgPolyline[] {
-  const _args = new TwigArgs();
-  Object.assign(_args, args);
-
-  const { dir, sca, strokeWidth, ang, lea } = _args;
-
   const polylinelists: SvgPolyline[][] = [];
   const twlist: Point[] = [];
   const tl = 10;
@@ -335,13 +289,17 @@ export function twig(
     twlist.push(new Point(nx + tx, ny + ty));
     if ((i === ((tl / 3) | 0) || i === (((tl * 2) / 3) | 0)) && dep > 0) {
       polylinelists.push(
-        twig(prng, nx + tx, ny + ty, dep - 1, {
-          ang: ang,
-          sca: sca * 0.8,
-          strokeWidth: strokeWidth,
-          dir: dir * randChoice(prng, [-1, 1]),
-          lea: lea,
-        })
+        twig(
+          prng,
+          nx + tx,
+          ny + ty,
+          dep - 1,
+          ang,
+          sca * 0.8,
+          dir * randChoice(prng, [-1, 1]),
+          strokeWidth,
+          lea
+        )
       );
     }
     if (i === tl - 1 && lea[0]) {
@@ -541,29 +499,16 @@ export function barkify(
   return polylinelists.flat();
 }
 
-class Tree04Args {
-  hei: number = 300;
-  strokeWidth: number = 6;
-  col: string = 'rgba(100,100,100,0.5)';
-  noi: number = 0.5;
-}
-
-export function tree04(
-  prng: PRNG,
-  x: number,
-  y: number,
-  args: Partial<Tree04Args> | undefined = undefined
-): SvgPolyline[] {
-  const _args = new Tree04Args();
-  Object.assign(_args, args);
-
-  const { hei, strokeWidth, col } = _args;
+export function tree04(prng: PRNG, x: number, y: number): SvgPolyline[] {
+  const hei: number = 300;
+  const strokeWidth: number = 6;
+  const col: string = 'rgba(100,100,100,0.5)';
 
   const polylinelists: SvgPolyline[][] = [];
   const txpolylinelists: SvgPolyline[][] = [];
   const twpolylinelists: SvgPolyline[][] = [];
 
-  const _trlist = branch(prng, { hei, strokeWidth, ang: -Math.PI / 2 });
+  const _trlist = branch(prng, hei, strokeWidth, -Math.PI / 2);
   txpolylinelists.push(barkify(prng, x, y, _trlist));
   const trlist: Point[] = _trlist[0].concat(_trlist[1].reverse());
 
@@ -578,11 +523,12 @@ export function tree04(
     ) {
       const ba =
         Math.PI * 0.2 - Math.PI * 1.4 * (i > trlist.length / 2 ? 1 : 0);
-      const _brlist: Point[][] = branch(prng, {
-        hei: hei * (prng.random() + 1) * 0.3,
-        strokeWidth: strokeWidth * 0.5,
-        ang: ba,
-      });
+      const _brlist: Point[][] = branch(
+        prng,
+        hei * (prng.random() + 1) * 0.3,
+        strokeWidth * 0.5,
+        ba
+      );
 
       _brlist[0].splice(0, 1);
       _brlist[1].splice(0, 1);
@@ -602,12 +548,10 @@ export function tree04(
               _brlist[0][j].x + trlist[i].x + x,
               _brlist[0][j].y + trlist[i].y + y,
               1,
-              {
-                strokeWidth: hei / 300,
-                ang: ba > -Math.PI / 2 ? ba : ba + Math.PI,
-                sca: (0.5 * hei) / 300,
-                dir: ba > -Math.PI / 2 ? 1 : -1,
-              }
+              ba > -Math.PI / 2 ? ba : ba + Math.PI,
+              (0.5 * hei) / 300,
+              ba > -Math.PI / 2 ? 1 : -1,
+              hei / 300
             )
           );
         }
@@ -649,13 +593,6 @@ export function tree04(
   return polylinelists.flat();
 }
 
-class Tree05Args {
-  hei: number = 300;
-  strokeWidth: number = 5;
-  col: string = 'rgba(100,100,100,0.5)';
-  noi: number = 0.5;
-}
-
 /**
  * 近处的大树
  * @param x
@@ -667,23 +604,16 @@ export function tree05(
   prng: PRNG,
   x: number,
   y: number,
-  args: Partial<Tree05Args> | undefined = undefined
+  hei: number = 300
 ): SvgPolyline[] {
-  const _args = new Tree05Args();
-  Object.assign(_args, args);
-
-  const { hei, strokeWidth, col } = _args;
+  const strokeWidth: number = 5;
+  const col: string = 'rgba(100,100,100,0.5)';
 
   const polylinelists: SvgPolyline[][] = [];
   const txpolylinelists: SvgPolyline[][] = [];
   const twpolylinelists: SvgPolyline[][] = [];
 
-  const _trlist = branch(prng, {
-    hei: hei,
-    strokeWidth: strokeWidth,
-    ang: -Math.PI / 2,
-    ben: 0,
-  });
+  const _trlist = branch(prng, hei, strokeWidth, -Math.PI / 2, 0);
   txpolylinelists.push(barkify(prng, x, y, _trlist));
   const trlist = _trlist[0].concat(_trlist[1].reverse());
 
@@ -702,12 +632,13 @@ export function tree05(
       const ba =
         -bar * Math.PI -
         (1 - bar * 2) * Math.PI * (i > trlist.length / 2 ? 1 : 0);
-      const _brlist = branch(prng, {
-        hei: hei * (0.3 * p - prng.random() * 0.05),
-        strokeWidth: strokeWidth * 0.5,
-        ang: ba,
-        ben: 0.5,
-      });
+      const _brlist = branch(
+        prng,
+        hei * (0.3 * p - prng.random() * 0.05),
+        strokeWidth * 0.5,
+        ba,
+        0.5
+      );
 
       _brlist[0].splice(0, 1);
       _brlist[1].splice(0, 1);
@@ -724,13 +655,11 @@ export function tree05(
               _brlist[0][j].x + trlist[i].x + x,
               _brlist[0][j].y + trlist[i].y + y,
               0,
-              {
-                strokeWidth: hei / 300,
-                ang: ba > -Math.PI / 2 ? ba : ba + Math.PI,
-                sca: (0.2 * hei) / 300,
-                dir: ba > -Math.PI / 2 ? 1 : -1,
-                lea: [true, 5],
-              }
+              ba > -Math.PI / 2 ? ba : ba + Math.PI,
+              (0.2 * hei) / 300,
+              ba > -Math.PI / 2 ? 1 : -1,
+              hei / 300,
+              [true, 5]
             )
           );
         }
@@ -774,20 +703,6 @@ export function tree05(
   return polylinelists.flat();
 }
 
-class Tree06Args {
-  hei: number = 100;
-  strokeWidth: number = 6;
-  col: string = 'rgba(100,100,100,0.5)';
-  noi: number = 0.5;
-}
-
-class FracTree06Args {
-  hei: number = 300;
-  strokeWidth: number = 5;
-  ang: number = 0;
-  ben: number = 0.2 * Math.PI;
-}
-
 function fracTree06(
   prng: PRNG,
   txpolylinelists: SvgPolyline[][],
@@ -795,20 +710,12 @@ function fracTree06(
   xoff: number,
   yoff: number,
   dep: number,
-  args: Partial<FracTree06Args> | undefined = undefined
+  hei: number = 300,
+  strokeWidth: number = 5,
+  ang: number = 0,
+  ben: number = 0.2 * Math.PI
 ): Point[] {
-  const _args = new FracTree06Args();
-  Object.assign(_args, args);
-
-  const { hei, strokeWidth, ang, ben } = _args;
-
-  const _trlist = branch(prng, {
-    hei: hei,
-    strokeWidth: strokeWidth,
-    ang: ang,
-    ben: ben,
-    det: hei / 20,
-  });
+  const _trlist = branch(prng, hei, strokeWidth, ang, ben, hei / 20);
 
   txpolylinelists.push(barkify(prng, xoff, yoff, _trlist));
   const trlist = _trlist[0].concat(_trlist[1].reverse());
@@ -836,12 +743,10 @@ function fracTree06(
         trlist[i].x + xoff,
         trlist[i].y + yoff,
         dep - 1,
-        {
-          hei: hei * (0.7 + prng.random() * 0.2),
-          strokeWidth: strokeWidth * 0.6,
-          ang: ang + ba,
-          ben: 0.55,
-        }
+        hei * (0.7 + prng.random() * 0.2),
+        strokeWidth * 0.6,
+        ang + ba,
+        0.55
       );
 
       for (let j = 0; j < brlist.length; j++) {
@@ -852,12 +757,11 @@ function fracTree06(
               brlist[j].x + trlist[i].x + xoff,
               brlist[j].y + trlist[i].y + yoff,
               2,
-              {
-                ang: ba * (prng.random() * 0.5 + 0.75),
-                sca: 0.3,
-                dir: ba > 0 ? 1 : -1,
-                lea: [false, 0],
-              }
+              ba * (prng.random() * 0.5 + 0.75),
+              0.3,
+              ba > 0 ? 1 : -1,
+              1,
+              [false, 0]
             )
           );
         }
@@ -880,22 +784,26 @@ export function tree06(
   prng: PRNG,
   x: number,
   y: number,
-  args: Partial<Tree06Args> | undefined = undefined
+  hei: number = 100
 ): SvgPolyline[] {
-  const _args = new Tree06Args();
-  Object.assign(_args, args);
-
-  const { hei, strokeWidth, col } = _args;
+  const strokeWidth: number = 6;
+  const col: string = 'rgba(100,100,100,0.5)';
   const polylinelists: SvgPolyline[][] = [];
   const txpolylinelists: SvgPolyline[][] = [];
   const twpolylinelists: SvgPolyline[][] = [];
 
-  const trmlist = fracTree06(prng, txpolylinelists, twpolylinelists, x, y, 3, {
-    hei: hei,
-    strokeWidth: strokeWidth,
-    ang: -Math.PI / 2,
-    ben: 0,
-  });
+  const trmlist = fracTree06(
+    prng,
+    txpolylinelists,
+    twpolylinelists,
+    x,
+    y,
+    3,
+    hei,
+    strokeWidth,
+    -Math.PI / 2,
+    0
+  );
 
   polylinelists.push([poly(trmlist, x, y, 'white', col, 0)]);
 
@@ -923,24 +831,15 @@ export function tree06(
   return polylinelists.flat();
 }
 
-class Tree07Args {
-  hei: number = 60;
-  strokeWidth: number = 4;
-  ben: (x: number) => number = (x: number) => 0.2 * Math.sqrt(x);
-  col: string = 'rgba(100,100,100,1)';
-  noi: number = 0.5;
-}
-
 export function tree07(
   prng: PRNG,
   x: number,
   y: number,
-  args: Partial<Tree07Args> | undefined = undefined
+  hei: number = 60
 ): SvgPolyline[] {
-  const _args: Tree07Args = new Tree07Args();
-  Object.assign(_args, args);
-
-  const { hei, strokeWidth, ben, col } = _args;
+  const strokeWidth: number = 4;
+  const ben: (x: number) => number = (x: number) => 0.2 * Math.sqrt(x);
+  const col: string = 'rgba(100,100,100,1)';
 
   const reso = 10;
   const nslist = [];
@@ -1014,24 +913,15 @@ export function tree07(
   return polylines;
 }
 
-class FracTree08Args {
-  ang: number = -Math.PI / 2;
-  len: number = 15;
-  ben: number = 0;
-}
-
 function fracTree08(
   prng: PRNG,
   xoff: number,
   yoff: number,
   dep: number,
-  args: Partial<FracTree08Args> | undefined = undefined
+  ang: number = -Math.PI / 2,
+  len: number = 15,
+  ben: number = 0
 ): SvgPolyline[] {
-  const _args: FracTree08Args = new FracTree08Args();
-  Object.assign(_args, args);
-
-  const { ang, len, ben } = _args;
-
   const fun = (x: number) => (dep ? 1 : Math.cos(0.5 * Math.PI * x));
   const spt = new Vector(xoff, yoff);
   const ept = new Point(xoff + Math.cos(ang) * len, yoff + Math.sin(ang) * len);
@@ -1074,9 +964,12 @@ function fracTree08(
     const nben = ben + randChoice(prng, [-1, 1]) * Math.PI * 0.001 * dep * dep;
     if (prng.random() < 0.5) {
       polylinelists.push(
-        fracTree08(prng, ept.x, ept.y, dep - 1, {
-          ang:
-            ang +
+        fracTree08(
+          prng,
+          ept.x,
+          ept.y,
+          dep - 1,
+          ang +
             ben +
             Math.PI *
               randChoice(prng, [
@@ -1084,14 +977,17 @@ function fracTree08(
                 normRand(prng, 0.5, 1),
               ]) *
               0.2,
-          len: len * normRand(prng, 0.8, 0.9),
-          ben: nben,
-        })
+          len * normRand(prng, 0.8, 0.9),
+          nben
+        )
       );
       polylinelists.push(
-        fracTree08(prng, ept.x, ept.y, dep - 1, {
-          ang:
-            ang +
+        fracTree08(
+          prng,
+          ept.x,
+          ept.y,
+          dep - 1,
+          ang +
             ben +
             Math.PI *
               randChoice(prng, [
@@ -1099,53 +995,51 @@ function fracTree08(
                 normRand(prng, 0.5, 1),
               ]) *
               0.2,
-          len: len * normRand(prng, 0.8, 0.9),
-          ben: nben,
-        })
+          len * normRand(prng, 0.8, 0.9),
+          nben
+        )
       );
     } else {
       polylinelists.push(
-        fracTree08(prng, ept.x, ept.y, dep - 1, {
-          ang: ang + ben,
-          len: len * normRand(prng, 0.8, 0.9),
-          ben: nben,
-        })
+        fracTree08(
+          prng,
+          ept.x,
+          ept.y,
+          dep - 1,
+          ang + ben,
+          len * normRand(prng, 0.8, 0.9),
+          nben
+        )
       );
     }
   }
   return polylinelists.flat();
 }
 
-class Tree08Args {
-  hei: number = 80;
-  strokeWidth: number = 1;
-  col: string = 'rgba(100,100,100,0.5)';
-  noi: number = 0.5;
-}
 
 export function tree08(
   prng: PRNG,
   x: number,
   y: number,
-  args: Partial<Tree08Args> | undefined = undefined
+  hei: number = 80
 ): SvgPolyline[] {
-  const _args: Tree08Args = new Tree08Args();
-  Object.assign(_args, args);
-
-  const { hei, strokeWidth, col } = _args;
+  
+  const strokeWidth: number = 1;
+  const col: string = 'rgba(100,100,100,0.5)';
 
   const polylinelists: SvgPolyline[][] = [];
   const twpolylinelists: SvgPolyline[][] = [];
 
   const ang = normRand(prng, -1, 1) * Math.PI * 0.2;
 
-  const _trlist = branch(prng, {
-    hei: hei,
-    strokeWidth: strokeWidth,
-    ang: -Math.PI / 2 + ang,
-    ben: Math.PI * 0.2,
-    det: hei / 20,
-  });
+  const _trlist = branch(
+    prng,
+    hei,
+    strokeWidth,
+    -Math.PI / 2 + ang,
+    Math.PI * 0.2,
+    hei / 20
+  );
   //txcanv += barkify(x,y,trlist)
 
   const trlist = _trlist[0].concat(_trlist[1].reverse());
@@ -1158,16 +1052,19 @@ export function tree08(
           x + trlist[i].x,
           y + trlist[i].y,
           Math.floor(4 * prng.random()),
-          { ang: -Math.PI / 2 - ang * prng.random() }
+          -Math.PI / 2 - ang * prng.random()
           // { hei: 20, ang: -Math.PI / 2 - ang * prng.random() }
         )
       );
     } else if (i === Math.floor(trlist.length / 2)) {
       twpolylinelists.push(
-        fracTree08(prng, x + trlist[i].x, y + trlist[i].y, 3, {
-          // hei: 25,
-          ang: -Math.PI / 2 + ang,
-        })
+        fracTree08(
+          prng,
+          x + trlist[i].x,
+          y + trlist[i].y,
+          3,
+          -Math.PI / 2 + ang
+        )
       );
     }
   }

@@ -5,23 +5,15 @@ import { PRNG } from '../basic/PRNG';
 import { SvgPolyline } from '../svg/types';
 import { stroke } from './brushes';
 
-class WaterArgs {
-  hei = 2;
-  len = 800;
-  clu = 10;
-}
-
 export function water(
   prng: PRNG,
   xoff: number,
   yoff: number,
   seed: number,
-  args: Partial<WaterArgs> | undefined = undefined
+  hei = 2,
+  len = 800,
+  clu = 10
 ): Chunk {
-  const _args = new WaterArgs();
-  Object.assign(_args, args);
-
-  const { hei, len, clu } = _args;
   const polylines: SvgPolyline[] = [];
 
   const ptlist: Point[][] = [];

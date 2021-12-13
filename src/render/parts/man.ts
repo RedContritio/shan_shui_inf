@@ -78,21 +78,12 @@ const flipper = function (plist: Point[]): Point[] {
   });
 };
 
-class GeneralFlipArgs {
-  fli = false;
-}
-
 export function hat01(
   prng: PRNG,
   p0: Point,
   p1: Point,
-  args: Partial<GeneralFlipArgs> | undefined = undefined
+  fli = false
 ): SvgPolyline[] {
-  const _args = new GeneralFlipArgs();
-  Object.assign(_args, args);
-
-  const { fli } = _args;
-
   const polylines: SvgPolyline[] = [];
   const seed = prng.random();
   const f: (pl: Point[]) => Point[] = fli ? flipper : (x) => x;
@@ -145,13 +136,8 @@ export function hat02(
   prng: PRNG,
   p0: Point,
   p1: Point,
-  args: Partial<GeneralFlipArgs> | undefined = undefined
+  fli = false
 ): SvgPolyline[] {
-  const _args = new GeneralFlipArgs();
-  Object.assign(_args, args);
-
-  const { fli } = _args;
-
   const polylines: SvgPolyline[] = [];
   // const seed = prng.random();
 
@@ -189,13 +175,8 @@ export function stick01(
   prng: PRNG,
   p0: Point,
   p1: Point,
-  args: Partial<GeneralFlipArgs> | undefined = undefined
+  fli = false
 ): SvgPolyline[] {
-  const _args = new GeneralFlipArgs();
-  Object.assign(_args, args);
-
-  const { fli } = _args;
-
   const polylines: SvgPolyline[] = [];
   const seed = prng.random();
 
@@ -282,38 +263,6 @@ function fhead(sca: number, x: number) {
   return sca * 7 * Math.pow(0.25 - Math.pow(x - 0.5, 2), 0.3);
 }
 
-class ManArgs {
-  constructor(prng: PRNG) {
-    this.ang = [
-      0,
-      -Math.PI / 2,
-      normRand(prng, 0, 0),
-      (Math.PI / 4) * prng.random(),
-      ((Math.PI * 3) / 4) * prng.random(),
-      (Math.PI * 3) / 4,
-      -Math.PI / 4,
-      (-Math.PI * 3) / 4 - (Math.PI / 4) * prng.random(),
-      -Math.PI / 4,
-    ];
-  }
-  sca = 0.5;
-  hat = hat01;
-  ite: (
-    prng: PRNG,
-    p1: Point,
-    p2: Point,
-    a: GeneralFlipArgs | undefined
-  ) => SvgPolyline[] = (
-    prng: PRNG,
-    p1: Point,
-    p2: Point,
-    a: GeneralFlipArgs | undefined
-  ) => [];
-  fli = true;
-  ang: number[];
-  len = [0, 30, 20, 30, 30, 30, 30, 30, 30];
-}
-
 //      2
 //    1/
 // 7/  | \_ 6
@@ -325,13 +274,28 @@ export function man(
   prng: PRNG,
   xoff: number,
   yoff: number,
-  args: Partial<ManArgs> | undefined = undefined
+  fli = true,
+  sca = 0.5,
+  _len = [0, 30, 20, 30, 30, 30, 30, 30, 30],
+  ite: (prng: PRNG, p1: Point, p2: Point, fli: boolean) => SvgPolyline[] = (
+    _1: PRNG,
+    _2: Point,
+    _3: Point,
+    _4: boolean
+  ) => [],
+  hat = hat01
 ): SvgPolyline[] {
-  const _args = new ManArgs(prng);
-  Object.assign(_args, args);
-
-  const { sca, hat, ite, fli, ang, len: _len } = _args;
-
+  const ang: number[] = [
+    0,
+    -Math.PI / 2,
+    normRand(prng, 0, 0),
+    (Math.PI / 4) * prng.random(),
+    ((Math.PI * 3) / 4) * prng.random(),
+    (Math.PI * 3) / 4,
+    -Math.PI / 4,
+    (-Math.PI * 3) / 4 - (Math.PI / 4) * prng.random(),
+    -Math.PI / 4,
+  ];
   const len = _len.map(function (v) {
     return v * sca;
   });
@@ -386,9 +350,7 @@ export function man(
   const _fbody = (v: number) => fbody(sca, v);
   const _fhead = (v: number) => fhead(sca, v);
 
-  polylinelists.push(
-    ite(prng, toGlobal(vecs[8]), toGlobal(vecs[6]), { fli: fli })
-  );
+  polylinelists.push(ite(prng, toGlobal(vecs[8]), toGlobal(vecs[6]), fli));
 
   polylinelists.push(
     cloth(
@@ -439,9 +401,7 @@ export function man(
     ),
   ]);
 
-  polylinelists.push(
-    hat(prng, toGlobal(vecs[1]), toGlobal(vecs[2]), { fli: fli })
-  );
+  polylinelists.push(hat(prng, toGlobal(vecs[1]), toGlobal(vecs[2]), fli));
 
   return polylinelists.flat();
 }

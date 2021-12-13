@@ -52,26 +52,32 @@ export class ChunkCache {
                 plan[i].x,
                 plan[i].y,
                 2 * prng.random() * Math.PI,
-                {
-                  strokeWidth: 600 + prng.random() * 400,
-                  hei: 100,
-                  cho: 0.5 + prng.random() * 0.2,
-                }
+                100,
+                0.5 + prng.random() * 0.2,
+                600 + prng.random() * 400
               )
             );
           } else if (plan[i].tag === 'distmount') {
             this.chunks.push(
-              distMount(prng, plan[i].x, plan[i].y, prng.random() * 100, {
-                hei: 150,
-                len: randChoice(prng, [500, 1000, 1500]),
-              })
+              distMount(
+                prng,
+                plan[i].x,
+                plan[i].y,
+                prng.random() * 100,
+                150,
+                randChoice(prng, [500, 1000, 1500])
+              )
             );
           } else if (plan[i].tag === 'boat') {
             this.chunks.push(
-              boat01(prng, plan[i].x, plan[i].y, prng.random(), {
-                sca: plan[i].y / 800,
-                fli: randChoice(prng, [true, false]),
-              })
+              boat01(
+                prng,
+                plan[i].x,
+                plan[i].y,
+                prng.random(),
+                plan[i].y / 800,
+                randChoice(prng, [true, false])
+              )
             );
           }
         }

@@ -248,29 +248,20 @@ function deco(
   return plist;
 }
 
-class RailArgs {
-  hei: number = 20;
-  strokeWidth: number = 180;
-  rot: number = 0.7;
-  per: number = 4;
-  seg: number = 4;
-  wei: number = 1;
-  tra: boolean = true;
-  fro: boolean = true;
-}
-
 function rail(
   prng: PRNG,
   xoff: number,
   yoff: number,
   seed: number = 0,
-  args: Partial<RailArgs> | undefined = undefined
+  tra: boolean = true,
+  hei: number = 20,
+  strokeWidth: number = 180,
+  per: number = 4,
+  seg: number = 4,
+  fro: boolean = true,
+  rot: number = 0.7,
+  wei: number = 1
 ): SvgPolyline[] {
-  const _args = new RailArgs();
-  Object.assign(_args, args);
-
-  const { hei, strokeWidth, rot, per, seg, wei, tra, fro } = _args;
-
   const mid = -strokeWidth * 0.5 + strokeWidth * rot;
   const bmid = -strokeWidth * 0.5 + strokeWidth * (1 - rot);
   const ptlist = [];
@@ -366,27 +357,18 @@ function rail(
   return polylines;
 }
 
-class RoofArgs {
-  hei = 20;
-  strokeWidth = 120;
-  rot = 0.7;
-  per = 4;
-  cor = 5;
-  wei = 3;
-  pla: [number, string] = [0, ''];
-}
-
 function roof(
   prng: PRNG,
   xoff: number,
   yoff: number,
-  args: Partial<RoofArgs> | undefined = undefined
+  hei = 20,
+  strokeWidth = 120,
+  rot = 0.7,
+  wei = 3,
+  per = 4,
+  pla: [number, string] = [0, ''],
+  cor = 5
 ): ISvgElement[] {
-  const _args = new RoofArgs();
-  Object.assign(_args, args);
-
-  const { hei, strokeWidth, rot, per, cor, wei, pla } = _args;
-
   const opf = function (ptlist: Point[]) {
     if (rot < 0.5) {
       return flip(ptlist);
@@ -510,26 +492,17 @@ function roof(
   return polylines;
 }
 
-class PagRoofArgs {
-  hei = 20;
-  strokeWidth = 120;
-  per = 4;
-  cor = 10;
-  sid = 4;
-  wei = 3;
-}
-
 function pagroof(
   prng: PRNG,
   xoff: number,
   yoff: number,
-  args: Partial<PagRoofArgs> | undefined = undefined
+  hei = 20,
+  strokeWidth = 120,
+  wei = 3,
+  per = 4
 ): SvgPolyline[] {
-  const _args = new PagRoofArgs();
-  Object.assign(_args, args);
-
-  const { hei, strokeWidth, per, cor, sid, wei } = _args;
-
+  const cor = 10,
+    sid = 4;
   const ptlist: Point[][] = [];
   const polist: Point[] = [new Point(0, -hei)];
   const polylines: SvgPolyline[] = [];
@@ -571,24 +544,15 @@ function pagroof(
   return polylines;
 }
 
-class Arch01Args {
-  hei = 70;
-  strokeWidth = 180;
-  per = 5;
-}
-
 export function arch01(
   prng: PRNG,
   xoff: number,
   yoff: number,
   seed: number = 0,
-  args: Partial<Arch01Args> | undefined = undefined
+  hei = 70,
+  strokeWidth = 180,
+  per = 5
 ): SvgPolyline[] {
-  const _args = new Arch01Args();
-  Object.assign(_args, args);
-
-  const { hei, strokeWidth, per } = _args;
-
   const p = 0.4 + prng.random() * 0.2;
   const h0 = hei * p;
   const h1 = hei * (1 - p);
@@ -600,14 +564,18 @@ export function arch01(
   );
 
   polylinelists.push(
-    rail(prng, xoff, yoff, seed, {
-      tra: true,
-      fro: false,
-      hei: 10,
-      strokeWidth: strokeWidth,
-      per: per * 2,
-      seg: (3 + prng.random() * 3) | 0,
-    })
+    rail(
+      prng,
+      xoff,
+      yoff,
+      seed,
+      true,
+      10,
+      strokeWidth,
+      per * 2,
+      (3 + prng.random() * 3) | 0,
+      false
+    )
   );
 
   const mcnt = randChoice(prng, [0, 1, 1, 2]);
@@ -617,10 +585,8 @@ export function arch01(
         prng,
         xoff + normRand(prng, -strokeWidth / 3, strokeWidth / 3),
         yoff,
-        {
-          fli: randChoice(prng, [true, false]),
-          sca: 0.42,
-        }
+        randChoice(prng, [true, false]),
+        0.42
       )
     );
   } else if (mcnt === 2) {
@@ -629,41 +595,36 @@ export function arch01(
         prng,
         xoff + normRand(prng, -strokeWidth / 4, -strokeWidth / 5),
         yoff,
-        {
-          fli: false,
-          sca: 0.42,
-        }
+        false,
+        0.42
       )
     );
     polylinelists.push(
-      man(prng, xoff + normRand(prng, strokeWidth / 5, strokeWidth / 4), yoff, {
-        fli: true,
-        sca: 0.42,
-      })
+      man(
+        prng,
+        xoff + normRand(prng, strokeWidth / 5, strokeWidth / 4),
+        yoff,
+        true,
+        0.42
+      )
     );
   }
   polylinelists.push(
-    rail(prng, xoff, yoff, seed, {
-      tra: false,
-      fro: true,
-      hei: 10,
-      strokeWidth: strokeWidth,
-      per: per * 2,
-      seg: (3 + prng.random() * 3) | 0,
-    })
+    rail(
+      prng,
+      xoff,
+      yoff,
+      seed,
+      false,
+      10,
+      strokeWidth,
+      per * 2,
+      (3 + prng.random() * 3) | 0,
+      true
+    )
   );
 
   return polylinelists.flat();
-}
-
-class Arch02Args {
-  hei = 10;
-  strokeWidth = 50;
-  rot = 0.3;
-  per = 5;
-  sto = 3;
-  sty = 1;
-  rai = false;
 }
 
 export function arch02(
@@ -671,12 +632,14 @@ export function arch02(
   xoff: number,
   yoff: number,
   seed: number = 0,
-  args: Partial<Arch02Args> | undefined = undefined
+  strokeWidth = 50,
+  sto = 3,
+  rot = 0.3,
+  sty = 1
 ): ISvgElement[] {
-  const _args = new Arch02Args();
-  Object.assign(_args, args);
-
-  const { hei, strokeWidth, rot, per, sto, sty, rai } = _args;
+  const hei = 10,
+    per = 5,
+    rai = false;
 
   const elementlists: ISvgElement[][] = [];
 
@@ -709,34 +672,37 @@ export function arch02(
     );
     elementlists.push(
       rai
-        ? rail(prng, xoff, yoff - hoff, i * 0.2, {
-            strokeWidth: strokeWidth * Math.pow(0.85, i) * 1.1,
-            hei: hei / 2,
-            per: per,
-            rot: rot,
-            wei: 0.5,
-            tra: false,
-          })
+        ? rail(
+            prng,
+            xoff,
+            yoff - hoff,
+            i * 0.2,
+            false,
+            hei / 2,
+            strokeWidth * Math.pow(0.85, i) * 1.1,
+            per,
+            4,
+            true,
+            rot,
+            0.5
+          )
         : []
     );
 
+    const pla: [number, string] =
+      sto === 1 && prng.random() < 1 / 3 ? [1, 'Pizza Hut'] : [0, ''];
     elementlists.push(
-      sto === 1 && prng.random() < 1 / 3
-        ? roof(prng, xoff, yoff - hoff - hei, {
-            hei: hei,
-            strokeWidth: strokeWidth * Math.pow(0.9, i),
-            rot: rot,
-            wei: 1.5,
-            per: per,
-            pla: [1, 'Pizza Hut'],
-          })
-        : roof(prng, xoff, yoff - hoff - hei, {
-            hei: hei,
-            strokeWidth: strokeWidth * Math.pow(0.9, i),
-            rot: rot,
-            wei: 1.5,
-            per: per,
-          })
+      roof(
+        prng,
+        xoff,
+        yoff - hoff - hei,
+        hei,
+        strokeWidth * Math.pow(0.9, i),
+        rot,
+        1.5,
+        per,
+        pla
+      )
     );
 
     hoff += hei * 1.5;
@@ -744,25 +710,17 @@ export function arch02(
   return elementlists.flat();
 }
 
-class Arch03Args {
-  hei = 10;
-  strokeWidth = 50;
-  rot = 0.7;
-  per = 5;
-  sto = 7;
-}
-
 export function arch03(
   prng: PRNG,
   xoff: number,
   yoff: number,
   seed: number = 0,
-  args: Partial<Arch03Args> | undefined = undefined
+  strokeWidth = 50,
+  sto = 7
 ): SvgPolyline[] {
-  const _args = new Arch03Args();
-  Object.assign(_args, args);
-
-  const { hei, strokeWidth, rot, per, sto } = _args;
+  const hei = 10,
+    rot = 0.7,
+    per = 5;
 
   const polylinelists: SvgPolyline[][] = [];
 
@@ -786,35 +744,35 @@ export function arch03(
       )
     );
     polylinelists.push(
-      rail(prng, xoff, yoff - hoff, i * 0.2, {
-        seg: 5,
-        strokeWidth: strokeWidth * Math.pow(0.85, i) * 1.1,
-        hei: hei / 2,
-        per: per / 2,
-        rot: rot,
-        wei: 0.5,
-        tra: false,
-      })
+      rail(
+        prng,
+        xoff,
+        yoff - hoff,
+        i * 0.2,
+        false,
+        hei / 2,
+        strokeWidth * Math.pow(0.85, i) * 1.1,
+        per / 2,
+        5,
+        true,
+        rot,
+        0.5
+      )
     );
     polylinelists.push(
-      pagroof(prng, xoff, yoff - hoff - hei, {
-        hei: hei * 1.5,
-        strokeWidth: strokeWidth * Math.pow(0.9, i),
-        wei: 1.5,
-        per: per,
-      })
+      pagroof(
+        prng,
+        xoff,
+        yoff - hoff - hei,
+        hei * 1.5,
+        strokeWidth * Math.pow(0.9, i),
+        1.5,
+        per
+      )
     );
     hoff += hei * 1.5;
   }
   return polylinelists.flat();
-}
-
-class Arch04Args {
-  hei = 15;
-  strokeWidth = 30;
-  rot = 0.7;
-  per = 5;
-  sto = 2;
 }
 
 export function arch04(
@@ -822,12 +780,12 @@ export function arch04(
   xoff: number,
   yoff: number,
   seed: number = 0,
-  args: Partial<Arch04Args> | undefined = undefined
+  sto = 2
 ): SvgPolyline[] {
-  const _args = new Arch04Args();
-  Object.assign(_args, args);
-
-  const { hei, strokeWidth, rot, per, sto } = _args;
+  const hei = 15,
+    strokeWidth = 30,
+    rot = 0.7,
+    per = 5;
 
   const polylinelists: SvgPolyline[][] = [];
 
@@ -850,33 +808,35 @@ export function arch04(
       )
     );
     polylinelists.push(
-      rail(prng, xoff, yoff - hoff, i * 0.2, {
-        seg: 3,
-        strokeWidth: strokeWidth * Math.pow(0.85, i) * 1.2,
-        hei: hei / 3,
-        per: per / 2,
-        rot: rot,
-        wei: 0.5,
-        tra: true,
-      })
+      rail(
+        prng,
+        xoff,
+        yoff - hoff,
+        i * 0.2,
+        true,
+        hei / 3,
+        strokeWidth * Math.pow(0.85, i) * 1.2,
+        per / 2,
+        3,
+        true,
+        rot,
+        0.5
+      )
     );
     polylinelists.push(
-      pagroof(prng, xoff, yoff - hoff - hei, {
-        hei: hei * 1,
-        strokeWidth: strokeWidth * Math.pow(0.9, i),
-        wei: 1.5,
-        per: per,
-      })
+      pagroof(
+        prng,
+        xoff,
+        yoff - hoff - hei,
+        hei * 1,
+        strokeWidth * Math.pow(0.9, i),
+        1.5,
+        per
+      )
     );
     hoff += hei * 1.2;
   }
   return polylinelists.flat();
-}
-
-class Boat01Args {
-  len = 120;
-  sca = 1;
-  fli = false;
 }
 
 export function boat01(
@@ -884,23 +844,24 @@ export function boat01(
   xoff: number,
   yoff: number,
   seed: number = 0,
-  args: Partial<Boat01Args> | undefined = undefined
+  sca = 1,
+  fli = false
 ): Chunk {
-  const _args = new Boat01Args();
-  Object.assign(_args, args);
-
-  const { len, sca, fli } = _args;
+  const len = 120;
   const polylinelists: SvgPolyline[][] = [];
 
   const dir = fli ? -1 : 1;
   polylinelists.push(
-    man(prng, xoff + 20 * sca * dir, yoff, {
-      ite: stick01,
-      hat: hat02,
-      sca: 0.5 * sca,
-      fli: !fli,
-      len: [0, 30, 20, 30, 10, 30, 30, 30, 30],
-    })
+    man(
+      prng,
+      xoff + 20 * sca * dir,
+      yoff,
+      !fli,
+      0.5 * sca,
+      [0, 30, 20, 30, 10, 30, 30, 30, 30],
+      stick01,
+      hat02
+    )
   );
 
   const plist1: Point[] = [];
@@ -931,22 +892,14 @@ export function boat01(
   return chunk;
 }
 
-class TransmissionTower01Args {
-  hei = 100;
-  strokeWidth = 20;
-}
-
 export function transmissionTower01(
   prng: PRNG,
   xoff: number,
   yoff: number,
-  seed: number = 0,
-  args: Partial<TransmissionTower01Args> | undefined = undefined
+  seed: number = 0
 ): SvgPolyline[] {
-  const _args = new TransmissionTower01Args();
-  Object.assign(_args, args);
-
-  const { hei, strokeWidth } = _args;
+  const hei = 100,
+    strokeWidth = 20;
 
   const polylines: SvgPolyline[] = [];
 
