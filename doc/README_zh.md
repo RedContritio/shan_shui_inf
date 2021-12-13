@@ -1,6 +1,6 @@
 # {Shan, Shui}\*
 
-[English](..\README.md) | 中文
+[English](..//README.md) | 中文
 
 该项目使用程序方式生成矢量格式的中国山水画，并支持卷轴的无限展开。
 
@@ -10,7 +10,7 @@
 
 算法参考自 [黄令东](https://github.com/LingDong-) 大佬的 [{Shan, Shui}\*](https://github.com/LingDong-/shan-shui-inf/blob/master/README.md#shan-shui)  项目。
 
-[TOC]
+[!TOC]
 
 ## 安装
 
@@ -29,17 +29,17 @@ npm start
 
 ### 人 man
 
-![man](img\man.png)
+![man](img/man.png)
 
 ### 水 water
 
-![water](img\water.png)
+![water](img/water.png)
 
 ### 建筑 arch
 
 #### 凉亭 arch01
 
-![arch01](img\arch\arch01.png)
+![arch01](img/arch/arch01.png)
 
 绿色为亭顶 `hut`
 
@@ -49,7 +49,7 @@ npm start
 
 #### 小屋 arch02
 
-![arch02](img\arch\arch02.png)
+![arch02](img/arch/arch02.png)
 
 黑色为屋顶 `deco`
 
@@ -57,7 +57,7 @@ npm start
 
 #### 塔 arch03
 
-![arch03](img\arch\arch03.png)
+![arch03](img/arch/arch03.png)
 
 蓝色为塔顶 `pagroof`
 
@@ -67,7 +67,7 @@ npm start
 
 #### 小楼 arch04
 
-![arch04](img\arch\arch04.png)
+![arch04](img/arch/arch04.png)
 
 蓝色为楼顶 `pagroot`
 
@@ -77,57 +77,57 @@ npm start
 
 #### 小船 boat01
 
-![boat01](img\arch\boat01.png)
+![boat01](img/arch/boat01.png)
 
 #### 输电塔 transmissionTower01
 
-![tower01](img\arch\tower01.png)
+![tower01](img/arch/tower01.png)
 
 ### 树 tree
 
 #### tree01
 
-![tree01](img\tree\tree01.png)
+![tree01](img/tree/tree01.png)
 
 #### tree02
 
-![tree02](img\tree\tree02.png)
+![tree02](img/tree/tree02.png)
 
 #### tree03
 
-![tree03](img\tree\tree03.png)
+![tree03](img/tree/tree03.png)
 
 #### tree04
 
-![tree04](img\tree\tree04.png)
+![tree04](img/tree/tree04.png)
 
 #### tree05
 
-![tree05](img\tree\tree05.png)
+![tree05](img/tree/tree05.png)
 
 #### tree06
 
-![tree06](img\tree\tree06.png)
+![tree06](img/tree/tree06.png)
 
 #### tree07
 
-![tree07](img\tree\tree07.png)
+![tree07](img/tree/tree07.png)
 
 #### tree08
 
-![tree08](img\tree\tree08.png)
+![tree08](img/tree/tree08.png)
 
 ### 山 mountain
 
 #### 山峦 mountain
 
-![mountain](img\mountain.png)
+![mountain](img/mountain.png)
 
 #### 丘陵 flatmountain
 
-![flatmountain](img\flatmountain.png)
+![flatmountain](img/flatmountain.png)
 
 #### 远山 distmountain
 
-![distmountain](img\distmountain.png)
+![distmountain](img/distmountain.png)
 
