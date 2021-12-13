@@ -341,7 +341,6 @@ export function man(
     );
   }
   yoff -= vecs[4].y;
-  console.log(vecs);
 
   const _fsleeve = (v: number) => fsleeve(sca, v);
   const _fbody = (v: number) => fbody(sca, v);
