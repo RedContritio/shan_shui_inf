@@ -131,3 +131,8 @@ pink - `rail`
 
 ![distmountain](doc/img/distmountain.png)
 
+## TODO
+
+- [ ] Add airplane
+- [ ] Deploy to GitHub Pages via GitHub Actions
+- [ ] More smooth autoscroll
