@@ -86,7 +86,7 @@ export class ChunkCache {
     }
   }
 
-  download(prng: PRNG, seed: string, r: Range, windy: number): void {
+  download(prng: PRNG, seed: string, r: Range, windy: number, cwid: number = 512): void {
     const filename: string = `${seed}-[${r.l}, ${r.r}].svg`;
     const windx: number = r.r - r.l;
     const zoom: number = 1.142;
@@ -94,10 +94,13 @@ export class ChunkCache {
 
     this.update(prng, r);
 
+    const left = r.l - cwid;
+    const right = r.r + cwid;
+
     const content: string = `<svg id="SVG" xmlns="http://www.w3.org/2000/svg" width="${
       r.r - r.l
     }" height="${windy}" style="mix-blend-mode: 'multiply'" viewBox="${viewbox}">${this.chunks
-      .filter((c) => c.x >= r.l && c.x < r.r)
+      .filter((c) => c.x >= left && c.x < right)
       .map((c) => `<g transform="translate(0, 0)">${c.render()}</g>`)
       .join('\n')} </svg>`;
 

@@ -77,9 +77,6 @@ class ScrollableCanvas extends React.Component<IProps, IState> {
     const nr = new Range(this.props.cursx, this.props.cursx + this.props.windx);
     chunkCache.update(prng, nr, this.cwid);
 
-    const left = nr.l - this.cwid;
-    const right = nr.r + this.cwid;
-
     return (
       <table id={ScrollableCanvas.id}>
         <tbody>
@@ -113,7 +110,6 @@ class ScrollableCanvas extends React.Component<IProps, IState> {
                   viewBox={viewbox}
                 >
                   {chunkCache.chunks
-                    .filter((c) => c.x >= left && c.x < right)
                     .map((c) => (
                       <g
                         key={`${c.tag} ${c.x} ${c.y}`}
