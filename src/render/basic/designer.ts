@@ -61,7 +61,7 @@ export function design(
     const x = i * xstep + ioff;
     for (let j = 0; j < yr(x) * 480; j += 30) {
       if (ns(new Point(x, j)) > 0.3 && locmax(new Point(x, j), ns, 2)) {
-        const xof = x + 2 * (prng.random() - 0.5) * 500;
+        const xof = x + prng.random(-500, 500);
         const yof = j + 300;
         const r = new DesignChunk('mount', xof, yof, ns(new Point(x, j)));
         if (needAdd(reg, r)) {
@@ -83,7 +83,7 @@ export function design(
       const r = new DesignChunk(
         'distmount',
         x,
-        280 - prng.random() * 50,
+        prng.random(230, 280),
         ns(new Point(x, yr(x) * 480))
       );
       if (needAdd(reg, r)) reg.push(r);
@@ -94,10 +94,10 @@ export function design(
     const x = i * xstep + ioff;
     if (mountain_cover[i] === 0) {
       if (prng.random() < 0.01) {
-        for (let j = 0; j < 4 * prng.random(); j++) {
+        for (let j = 0; j < prng.random(0, 4); j++) {
           const r = new DesignChunk(
             'flatmount',
-            x + 2 * (prng.random() - 0.5) * 700,
+            x + prng.random(-700, 700),
             700 - j * 50,
             ns(new Point(x, j))
           );
@@ -110,7 +110,7 @@ export function design(
   for (let i = imin; i < imax; i++) {
     if (prng.random() < 0.2) {
       const x = i * xstep + ioff;
-      const r = new DesignChunk('boat', x, 300 + prng.random() * 390);
+      const r = new DesignChunk('boat', x, prng.random(300, 690));
       if (needAdd(reg, r, 400)) reg.push(r);
     }
   }

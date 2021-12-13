@@ -41,4 +41,11 @@ export class PRNG {
   random(l: number = 0, r: number = 1): number {
     return this.next() * (r - l) + l;
   }
+
+  /**
+   * @returns -1 or 1
+   */
+  randsign(): number {
+    return this.random() > 0.5 ? -1 : 1;
+  }
 }

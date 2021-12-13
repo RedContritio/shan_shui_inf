@@ -19,7 +19,7 @@ export function stroke(
   const vtxlist0 = [];
   const vtxlist1 = [];
   let vtxlist = [];
-  const n0 = prng.random() * 10;
+  const n0 = prng.random(0, 10);
   for (let i = 1; i < ptlist.length - 1; i++) {
     let w = strokeWidth * fun(i / ptlist.length);
     w = w * (1 - noi) + w * noi * Noise.noise(prng, i * 0.5, n0);
@@ -95,7 +95,7 @@ export function blob_points(
     lalist.push([l, a]);
   }
   let nslist = [];
-  const n0 = prng.random() * 10;
+  const n0 = prng.random(0, 10);
   for (let i = 0; i < reso + 1; i++) {
     nslist.push(Noise.noise(prng, i * 0.05, n0));
   }
@@ -143,9 +143,9 @@ export function texture(
   strokeWidth: number = 1.5,
   sha: number = 0,
   col: (x: number) => string = (_) =>
-    `rgba(100,100,100,${(prng.random() * 0.3).toFixed(3)})`,
+    `rgba(100,100,100,${prng.random(0, 0.3).toFixed(3)})`,
   dis: () => number = () =>
-    (1 / 3) * (prng.random() > 0.5 ? 0 : 2 + prng.random()),
+    0.5 + (prng.random() > 0.5 ? -1 : 1) * prng.random(1 / 6, 0.5),
   noi: (x: number) => number = (x) => 30 / x,
   len: number = 0.2
 ): SvgPolyline[] {
@@ -155,9 +155,8 @@ export function texture(
 
   for (let i = 0; i < tex; i++) {
     const mid = (dis() * reso[1]) | 0;
-    //mid = (reso[1]/3+reso[1]/3*prng.random())|0
 
-    const hlen = Math.floor(prng.random() * (reso[1] * len));
+    const hlen = Math.floor(prng.random(0, reso[1] * len));
 
     let start = mid - hlen;
     let end = mid + hlen;

@@ -42,7 +42,7 @@ export class ChunkCache {
         for (let i = 0; i < plan.length; i++) {
           if (plan[i].tag === 'mount') {
             this.chunks.push(
-              mountain(prng, plan[i].x, plan[i].y, i * 2 * prng.random())
+              mountain(prng, plan[i].x, plan[i].y, prng.random(0, 2 * i))
             );
             this.chunks.push(water(prng, plan[i].x, plan[i].y, i * 2));
           } else if (plan[i].tag === 'flatmount') {
@@ -51,10 +51,10 @@ export class ChunkCache {
                 prng,
                 plan[i].x,
                 plan[i].y,
-                2 * prng.random() * Math.PI,
+                prng.random(0, 2 * Math.PI),
                 100,
-                0.5 + prng.random() * 0.2,
-                600 + prng.random() * 400
+                prng.random(0.5, 0.7),
+                prng.random(600, 1000)
               )
             );
           } else if (plan[i].tag === 'distmount') {
@@ -63,7 +63,7 @@ export class ChunkCache {
                 prng,
                 plan[i].x,
                 plan[i].y,
-                prng.random() * 100,
+                prng.random(0, 100),
                 150,
                 randChoice(prng, [500, 1000, 1500])
               )

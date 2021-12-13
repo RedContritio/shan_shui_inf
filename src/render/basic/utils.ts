@@ -26,7 +26,7 @@ export function loopNoise(nslist: number[]): number[] {
 }
 
 export function randChoice<T>(prng: PRNG, arr: T[]): T {
-  const p = arr.length * prng.random();
+  const p = prng.random(0, arr.length);
   const ip = Math.floor(p);
   return arr[ip];
 }

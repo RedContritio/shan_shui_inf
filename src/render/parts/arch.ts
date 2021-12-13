@@ -29,7 +29,7 @@ function hut(
 
   for (let i = 0; i < reso[0]; i++) {
     ptlist.push([]);
-    const heir = hei + hei * 0.2 * prng.random();
+    const heir = hei * prng.random(1, 1.2);
     for (let j = 0; j < reso[1]; j++) {
       const nx =
         strokeWidth *
@@ -75,7 +75,7 @@ function hut(
     tex,
     1,
     0,
-    (x) => `rgba(120,120,120,${(0.3 + prng.random() * 0.3).toFixed(3)})`,
+    (x) => `rgba(120,120,120,${prng.random(0.3, 0.6).toFixed(3)})`,
     () => wtrand(prng, (a) => a * a),
     (_) => 5,
     0.25
@@ -308,7 +308,7 @@ function rail(
     );
   }
   if (tra) {
-    const open = Math.floor(prng.random() * ptlist.length);
+    const open = Math.floor(prng.random(0, ptlist.length));
     ptlist[open] = ptlist[open].slice(0, -1);
     ptlist[(open + ptlist.length) % ptlist.length] = ptlist[
       (open + ptlist.length) % ptlist.length
@@ -333,7 +333,7 @@ function rail(
         ],
         2
       );
-      ln[0].x += (prng.random() - 0.5) * hei * 0.5;
+      ln[0].x += prng.random(-0.25, 0.25) * hei;
       polylines.push(poly(ln, xoff, yoff, 'none', 'rgba(100,100,100,0.5)', 2));
     }
   }
@@ -553,7 +553,7 @@ export function arch01(
   strokeWidth = 180,
   per = 5
 ): SvgPolyline[] {
-  const p = 0.4 + prng.random() * 0.2;
+  const p = prng.random(0.4, 0.6);
   const h0 = hei * p;
   const h1 = hei * (1 - p);
 
@@ -573,7 +573,7 @@ export function arch01(
       10,
       strokeWidth,
       per * 2,
-      (3 + prng.random() * 3) | 0,
+      prng.random(3, 6),
       false
     )
   );
@@ -619,7 +619,7 @@ export function arch01(
       10,
       strokeWidth,
       per * 2,
-      (3 + prng.random() * 3) | 0,
+      prng.random(3, 6),
       true
     )
   );

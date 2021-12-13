@@ -8,8 +8,7 @@ import { stroke } from './brushes';
 function expand(ptlist: Point[], wfun: (v: number) => number): Point[][] {
   const vtxlist0: Point[] = [];
   const vtxlist1: Point[] = [];
-  // const vtxlist = [];
-  // const n0 = prng.random() * 10;
+
   for (let i = 1; i < ptlist.length - 1; i++) {
     const w = wfun(i / ptlist.length);
     const a1 = Math.atan2(
@@ -142,7 +141,7 @@ export function hat02(
   // const seed = prng.random();
 
   const f: (pl: Point[]) => Point[] = fli ? flipper : (x) => x;
-  
+
   polylines.push(
     poly(
       tranpoly(
@@ -287,11 +286,11 @@ export function man(
     0,
     -Math.PI / 2,
     normRand(prng, 0, 0),
-    (Math.PI / 4) * prng.random(),
-    ((Math.PI * 3) / 4) * prng.random(),
+    prng.random(0, Math.PI / 4),
+    prng.random(0, (Math.PI * 3) / 4),
     (Math.PI * 3) / 4,
     -Math.PI / 4,
-    (-Math.PI * 3) / 4 - (Math.PI / 4) * prng.random(),
+    -Math.PI * prng.random(3 / 4, 1),
     -Math.PI / 4,
   ];
   const len = _len.map(function (v) {

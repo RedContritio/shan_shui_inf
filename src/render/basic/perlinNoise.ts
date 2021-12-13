@@ -21,7 +21,7 @@ const lcg = {
   z: -1,
   setSeed(prng: PRNG, val: number): void {
     // make seed unsigned
-    this.z = this.seed = (val == null ? prng.random() * this.m : val) >>> 0;
+    this.z = this.seed = (val == null ? prng.random(0, this.m) : val) >>> 0;
   },
   getSeed: function (): number {
     return this.seed;
