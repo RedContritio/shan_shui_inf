@@ -137,16 +137,10 @@ export function tree03(
       for (let j = 0; j < (reso - i) * 2; j++) {
         const shape = (x: number) => Math.log(50 * x + 1) / 3.95;
         const ox = prng.random() * strokeWidth * 2 * shape((reso - i) / reso);
-        const lcol =
-          'rgba(' +
-          leafcol[0] +
-          ',' +
-          leafcol[1] +
-          ',' +
-          leafcol[2] +
-          ',' +
-          (prng.random() * 0.2 + parseFloat(leafcol[3])).toFixed(3) +
-          ')';
+        const lcol = `rgba(${leafcol[0]},${leafcol[1]},${leafcol[2]},${(
+          prng.random() * 0.2 +
+          parseFloat(leafcol[3])
+        ).toFixed(3)})`;
         blobs.push(
           blob(
             prng,
@@ -316,7 +310,7 @@ export function twig(
             nx + tx + Math.cos(ang) * dj * strokeWidth,
             ny + ty + (Math.sin(ang) * dj - lea[1] / (dep + 1)) * strokeWidth,
             ang / 2 + Math.PI / 2 + Math.PI * 0.2 * (prng.random() - 0.5),
-            'rgba(100,100,100,' + (0.5 + dep * 0.2).toFixed(3) + ')',
+            `rgba(100,100,100,${(0.5 + dep * 0.2).toFixed(3)})`,
             (15 + 12 * prng.random()) * strokeWidth,
             (6 + 3 * prng.random()) * strokeWidth,
             0.5,
@@ -570,8 +564,7 @@ export function tree04(prng: PRNG, x: number, y: number): SvgPolyline[] {
 
   trmlist.splice(0, 1);
   trmlist.splice(trmlist.length - 1, 1);
-  const color =
-    'rgba(100,100,100,' + (0.4 + prng.random() * 0.1).toFixed(3) + ')';
+  const color = `rgba(100,100,100,${(0.4 + prng.random() * 0.1).toFixed(3)})`;
 
   polylinelists.push([
     stroke(
@@ -679,8 +672,7 @@ export function tree05(
 
   trmlist.splice(0, 1);
   trmlist.splice(trmlist.length - 1, 1);
-  const color =
-    'rgba(100,100,100,' + (0.4 + prng.random() * 0.1).toFixed(3) + ')';
+  const color = `rgba(100,100,100,${(0.4 + prng.random() * 0.1).toFixed(3)})`;
 
   // 树干
   polylinelists.push([
@@ -809,8 +801,7 @@ export function tree06(
 
   trmlist.splice(0, 1);
   trmlist.splice(trmlist.length - 1, 1);
-  const color =
-    'rgba(100,100,100,' + (0.4 + prng.random() * 0.1).toFixed(3) + ')';
+  const color = `rgba(100,100,100,${(0.4 + prng.random() * 0.1).toFixed(3)})`;
   polylinelists.push([
     stroke(
       prng,
@@ -822,7 +813,7 @@ export function tree06(
       2.5,
       0.9,
       0,
-      (x) => Math.sin(1)
+      (_) => Math.sin(1)
     ),
   ]);
 
@@ -862,16 +853,9 @@ export function tree07(
     const ny = y - (i * hei) / reso;
     if (i >= reso / 4) {
       for (let j = 0; j < 1; j++) {
-        const lcol =
-          'rgba(' +
-          leafcol[0] +
-          ',' +
-          leafcol[1] +
-          ',' +
-          leafcol[2] +
-          ',' +
-          parseFloat(leafcol[3]).toFixed(3) +
-          ')';
+        const lcol = `rgba(${leafcol[0]},${leafcol[1]},${
+          leafcol[2]
+        },${parseFloat(leafcol[3]).toFixed(3)})`;
         const bfunc = function (x: number) {
           return x <= 1
             ? 2.75 * x * Math.pow(1 - x, 1 / 1.8)
@@ -907,7 +891,7 @@ export function tree07(
   for (let k = 0; k < T.length; k++) {
     const m = midPt(T[k]);
     const c = (Noise.noise(prng, m.x * 0.02, m.y * 0.02) * 200 + 50) | 0;
-    const co = 'rgba(' + c + ',' + c + ',' + c + ',0.8)';
+    const co = `rgba(${c},${c},${c},0.8)`;
     polylines.push(poly(T[k], 0, 0, co, co));
   }
   return polylines;
@@ -1069,8 +1053,7 @@ export function tree08(
 
   polylinelists.push([poly(trlist, x, y, 'white', col)]);
 
-  const color =
-    'rgba(100,100,100,' + (0.6 + prng.random() * 0.1).toFixed(3) + ')';
+  const color = `rgba(100,100,100,${(0.6 + prng.random() * 0.1).toFixed(3)})`;
   polylinelists.push([
     stroke(
       prng,

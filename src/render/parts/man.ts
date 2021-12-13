@@ -6,8 +6,8 @@ import { SvgPolyline } from '../svg/types';
 import { stroke } from './brushes';
 
 function expand(ptlist: Point[], wfun: (v: number) => number): Point[][] {
-  const vtxlist0 = [];
-  const vtxlist1 = [];
+  const vtxlist0: Point[] = [];
+  const vtxlist1: Point[] = [];
   // const vtxlist = [];
   // const n0 = prng.random() * 10;
   for (let i = 1; i < ptlist.length - 1; i++) {
@@ -142,9 +142,7 @@ export function hat02(
   // const seed = prng.random();
 
   const f: (pl: Point[]) => Point[] = fli ? flipper : (x) => x;
-  // canv += poly(tranpoly(p0,p1,[
-  //   [-0.3,0.6],[-0.15,1.0],[0,1.1],[0.15,1.0],[0.3,0.6]
-  //   ]),{fill:"white",stroke:"rgba(130,130,130,0.8)",strokeWidth:1})
+  
   polylines.push(
     poly(
       tranpoly(

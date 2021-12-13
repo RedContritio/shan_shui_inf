@@ -36,7 +36,7 @@ export function water(
 
   for (let j = 1; j < ptlist.length; j += 1) {
     const color =
-      'rgba(100,100,100,' + (0.3 + prng.random() * 0.3).toFixed(3) + ')';
+      `rgba(100,100,100,${(0.3 + prng.random() * 0.3).toFixed(3)})`;
     polylines.push(
       stroke(
         prng,

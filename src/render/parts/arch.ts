@@ -75,7 +75,7 @@ function hut(
     tex,
     1,
     0,
-    (x) => 'rgba(120,120,120,' + (0.3 + prng.random() * 0.3).toFixed(3) + ')',
+    (x) => `rgba(120,120,120,${(0.3 + prng.random() * 0.3).toFixed(3)})`,
     () => wtrand(prng, (a) => a * a),
     (_) => 5,
     0.25

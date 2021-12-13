@@ -142,12 +142,10 @@ export function texture(
   tex: number = 400,
   strokeWidth: number = 1.5,
   sha: number = 0,
-  col: (x: number) => string = (x) =>
+  col: (x: number) => string = (_) =>
     `rgba(100,100,100,${(prng.random() * 0.3).toFixed(3)})`,
   dis: () => number = () =>
-    prng.random() > 0.5
-      ? (1 / 3) * prng.random()
-      : (1 * 2) / 3 + (1 / 3) * prng.random(),
+    (1 / 3) * (prng.random() > 0.5 ? 0 : 2 + prng.random()),
   noi: (x: number) => number = (x) => 30 / x,
   len: number = 0.2
 ): SvgPolyline[] {

@@ -38,7 +38,7 @@ export class PRNG {
     return this.s / this.m;
   }
 
-  random(): number {
-    return this.next();
+  random(l: number = 0, r: number = 1): number {
+    return this.next() * (r - l) + l;
   }
 }

@@ -1,4 +1,4 @@
-import { Point } from '../basic/point';
+import { distance, Point } from '../basic/point';
 import { loopNoise, normRand, poly, randChoice } from '../basic/utils';
 import { Noise } from '../basic/perlinNoise';
 import { div, stroke, texture } from './brushes';
@@ -80,8 +80,7 @@ export function foot(
     polylines.push(poly(ftlist[i], xoff, yoff, 'white', 'none'));
   }
   for (let j = 0; j < ftlist.length; j++) {
-    const color =
-      'rgba(100,100,100,' + (0.1 + prng.random() * 0.1).toFixed(3) + ')';
+    const color = `rgba(100,100,100,${prng.random(0.1, 0.2).toFixed(3)})`;
     polylines.push(
       stroke(
         prng,
@@ -157,27 +156,24 @@ export function mountain(
     vegetate(
       ptlist,
       function (x, y) {
+        const noise = Noise.noise(prng, 0.01 * x, 0.01 * y) * 0.5 * 0.3 + 0.5;
         return tree02(
           prng,
           x + xoff,
           y + yoff - 5,
-          'rgba(100,100,100,' +
-            (Noise.noise(prng, 0.01 * x, 0.01 * y) * 0.5 * 0.3 + 0.5).toFixed(
-              3
-            ) +
-            ')',
+          `rgba(100,100,100,${noise.toFixed(3)})`,
           2
         );
       },
       function (i, j) {
-        const ns = Noise.noise(prng, j * 0.1, seed);
+        const noise = Noise.noise(prng, j * 0.1, seed);
         return (
-          i === 0 && ns * ns * ns < 0.1 && Math.abs(ptlist[i][j].y) / h > 0.2
+          i === 0 &&
+          noise * noise * noise < 0.1 &&
+          Math.abs(ptlist[i][j].y) / h > 0.2
         );
       },
-      function (veglist, i) {
-        return true;
-      }
+      (_v, _i) => true
     )
   );
 
@@ -218,42 +214,25 @@ export function mountain(
       randChoice(prng, [0, 0, 0, 0, 5])
     )
   );
-  //   canv += col === undefined ? texture(ptlist, {
-  //     xof: xoff,
-  //     yof: yoff,
-  //     tex: tex,
-  //     sha: randChoice([0, 0, 0, 0, 5]),
-  //   }) : texture(ptlist, {
-  //     xof: xoff,
-  //     yof: yoff,
-  //     tex: tex,
-  //     sha: randChoice([0, 0, 0, 0, 5]),
-  //     col: col,
-  //   });
 
   //TOP
   elementlists.push(
     vegetate(
       ptlist,
       function (x, y) {
+        const noise = Noise.noise(prng, 0.01 * x, 0.01 * y) * 0.5 * 0.3 + 0.5;
         return tree02(
           prng,
           x + xoff,
           y + yoff,
-          'rgba(100,100,100,' +
-            (Noise.noise(prng, 0.01 * x, 0.01 * y) * 0.5 * 0.3 + 0.5).toFixed(
-              3
-            ) +
-            ')'
+          `rgba(100,100,100,${noise.toFixed(3)}`
         );
       },
       function (i, j) {
-        const ns = Noise.noise(prng, i * 0.1, j * 0.1, seed + 2);
-        return ns * ns * ns < 0.1 && Math.abs(ptlist[i][j].y) / h > 0.5;
+        const noise = Noise.noise(prng, i * 0.1, j * 0.1, seed + 2);
+        return Math.pow(noise, 3) < 0.1 && Math.abs(ptlist[i][j].y) / h > 0.5;
       },
-      function (veglist, i) {
-        return true;
-      }
+      (_v, _i) => true
     )
   );
 
@@ -263,45 +242,32 @@ export function mountain(
       vegetate(
         ptlist,
         function (x, y) {
-          let ht = ((h + y) / h) * 70;
-          ht = ht * 0.3 + prng.random() * ht * 0.7;
+          const ht = ((h + y) / h) * 70 * prng.random(0.3, 1);
+          const noise = Noise.noise(prng, 0.01 * x, 0.01 * y) * 0.5 * 0.3 + 0.3;
           return tree01(
             prng,
             x + xoff,
             y + yoff,
             ht,
             prng.random() * 3 + 1,
-            'rgba(100,100,100,' +
-              (Noise.noise(prng, 0.01 * x, 0.01 * y) * 0.5 * 0.3 + 0.3).toFixed(
-                3
-              ) +
-              ')'
+            `rgba(100,100,100,${noise.toFixed(3)})`
           );
         },
         function (i, j): boolean {
-          const ns = Noise.noise(prng, i * 0.2, j * 0.05, seed);
+          const noise = Noise.noise(prng, i * 0.2, j * 0.05, seed);
           return (
             j % 2 !== 0 &&
-            ns * ns * ns * ns < 0.012 &&
+            Math.pow(noise, 4) < 0.012 &&
             Math.abs(ptlist[i][j].y) / h < 0.3
           );
         },
         function (veglist, i) {
-          let counter = 0;
-          for (let j = 0; j < veglist.length; j++) {
-            if (
-              i !== j &&
-              Math.pow(veglist[i].x - veglist[j].x, 2) +
-                Math.pow(veglist[i].y - veglist[j].y, 2) <
-                30 * 30
-            ) {
-              counter++;
-            }
-            if (counter > 2) {
-              return true;
-            }
-          }
-          return false;
+          const cnt = veglist.reduce<number>(
+            (s: number, p: Point, j: number) =>
+              s + (i != j && distance(veglist[i], p) < 30 ? 1 : 0),
+            0
+          );
+          return cnt > 2;
         }
       )
     );
@@ -311,32 +277,27 @@ export function mountain(
       vegetate(
         ptlist,
         function (x, y) {
-          let ht = ((h + y) / h) * 120;
-          ht = ht * 0.5 + prng.random() * ht * 0.5;
+          const ht = ((h + y) / h) * 120 * 0.5 * prng.random(1, 2);
           const bc = prng.random() * 0.1;
           const bp = 1;
+          const noise = Noise.noise(prng, 0.01 * x, 0.01 * y) * 0.5 * 0.3 + 0.3;
           return tree03(
             prng,
             x + xoff,
             y + yoff,
             ht,
-            'rgba(100,100,100,' +
-              (Noise.noise(prng, 0.01 * x, 0.01 * y) * 0.5 * 0.3 + 0.3).toFixed(
-                3
-              ) +
-              ')',
+            `rgba(100,100,100,${noise.toFixed(3)})`,
             (x) => Math.pow(x * bc, bp)
           );
         },
         function (i, j) {
-          const ns = Noise.noise(prng, i * 0.2, j * 0.05, seed);
+          const noise = Noise.noise(prng, i * 0.2, j * 0.05, seed);
           return (
-            (j === 0 || j === ptlist[i].length - 1) && ns * ns * ns * ns < 0.012
+            (j === 0 || j === ptlist[i].length - 1) &&
+            Math.pow(noise, 4) < 0.012
           );
         },
-        function (veglist, i) {
-          return true;
-        }
+        (_veglist, _i) => true
       )
     );
   }
@@ -378,9 +339,7 @@ export function mountain(
           ns * ns * ns * ns < 0.008
         );
       },
-      function (veglist, i) {
-        return true;
-      }
+      (_veglist, _i) => true
     )
   );
   //TOP ARCH
@@ -404,9 +363,7 @@ export function mountain(
           prng.random() < 0.02
         );
       },
-      function (veglist, i) {
-        return true;
-      }
+      (_veglist, _i) => true
     )
   );
 
@@ -418,16 +375,14 @@ export function mountain(
         return transmissionTower01(prng, x + xoff, y + yoff, seed);
       },
       function (i, j) {
-        const ns = Noise.noise(prng, i * 0.2, j * 0.05, seed + 20 * Math.PI);
+        const noise = Noise.noise(prng, i * 0.2, j * 0.05, seed + 20 * Math.PI);
         return (
           i % 2 === 0 &&
           (j === 1 || j === ptlist[i].length - 2) &&
-          ns * ns * ns * ns < 0.002
+          Math.pow(noise, 4) < 0.002
         );
       },
-      function (veglist, i) {
-        return true;
-      }
+      (_veglist, _i) => true
     )
   );
 
@@ -449,9 +404,7 @@ export function mountain(
       function (i, j) {
         return (j === 0 || j === ptlist[i].length - 1) && prng.random() < 0.1;
       },
-      function (veglist, i) {
-        return true;
-      }
+      (_veglist, _i) => true
     )
   );
 
@@ -560,7 +513,7 @@ export function flatMount(
       tex,
       2,
       0,
-      (x) => `rgba(100,100,100,${(prng.random() * 0.3).toFixed(3)})`,
+      (_) => `rgba(100,100,100,${prng.random(0, 0.3).toFixed(3)})`,
       () =>
         prng.random() > 0.5
           ? 0.1 + 0.4 * prng.random()
@@ -667,16 +620,16 @@ export function flatDec(
   }
 
   if (tt === 0) {
-    for (let j = 0; j < prng.random() * 3; j++) {
+    for (let j = 0; j < prng.random(0, 3); j++) {
       polylinelists.push(
         rock(
           prng,
           xoff + normRand(prng, grbd.xmin, grbd.xmax),
           yoff + (grbd.ymin + grbd.ymax) / 2 + normRand(prng, -5, 5) + 20,
-          prng.random() * 100,
-          40 + prng.random() * 20,
+          prng.random(0, 100),
+          prng.random(40, 60),
           5,
-          50 + prng.random() * 20
+          prng.random(50, 70)
         )
       );
     }
@@ -829,8 +782,8 @@ export function distMount(
   }
   for (let i = 0; i < ptlist.length; i++) {
     const getCol = function (x: number, y: number) {
-      const c = (Noise.noise(prng, x * 0.02, y * 0.02, yoff) * 55 + 200) | 0;
-      return 'rgb(' + c + ',' + c + ',' + c + ')';
+      const c = Noise.noise(prng, x * 0.02, y * 0.02, yoff) * 55 + 200;
+      return `rgb(${c},${c},${c})`;
     };
     const pe = ptlist[i][ptlist[i].length - 1];
     polylines.push(poly(ptlist[i], 0, 0, getCol(pe.x, pe.y), 'none', 1));
@@ -926,7 +879,7 @@ export function rock(
       tex,
       3,
       sha,
-      (x) => 'rgba(180,180,180,' + (0.3 + prng.random() * 0.3).toFixed(3) + ')',
+      (_) => `rgba(180,180,180,${prng.random(0.3, 0.6).toFixed(3)})`,
       () =>
         prng.random() > 0.5
           ? 0.15 + 0.15 * prng.random()
