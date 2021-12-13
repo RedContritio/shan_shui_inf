@@ -120,10 +120,10 @@ class App extends React.Component<{}, AppState> {
     const changeSeed = (seed: string) => this.setState({ seed });
     const onChangeSaveRange = (saveRange: Range) =>
       this.setState({ saveRange });
-    const toggleAutoScroll = (autoscroll: boolean, step: number) => {
-      this.setState({ auto_scroll: autoscroll });
-      this.autoxcroll(step);
-    };
+    const toggleAutoScroll = (autoscroll: boolean, step: number) =>
+      this.setState({ auto_scroll: autoscroll }, () => {
+        this.autoxcroll(step);
+      });
     const toggleAutoLoad = (autoLoad: boolean) => {
       this.setState({
         autoLoad,
