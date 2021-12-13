@@ -1,4 +1,4 @@
-# {Shan, Shui}/*
+# {Shan, Shui}\*
 
 English | [中文](doc/README_zh.md)
 

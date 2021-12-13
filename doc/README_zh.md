@@ -10,7 +10,7 @@
 
 算法参考自 [黄令东](https://github.com/LingDong-) 大佬的 [{Shan, Shui}\*](https://github.com/LingDong-/shan-shui-inf/blob/master/README.md#shan-shui)  项目。
 
-[!TOC]
+[TOC]
 
 ## 安装
 
