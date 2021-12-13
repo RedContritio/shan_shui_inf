@@ -6,7 +6,6 @@ div#SETTING {
 }
 
 div#BTN_ROW {
-  position: fixed;
   top: 3px;
   height: 32px;
   user-select: none;
