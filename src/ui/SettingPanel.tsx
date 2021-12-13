@@ -46,7 +46,7 @@ class SettingPanel extends React.Component<IProps, State> {
 
     return (
       <div id={SettingPanel.id} style={{ left }}>
-        <div>
+        <div id="BTN_ROW">
           <ButtonSet
             onClick={toggleVisible}
             menu_visible={this.state.menu_visible}

@@ -5,15 +5,26 @@ div#SETTING {
   top: 3px;
 }
 
-div#SET_BTN {
+div#BTN_ROW {
+  position: fixed;
+  top: 3px;
+  height: 32px;
+  user-select: none;
+  vertical-align: middle;
+  font-size: 18px;
+}
+
+div#BTN_ROW > div {
+  float: left;
+  margin-right: 3px;
   width: 32px;
   height: 32px;
-  color: rgba(0, 0, 0, 0.4);
   border: 1px solid rgba(0, 0, 0, 0.4);
   text-align: center;
   display: table;
   cursor: pointer;
-  user-select: none;
+  color: rgba(0, 0, 0, 0.4);
+  z-index: 1000;
 }
 
 div#SET_BTN > div,
@@ -31,22 +42,6 @@ div#MENU {
 div#MENU td > * {
   margin-top: 0;
   margin-bottom: 0;
-  user-select: none;
-}
-
-div#SOURCE_BTN {
-  position: fixed;
-  z-index: 1000;
-  top: 3px;
-  width: 32px;
-  height: 32px;
-  color: rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(0, 0, 0, 0.4);
-  text-align: center;
-  display: table;
-  cursor: pointer;
-  vertical-align: middle;
-  font-size: 18px;
   user-select: none;
 }
 

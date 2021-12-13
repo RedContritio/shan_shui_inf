@@ -1,13 +1,12 @@
 import React from 'react';
 import SettingPanel from './ui/SettingPanel';
-import ButtonSource from './ui/ButtonSource';
 import ScrollableCanvas from './ui/ScrollableCanvas';
 import BackgroundRender from './ui/BackgroundRender';
 import { PRNG } from './render/basic/PRNG';
 import { Range } from './render/basic/range';
-import './App.css';
 import { PerlinNoise } from './render/basic/perlinNoise';
 import { ChunkCache } from './render/chunkCache';
+import './App.css';
 
 interface AppState {
   seed: string;
@@ -153,7 +152,6 @@ class App extends React.Component<{}, AppState> {
             onChangeSaveRange={onChangeSaveRange}
             toggleAutoLoad={toggleAutoLoad}
           />
-          <ButtonSource />
           <ScrollableCanvas
             xscroll={xscroll}
             windy={this.state.windy}
