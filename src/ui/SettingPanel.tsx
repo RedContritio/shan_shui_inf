@@ -3,6 +3,7 @@ import { PRNG } from '../render/basic/PRNG';
 import { Range } from '../render/basic/range';
 import { ChunkCache } from '../render/chunkCache';
 import ButtonSet from './ButtonSet';
+import ButtonSource from './ButtonSource';
 import Menu from './Menu';
 import './styles.css';
 
@@ -45,11 +46,14 @@ class SettingPanel extends React.Component<IProps, State> {
 
     return (
       <div id={SettingPanel.id} style={{ left }}>
-        <ButtonSet
-          onClick={toggleVisible}
-          menu_visible={this.state.menu_visible}
-          left={left}
-        />
+        <div>
+          <ButtonSet
+            onClick={toggleVisible}
+            menu_visible={this.state.menu_visible}
+            left={left}
+          />
+          <ButtonSource />
+        </div>
         <div style={{ height: 4 }} />
         <Menu
           display={menu_visible ? 'block' : 'none'}
