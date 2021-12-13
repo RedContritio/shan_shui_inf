@@ -28,6 +28,7 @@ class App extends React.Component<{}, AppState> {
   prng = new PRNG();
   noise = new PerlinNoise();
   chunkCache = new ChunkCache();
+  static readonly FPS = 2;
 
   constructor(props: {}) {
     super(props);
@@ -77,11 +78,11 @@ class App extends React.Component<{}, AppState> {
 
   autoxcroll(v: number) {
     if (this.state.auto_scroll) {
-      this.xscroll(v);
+      this.xscroll(v / App.FPS);
       const autoxscroll = (v: number) => this.autoxcroll(v);
       setTimeout(function () {
         autoxscroll(v);
-      }, 2000);
+      }, 1000 / App.FPS);
     }
   }
 

@@ -32,7 +32,7 @@ class Menu extends React.Component<IProps, IState> {
     super(props);
 
     this.state = {
-      step: 200,
+      step: 100,
     };
   }
 
