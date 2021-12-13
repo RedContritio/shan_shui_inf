@@ -95,6 +95,7 @@ class Menu extends React.Component<IProps, IState> {
                 <button onClick={this.props.reloadWSeed}>Generate</button>
               </td>
             </tr>
+            <hr />
             <tr>
               <td>
                 <pre>
@@ -135,6 +136,7 @@ class Menu extends React.Component<IProps, IState> {
                 </pre>
               </td>
             </tr>
+            <hr />
             <tr>
               <td>
                 <pre>SAVE</pre>
