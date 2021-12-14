@@ -8,7 +8,7 @@
 
 当前支持导出任意范围的 `svg` 图像（不含背景）。
 
-算法参考自 [黄令东](https://github.com/LingDong-) 大佬的 [{Shan, Shui}\*](https://github.com/LingDong-/shan-shui-inf/blob/master/README.md#shan-shui)  项目。
+算法参考自 [黄令东](https://github.com/LingDong-) 大佬的 [{Shan, Shui}\*](https://github.com/LingDong-/shan-shui-inf/blob/master/README.md#shan-shui) 项目。
 
 [TOC]
 
@@ -131,3 +131,8 @@ npm start
 
 ![distmountain](img/distmountain.png)
 
+## TODO
+
+- [ ] 添加飞机
+- [ ] 通过 GitHub Actions 部署至 GitHub Pages
+- [ ] 更加平滑的自动滚动
