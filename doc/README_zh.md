@@ -16,7 +16,7 @@
 
 ```shell
 sudo apt-get install nodejs
-npm install
+npm install # 或执行 `yarn`
 ```
 
 ## 运行

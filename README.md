@@ -16,7 +16,7 @@ The algorithm is based on page of [{Shan, Shui}\*](https://github.com/LingDong-/
 
 ```shell
 sudo apt-get install nodejs
-npm install
+npm install # or `yarn`
 ```
 
 ## Usage
