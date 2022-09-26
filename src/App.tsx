@@ -10,9 +10,9 @@ import './App.css';
 
 interface AppState {
   seed: string;
-  auto_scroll: boolean;
-  background_image: string | undefined;
-  foreground_image: string;
+  autoScroll: boolean;
+  backgroundImage: string | undefined;
+  foregroundImage: string;
   cursx: number;
   windx: number;
   windy: number;
@@ -37,9 +37,9 @@ class App extends React.Component<{}, AppState> {
 
     this.state = {
       seed: qseed == null ? new Date().getTime().toString() : qseed,
-      auto_scroll: false,
-      background_image: undefined,
-      foreground_image: '',
+      autoScroll: false,
+      backgroundImage: undefined,
+      foregroundImage: '',
       cursx: 0,
       windx: window.innerWidth,
       windy: window.innerHeight,
@@ -53,7 +53,7 @@ class App extends React.Component<{}, AppState> {
 
   componentDidMount() {
     const url = this.bgrender.current?.generate(this.prng, this.noise);
-    this.setState({ background_image: url });
+    this.setState({ backgroundImage: url });
 
     const resizeCallback = () =>
       this.setState({ windx: window.innerWidth, windy: window.innerHeight });
@@ -76,7 +76,7 @@ class App extends React.Component<{}, AppState> {
   }
 
   autoxcroll(v: number) {
-    if (this.state.auto_scroll) {
+    if (this.state.autoScroll) {
       this.xscroll(v / App.FPS);
       const autoxscroll = (v: number) => this.autoxcroll(v);
       setTimeout(function () {
@@ -121,7 +121,7 @@ class App extends React.Component<{}, AppState> {
     const onChangeSaveRange = (saveRange: Range) =>
       this.setState({ saveRange });
     const toggleAutoScroll = (autoscroll: boolean, step: number) =>
-      this.setState({ auto_scroll: autoscroll }, () => {
+      this.setState({ autoScroll: autoscroll }, () => {
         this.autoxcroll(step);
       });
     const toggleAutoLoad = (autoLoad: boolean) => {
@@ -155,7 +155,7 @@ class App extends React.Component<{}, AppState> {
           <ScrollableCanvas
             xscroll={xscroll}
             windy={this.state.windy}
-            background={this.state.background_image}
+            background={this.state.backgroundImage}
             seed={this.state.seed}
             cursx={this.state.cursx}
             windx={this.state.windx}
